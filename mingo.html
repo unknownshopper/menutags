@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Menú</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="mt-theme-mingo">
+    <div id="mtLoader" class="mt-loader">
+        <div class="mt-loader-card">
+            <div class="mt-brand">MenuTags</div>
+            <h2 class="mt-loader-title">Bienvenido a Mingo</h2>
+            <p class="mt-loader-sub">Cargando menú...</p>
+            <div class="mt-spinner" aria-hidden="true"></div>
+        </div>
+    </div>
+
+    <div class="mt-container">
+        <header class="mt-header">
+            <div>
+                <div class="mt-brand">MenuTags</div>
+                <h1>Menú</h1>
+            </div>
+        </header>
+
+        <main class="mt-main">
+            <section class="mt-section" id="mtOrder">
+                <h2>MINGO TORTAS AHOGADAS</h2>
+                <p>Arma tu pedido y envíalo por WhatsApp.</p>
+
+                <div class="mt-choice">
+                    <h3>Producto</h3>
+                    <div class="mt-choice-grid">
+                        <button class="mt-option" type="button" id="mtKindTorta">Torta</button>
+                        <button class="mt-option" type="button" id="mtKindTaco">Taco</button>
+                    </div>
+                </div>
+
+                <div class="mt-choice" id="mtFields">
+                    <div class="mt-field" id="mtFieldTortaSize">
+                        <label class="mt-label" for="mtTortaSize">Tamaño</label>
+                        <select class="mt-input" id="mtTortaSize">
+                            <option value="Mini">Mini ($65)</option>
+                            <option value="Clásica">Clásica ($85)</option>
+                            <option value="Jumbo">Jumbo ($105)</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-field" id="mtFieldTacoType">
+                        <label class="mt-label" for="mtTacoType">Taco</label>
+                        <select class="mt-input" id="mtTacoType">
+                            <option value="Frijol">Frijol ($65)</option>
+                            <option value="Papa">Papa ($65)</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-field" id="mtFieldProtein">
+                        <label class="mt-label" for="mtProtein">Proteína</label>
+                        <select class="mt-input" id="mtProtein"></select>
+                    </div>
+
+                    <div class="mt-field" id="mtFieldQty">
+                        <label class="mt-label" for="mtQty">Cantidad</label>
+                        <div class="mt-qty">
+                            <button class="mt-pill" type="button" id="mtQtyMinus">-</button>
+                            <input class="mt-input" id="mtQty" inputmode="numeric" value="1" />
+                            <button class="mt-pill" type="button" id="mtQtyPlus">+</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-row">
+                        <button class="mt-btn" type="button" id="mtAdd">Agregar al pedido</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-section" id="mtCart">
+                <h2>Resumen de pedido</h2>
+                <ul id="mtCartList"></ul>
+                <div class="mt-total">
+                    <div class="mt-total-row">
+                        <span>Total</span>
+                        <strong id="mtTotal">$0</strong>
+                    </div>
+                </div>
+                <div class="mt-row">
+                    <button class="mt-btn" type="button" id="mtWhatsApp">Hacer pedido</button>
+                    <button class="mt-pill" type="button" id="mtClear">Vaciar</button>
+                </div>
+            </section>
+
+            <section class="mt-section mt-hidden" id="mtStaticMenu" aria-hidden="true">
+                <h2>Tortas ahogadas</h2>
+                <h3>Tamaños</h3>
+                <ul>
+                    <li>Mini</li>
+                    <li>Clásica</li>
+                    <li>Jumbo</li>
+                </ul>
+
+                <h3>Proteínas</h3>
+                <ul>
+                    <li>Maciza</li>
+                    <li>Cuerito con maciza</li>
+                    <li>Camarón con panela</li>
+                </ul>
+            </section>
+
+            <section class="mt-section mt-hidden" aria-hidden="true">
+                <h2>Tacos dorados</h2>
+                <ul>
+                    <li>Frijol</li>
+                    <li>Papa</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+    <script src="mingo.js"></script>
+</body>
+</html>
