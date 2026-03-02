@@ -273,6 +273,28 @@
      align-items: center;
  }
 
+ .mt-qty--compact {
+     grid-template-columns: 44px 1fr 44px;
+     gap: 8px;
+ }
+
+ .mt-item-controls {
+     display: grid;
+     gap: 10px;
+     margin-top: 10px;
+ }
+
+ @media (min-width: 720px) {
+     .mt-item-controls {
+         grid-template-columns: 1fr auto auto;
+         align-items: center;
+     }
+
+     .mt-item-controls .mt-btn {
+         justify-self: end;
+     }
+ }
+
  .mt-total {
      margin-top: 12px;
      border-top: 1px solid rgba(255, 255, 255, 0.12);

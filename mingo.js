@@ -3,271 +3,234 @@
          return document.getElementById(id);
      }
 
-     function money(n) {
-         return "$" + String(n);
-     }
+    function money(n) {
+        return "$" + String(n);
+    }
 
-     var WA_PHONE = "5219933026066";
-     var HEADER = "MINGO TORTAS AHOGADAS resumen de pedido";
+    var WA_PHONE = "5219933026066";
+    var HEADER = "MINGO TORTAS AHOGADAS resumen de pedido";
 
-     var PRICES_TORTA = {
-         "Mini": 65,
-         "Clásica": 85,
-         "Jumbo": 105,
-     };
-     var PRICE_TACO = 65;
+    var PRICES_TORTA = {
+        "Mini": 65,
+        "Clásica": 85,
+        "Jumbo": 105,
+    };
+    var PRICE_TACO = 65;
+    var PRICE_BEBIDA = 35;
+    var PRICE_POSTRE = 55;
 
-     var PROTEINS_TORTA = ["Maciza", "Cuerito con maciza", "Camarón con panela"];
-     var PROTEINS_TACO = ["Maciza", "Cuerito con maciza"];
+    var PROTEINS_TORTA = ["Maciza", "Cuerito con maciza", "Camarón con panela"];
+    var PROTEINS_TACO = ["Maciza", "Cuerito con maciza"];
 
-     var PRICE_BEBIDA = 35;
+    var loader = qs("mtLoader");
+    var listTortas = qs("mtListTortas");
+    var listTacos = qs("mtListTacos");
+    var listBebidas = qs("mtListBebidas");
+    var listPostres = qs("mtListPostres");
 
-     var loader = qs("mtLoader");
-     var kindTorta = qs("mtKindTorta");
-     var kindTaco = qs("mtKindTaco");
-     var kindBebida = qs("mtKindBebida");
+    var cartList = qs("mtCartList");
+    var totalEl = qs("mtTotal");
+    var waBtn = qs("mtWhatsApp");
+    var clearBtn = qs("mtClear");
 
-     var fieldTortaSize = qs("mtFieldTortaSize");
-     var fieldTacoType = qs("mtFieldTacoType");
-     var fieldBebida = qs("mtFieldBebida");
-     var bebidaSelect = qs("mtBebida");
-     var proteinSelect = qs("mtProtein");
-     var tortaSizeSelect = qs("mtTortaSize");
-     var tacoTypeSelect = qs("mtTacoType");
+    if (!listTortas || !listTacos || !listBebidas || !listPostres || !cartList || !totalEl || !waBtn || !clearBtn) {
+        return;
+    }
 
-     var qtyInput = qs("mtQty");
-     var qtyMinus = qs("mtQtyMinus");
-     var qtyPlus = qs("mtQtyPlus");
-     var addBtn = qs("mtAdd");
+    var cart = [];
 
-     var cartList = qs("mtCartList");
-     var totalEl = qs("mtTotal");
-     var waBtn = qs("mtWhatsApp");
-     var clearBtn = qs("mtClear");
+    function getQtyFromInput(inputEl) {
+        var v = parseInt(String((inputEl && inputEl.value) || "1"), 10);
+        if (!isFinite(v) || v < 1) v = 1;
+        if (v > 99) v = 99;
+        if (inputEl) inputEl.value = String(v);
+        return v;
+    }
 
-     if (!kindTorta || !kindTaco || !kindBebida || !fieldTortaSize || !fieldTacoType || !fieldBebida || !bebidaSelect || !proteinSelect || !tortaSizeSelect || !tacoTypeSelect || !qtyInput || !qtyMinus || !qtyPlus || !addBtn || !cartList || !totalEl || !waBtn || !clearBtn) {
-         return;
-     }
+    function getUnitPrice(item) {
+        if (item.kind === "torta") {
+            return PRICES_TORTA[item.size] || 0;
+        }
+        if (item.kind === "taco") {
+            return PRICE_TACO;
+        }
+        if (item.kind === "bebida") {
+            return PRICE_BEBIDA;
+        }
+        if (item.kind === "postre") {
+            return PRICE_POSTRE;
+        }
+        return 0;
+    }
 
-     var kind = "torta";
-     var cart = [];
+    function getLineTotal(item) {
+        return getUnitPrice(item) * item.qty;
+    }
 
-     function hide(el) {
-         el.classList.add("mt-hidden");
-     }
+    function getCartTotal() {
+        return cart.reduce(function (sum, it) {
+            return sum + getLineTotal(it);
+        }, 0);
+    }
 
-     function show(el) {
-         el.classList.remove("mt-hidden");
-     }
+    function renderCart() {
+        if (!cart.length) {
+            cartList.innerHTML = "<li>Tu pedido está vacío.</li>";
+            totalEl.textContent = money(0);
+            return;
+        }
 
-     function setActiveKind(next) {
-         kind = next;
+        cartList.innerHTML = cart.map(function (it, idx) {
+            var title = it.kind === "torta" ? "Torta" : (it.kind === "taco" ? "Taco" : (it.kind === "bebida" ? "Bebida" : "Postre"));
+            var details = [];
+            if (it.kind === "torta") details.push(it.size);
+            if (it.kind === "taco") details.push(it.taco);
+            if (it.kind === "bebida") details.push(it.bebida);
+            if (it.kind === "postre") details.push(it.postre);
+            if (it.kind === "torta" || it.kind === "taco") details.push(it.protein);
 
-         kindTorta.classList.toggle("is-selected", kind === "torta");
-         kindTaco.classList.toggle("is-selected", kind === "taco");
-         kindBebida.classList.toggle("is-selected", kind === "bebida");
-         kindTorta.setAttribute("aria-pressed", String(kind === "torta"));
-         kindTaco.setAttribute("aria-pressed", String(kind === "taco"));
-         kindBebida.setAttribute("aria-pressed", String(kind === "bebida"));
+            var unit = getUnitPrice(it);
+            var line = getLineTotal(it);
 
-         if (kind === "torta") {
-             show(fieldTortaSize);
-             hide(fieldTacoType);
-             hide(fieldBebida);
-             setProteinOptions(PROTEINS_TORTA);
-             return;
-         }
+            return (
+                "<li>" +
+                "<div><strong>" + it.qty + "x " + title + "</strong> <span>(" + details.join(", ") + ")</span></div>" +
+                "<div>" + money(unit) + " c/u · <strong>" + money(line) + "</strong></div>" +
+                "<div class=\"mt-row\"><button class=\"mt-pill\" type=\"button\" data-remove=\"" + idx + "\">Eliminar</button></div>" +
+                "</li>"
+            );
+        }).join("");
 
-         if (kind === "taco") {
-             hide(fieldTortaSize);
-             show(fieldTacoType);
-             hide(fieldBebida);
-             setProteinOptions(PROTEINS_TACO);
-             return;
-         }
+        totalEl.textContent = money(getCartTotal());
+    }
 
-         if (kind === "bebida") {
-             hide(fieldTortaSize);
-             hide(fieldTacoType);
-             show(fieldBebida);
-             proteinSelect.innerHTML = "";
-             hide(qs("mtFieldProtein"));
-             return;
-         }
+    function addFromRow(li) {
+        if (!li) return;
+        var rowKind = li.getAttribute("data-kind") || "";
+        var qtyEl = li.querySelector('[data-field="qty"]');
+        var qty = getQtyFromInput(qtyEl);
 
-         show(qs("mtFieldProtein"));
-     }
+        if (rowKind === "torta") {
+            var size = li.getAttribute("data-size") || "";
+            var protein = (li.querySelector('[data-field="protein"]') || {}).value || "";
+            cart.push({ kind: "torta", qty: qty, size: size, protein: protein });
+        }
 
-     function setProteinOptions(options) {
-         proteinSelect.innerHTML = options.map(function (p) {
-             return '<option value="' + p + '">' + p + "</option>";
-         }).join("");
-     }
+        if (rowKind === "taco") {
+            var taco = li.getAttribute("data-taco") || "";
+            var proteinTaco = (li.querySelector('[data-field="protein"]') || {}).value || "";
+            cart.push({ kind: "taco", qty: qty, taco: taco, protein: proteinTaco });
+        }
 
-     function getQty() {
-         var v = parseInt(String(qtyInput.value || "1"), 10);
-         if (!isFinite(v) || v < 1) v = 1;
-         if (v > 99) v = 99;
-         qtyInput.value = String(v);
-         return v;
-     }
+        if (rowKind === "bebida") {
+            var bebida = li.getAttribute("data-bebida") || "";
+            cart.push({ kind: "bebida", qty: qty, bebida: bebida });
+        }
 
-     function getUnitPrice(item) {
-         if (item.kind === "torta") {
-             return PRICES_TORTA[item.size] || 0;
-         }
-         if (item.kind === "taco") {
-             return PRICE_TACO;
-         }
-         if (item.kind === "bebida") {
-             return PRICE_BEBIDA;
-         }
-         return 0;
-     }
+        if (rowKind === "postre") {
+            var postre = li.getAttribute("data-postre") || "";
+            cart.push({ kind: "postre", qty: qty, postre: postre });
+        }
 
-     function getLineTotal(item) {
-         return getUnitPrice(item) * item.qty;
-     }
+        if (qtyEl) qtyEl.value = "1";
+        renderCart();
+    }
 
-     function getCartTotal() {
-         return cart.reduce(function (sum, it) {
-             return sum + getLineTotal(it);
-         }, 0);
-     }
+    function buildTicketText() {
+        var lines = [HEADER, ""];
 
-     function renderCart() {
-         if (!cart.length) {
-             cartList.innerHTML = "<li>Tu pedido está vacío.</li>";
-             totalEl.textContent = money(0);
-             return;
-         }
+        cart.forEach(function (it, i) {
+            var title = it.kind === "torta" ? "Torta" : (it.kind === "taco" ? "Taco" : (it.kind === "bebida" ? "Bebida" : "Postre"));
+            var details = [];
+            if (it.kind === "torta") details.push(it.size);
+            if (it.kind === "taco") details.push(it.taco);
+            if (it.kind === "bebida") details.push(it.bebida);
+            if (it.kind === "postre") details.push(it.postre);
+            if (it.kind === "torta" || it.kind === "taco") details.push(it.protein);
 
-         cartList.innerHTML = cart.map(function (it, idx) {
-             var title = it.kind === "torta" ? "Torta" : (it.kind === "taco" ? "Taco" : "Bebida");
-             var details = [];
-             if (it.kind === "torta") details.push(it.size);
-             if (it.kind === "taco") details.push(it.taco);
-             if (it.kind === "bebida") details.push(it.bebida);
-             if (it.kind !== "bebida") details.push(it.protein);
+            var unit = getUnitPrice(it);
+            var lineTotal = getLineTotal(it);
 
-             var unit = getUnitPrice(it);
-             var line = getLineTotal(it);
+            lines.push(
+                (i + 1) + ". " + it.qty + "x " + title + " (" + details.join(", ") + ") - " + money(unit) + " c/u = " + money(lineTotal)
+            );
+        });
 
-             return (
-                 "<li>" +
-                 "<div><strong>" + it.qty + "x " + title + "</strong> <span>(" + details.join(", ") + ")</span></div>" +
-                 "<div>" + money(unit) + " c/u · <strong>" + money(line) + "</strong></div>" +
-                 "<div class=\"mt-row\"><button class=\"mt-pill\" type=\"button\" data-remove=\"" + idx + "\">Eliminar</button></div>" +
-                 "</li>"
-             );
-         }).join("");
+        lines.push("");
+        lines.push("TOTAL: " + money(getCartTotal()));
+        return lines.join("\n");
+    }
 
-         totalEl.textContent = money(getCartTotal());
-     }
+    function sendWhatsApp() {
+        if (!cart.length) {
+            return;
+        }
 
-     function addToCart() {
-         var qty = getQty();
-         var protein = proteinSelect.value;
+        var text = buildTicketText();
+        var url = "https://wa.me/" + WA_PHONE + "?text=" + encodeURIComponent(text);
+        window.location.href = url;
+    }
 
-         if (kind === "torta") {
-             var size = tortaSizeSelect.value;
-             cart.push({ kind: "torta", qty: qty, size: size, protein: protein });
-         }
+    function clearCart() {
+        cart = [];
+        renderCart();
+    }
 
-         if (kind === "taco") {
-             var taco = tacoTypeSelect.value;
-             cart.push({ kind: "taco", qty: qty, taco: taco, protein: protein });
-         }
+    waBtn.addEventListener("click", sendWhatsApp);
+    clearBtn.addEventListener("click", clearCart);
 
-         if (kind === "bebida") {
-             var bebida = bebidaSelect.value;
-             cart.push({ kind: "bebida", qty: qty, bebida: bebida });
-         }
+    function bindList(listEl) {
+        listEl.addEventListener("click", function (e) {
+            var plusBtn = e.target.closest('button[data-action="plus"]');
+            if (plusBtn) {
+                var li = plusBtn.closest("li");
+                var input = li && li.querySelector('[data-field="qty"]');
+                if (!input) return;
+                input.value = String(Math.min(99, getQtyFromInput(input) + 1));
+                return;
+            }
 
-         qtyInput.value = "1";
-         renderCart();
-     }
+            var minusBtn = e.target.closest('button[data-action="minus"]');
+            if (minusBtn) {
+                var liMinus = minusBtn.closest("li");
+                var inputMinus = liMinus && liMinus.querySelector('[data-field="qty"]');
+                if (!inputMinus) return;
+                inputMinus.value = String(Math.max(1, getQtyFromInput(inputMinus) - 1));
+                return;
+            }
 
-     function buildTicketText() {
-         var lines = [HEADER, ""]; 
+            var addBtn = e.target.closest('button[data-action="add"]');
+            if (addBtn) {
+                addFromRow(addBtn.closest("li"));
+            }
+        });
 
-         cart.forEach(function (it, i) {
-             var title = it.kind === "torta" ? "Torta" : (it.kind === "taco" ? "Taco" : "Bebida");
-             var details = [];
-             if (it.kind === "torta") details.push(it.size);
-             if (it.kind === "taco") details.push(it.taco);
-             if (it.kind === "bebida") details.push(it.bebida);
-             if (it.kind !== "bebida") details.push(it.protein);
+        listEl.addEventListener("blur", function (e) {
+            var input = e.target && e.target.matches && e.target.matches('[data-field="qty"]') ? e.target : null;
+            if (!input) return;
+            getQtyFromInput(input);
+        }, true);
+    }
 
-             var unit = getUnitPrice(it);
-             var lineTotal = getLineTotal(it);
+    bindList(listTortas);
+    bindList(listTacos);
+    bindList(listBebidas);
+    bindList(listPostres);
 
-             lines.push(
-                 (i + 1) + ". " + it.qty + "x " + title + " (" + details.join(", ") + ") - " + money(unit) + " c/u = " + money(lineTotal)
-             );
-         });
+    cartList.addEventListener("click", function (e) {
+        var btn = e.target.closest("button[data-remove]");
+        if (!btn) return;
+        var idx = parseInt(btn.getAttribute("data-remove"), 10);
+        if (!isFinite(idx) || idx < 0 || idx >= cart.length) return;
+        cart.splice(idx, 1);
+        renderCart();
+    });
 
-         lines.push("");
-         lines.push("TOTAL: " + money(getCartTotal()));
-         return lines.join("\n");
-     }
+    renderCart();
 
-     function sendWhatsApp() {
-         if (!cart.length) {
-             return;
-         }
-
-         var text = buildTicketText();
-         var url = "https://wa.me/" + WA_PHONE + "?text=" + encodeURIComponent(text);
-         window.location.href = url;
-     }
-
-     function clearCart() {
-         cart = [];
-         renderCart();
-     }
-
-     kindTorta.addEventListener("click", function () {
-         setActiveKind("torta");
-     });
-     kindTaco.addEventListener("click", function () {
-         setActiveKind("taco");
-     });
-
-     kindBebida.addEventListener("click", function () {
-         show(qs("mtFieldProtein"));
-         setActiveKind("bebida");
-     });
-
-     qtyMinus.addEventListener("click", function () {
-         qtyInput.value = String(Math.max(1, getQty() - 1));
-     });
-     qtyPlus.addEventListener("click", function () {
-         qtyInput.value = String(Math.min(99, getQty() + 1));
-     });
-     qtyInput.addEventListener("blur", function () {
-         getQty();
-     });
-
-     addBtn.addEventListener("click", addToCart);
-     waBtn.addEventListener("click", sendWhatsApp);
-     clearBtn.addEventListener("click", clearCart);
-
-     cartList.addEventListener("click", function (e) {
-         var btn = e.target.closest("button[data-remove]");
-         if (!btn) return;
-         var idx = parseInt(btn.getAttribute("data-remove"), 10);
-         if (!isFinite(idx) || idx < 0 || idx >= cart.length) return;
-         cart.splice(idx, 1);
-         renderCart();
-     });
-
-     setActiveKind("torta");
-     renderCart();
-
-     if (loader) {
-         window.setTimeout(function () {
-             loader.classList.add("mt-hidden");
-         }, 4000);
-     }
- })();
+    if (loader) {
+        window.setTimeout(function () {
+            loader.classList.add("mt-hidden");
+        }, 4000);
+    }
+})();
