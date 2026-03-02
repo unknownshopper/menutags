@@ -449,19 +449,6 @@
  li {
      padding: 12px 12px;
      border-radius: 14px;
-     border: 1px solid rgba(255, 255, 255, 0.12);
-     background: rgba(255, 255, 255, 0.05);
- }
- 
- .mt-grid {
-     display: grid;
-     gap: 14px;
- }
- 
- @media (min-width: 720px) {
-     h1 {
-         font-size: 34px;
-     }
  
      .mt-header {
          flex-direction: row;

@@ -1,4 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Banquetakos | Menú</title>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Banquetakos">
+    <meta property="og:description" content="Menú y pedido por WhatsApp.">
+    <meta property="og:url" content="https://unknownshopper.github.io/menutags/banquetakos.html">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="mt-theme-banquetakos">
+    <div class="mt-container">
+        <header class="mt-header">
+            <div class="mt-header-left">
+                <div class="mt-header-text">
+                    <div class="mt-brand">MenuTags</div>
+                    <h1>BANQUETAKOS</h1>
+                </div>
+            </div>
+        </header>
 
+        <main class="mt-main">
+            <section class="mt-section" id="mtOrder">
+                <h2>Pedido</h2>
+                <p>Arma tu pedido y envíalo por WhatsApp.</p>
+            </section>
 
+            <section class="mt-section" id="btMenuTacos">
+                <h2>Tacos</h2>
+                <ul id="btListTacos">
+                    <li data-kind="taco" data-item="Taco" data-price="35">
+                        <div><strong>Taco</strong> <span>($35)</span></div>
+                        <div class="mt-item-controls">
+                            <select class="mt-input" data-field="protein">
+                                <option value="Bistec">Bistec</option>
+                                <option value="Sirloin">Sirloin</option>
+                                <option value="Chuleta">Chuleta</option>
+                                <option value="Tocino">Tocino</option>
+                                <option value="Pastor">Pastor</option>
+                                <option value="Pastor blanco">Pastor blanco</option>
+                            </select>
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="1" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                            <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
 
+            <section class="mt-section" id="btMenuGringas">
+                <h2>Gringas</h2>
+                <ul id="btListGringas">
+                    <li data-kind="gringa" data-item="Gringa" data-price="85">
+                        <div><strong>Gringa</strong> <span>($85)</span></div>
+                        <div class="mt-item-controls">
+                            <select class="mt-input" data-field="protein">
+                                <option value="Bistec">Bistec</option>
+                                <option value="Sirloin">Sirloin</option>
+                                <option value="Chuleta">Chuleta</option>
+                                <option value="Tocino">Tocino</option>
+                                <option value="Pastor">Pastor</option>
+                                <option value="Pastor blanco">Pastor blanco</option>
+                            </select>
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="1" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                            <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
 
+            <section class="mt-section" id="btMenuTortas">
+                <h2>Tortas</h2>
+                <ul id="btListTortas">
+                    <li data-kind="torta" data-item="Torta" data-price="80">
+                        <div><strong>Torta</strong> <span>($80)</span></div>
+                        <div class="mt-item-controls">
+                            <select class="mt-input" data-field="protein">
+                                <option value="Bistec">Bistec</option>
+                                <option value="Sirloin">Sirloin</option>
+                                <option value="Chuleta">Chuleta</option>
+                                <option value="Tocino">Tocino</option>
+                                <option value="Pastor">Pastor</option>
+                                <option value="Pastor blanco">Pastor blanco</option>
+                            </select>
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="1" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                            <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mt-section" id="btMenuCostras">
+                <h2>Costras</h2>
+                <ul id="btListCostras">
+                    <li data-kind="costra" data-item="Costra" data-price="95">
+                        <div><strong>Costra</strong> <span>($95)</span></div>
+                        <div class="mt-item-controls">
+                            <select class="mt-input" data-field="protein">
+                                <option value="Bistec">Bistec</option>
+                                <option value="Sirloin">Sirloin</option>
+                                <option value="Chuleta">Chuleta</option>
+                                <option value="Tocino">Tocino</option>
+                                <option value="Pastor">Pastor</option>
+                                <option value="Pastor blanco">Pastor blanco</option>
+                            </select>
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="1" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                            <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mt-section" id="btMenuPizzas">
+                <h2>Pizzas</h2>
+                <ul id="btListPizzas">
+                    <li data-kind="pizza" data-item="Pizza" data-price="140">
+                        <div><strong>Pizza</strong> <span>($140)</span></div>
+                        <div class="mt-item-controls">
+                            <select class="mt-input" data-field="protein">
+                                <option value="Bistec">Bistec</option>
+                                <option value="Sirloin">Sirloin</option>
+                                <option value="Chuleta">Chuleta</option>
+                                <option value="Tocino">Tocino</option>
+                                <option value="Pastor">Pastor</option>
+                                <option value="Pastor blanco">Pastor blanco</option>
+                            </select>
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="1" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                            <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mt-section" id="btMenuBebidas">
+                <h2>Bebidas</h2>
+                <ul id="btListBebidas">
+                    <li data-kind="bebida" data-bebida="CocaCola lata" data-item="Bebida" data-price="25">
+                        <div><strong>CocaCola lata</strong> <span>($25)</span></div>
+                        <div class="mt-item-controls">
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="1" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                            <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                        </div>
+                    </li>
+                    <li data-kind="bebida" data-bebida="CocaCola 600ml" data-item="Bebida" data-price="35">
+                        <div><strong>CocaCola 600ml</strong> <span>($35)</span></div>
+                        <div class="mt-item-controls">
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="1" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                            <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                        </div>
+                    </li>
+                    <li data-kind="bebida" data-bebida="CocaCola 1.5L" data-item="Bebida" data-price="55">
+                        <div><strong>CocaCola 1.5L</strong> <span>($55)</span></div>
+                        <div class="mt-item-controls">
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="1" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                            <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mt-section" id="btCart" data-mt-cart>
+                <h2>Resumen de pedido</h2>
+                <ul id="btCartList"></ul>
+                <div class="mt-total">
+                    <div class="mt-total-row">
+                        <span>Total</span>
+                        <strong id="btTotal">$0</strong>
+                    </div>
+                </div>
+                <div class="mt-row">
+                    <button class="mt-btn" type="button" id="btWhatsApp">Hacer pedido</button>
+                    <button class="mt-pill" type="button" id="btClear">Vaciar</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+    <script src="banquetakos.js"></script>
+</body>
+</html>
