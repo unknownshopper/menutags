@@ -18,15 +18,18 @@
 
     <div class="mt-container">
         <header class="mt-header">
-            <div>
-                <div class="mt-brand">MenuTags</div>
-                <h1>Menú</h1>
+            <div class="mt-header-left">
+                <img class="mt-logo" src="mingologo.png" alt="Mingo" />
+                <div class="mt-header-text">
+                    <div class="mt-brand">MenuTags</div>
+                    <h1>MINGO TORTAS AHOGADAS</h1>
+                </div>
             </div>
         </header>
 
         <main class="mt-main">
             <section class="mt-section" id="mtOrder">
-                <h2>MINGO TORTAS AHOGADAS</h2>
+                <h2>Pedido</h2>
                 <p>Arma tu pedido y envíalo por WhatsApp.</p>
 
                 <div class="mt-choice">
@@ -34,6 +37,7 @@
                     <div class="mt-choice-grid">
                         <button class="mt-option" type="button" id="mtKindTorta">Torta</button>
                         <button class="mt-option" type="button" id="mtKindTaco">Taco</button>
+                        <button class="mt-option" type="button" id="mtKindBebida">Bebida</button>
                     </div>
                 </div>
 
@@ -52,6 +56,16 @@
                         <select class="mt-input" id="mtTacoType">
                             <option value="Frijol">Frijol ($65)</option>
                             <option value="Papa">Papa ($65)</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-field" id="mtFieldBebida">
+                        <label class="mt-label" for="mtBebida">Bebida</label>
+                        <select class="mt-input" id="mtBebida">
+                            <option value="Horchata">Horchata ($35)</option>
+                            <option value="Horchata con fresa">Horchata con fresa ($35)</option>
+                            <option value="Lata GDL">Lata GDL ($35)</option>
+                            <option value="CocaCola">CocaCola ($35)</option>
                         </select>
                     </div>
 

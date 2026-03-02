@@ -307,6 +307,31 @@
      border-radius: var(--radius);
      box-shadow: var(--shadow);
  }
+
+ .mt-header-left {
+     display: grid;
+     grid-template-columns: auto 1fr;
+     gap: 12px;
+     align-items: center;
+ }
+
+ .mt-header-text {
+     min-width: 0;
+ }
+
+ .mt-logo {
+     width: 100px;
+     height: 100px;
+     border-radius: 16px;
+     object-fit: contain;
+     background: rgba(255, 255, 255, 0.10);
+     border: 1px solid rgba(255, 255, 255, 0.14);
+ }
+
+ .mt-theme-mingo .mt-logo {
+     background: rgba(220, 38, 38, 0.05);
+     border-color: rgba(220, 38, 38, 0.18);
+ }
  
  .mt-brand {
      font-size: 12px;
@@ -421,6 +446,11 @@
          align-items: center;
          justify-content: space-between;
      }
+
+     .mt-logo {
+         width: 100px;
+         height: 100px;
+     }
  
      .mt-actions {
          padding-top: 0;
@@ -431,6 +461,6 @@
      }
 
      .mt-choice-grid {
-         grid-template-columns: 1fr 1fr;
+         grid-template-columns: repeat(3, 1fr);
      }
  }
