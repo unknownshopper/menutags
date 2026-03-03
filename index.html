@@ -17,7 +17,6 @@
             <div class="mt-actions">
                 <a class="mt-btn" href="#demo">Ver demo</a>
                 <a class="mt-btn" href="#contacto">Contacto</a>
-                <a class="mt-btn" href="indexadmin.html">Admin</a>
             </div>
         </header>
 
@@ -99,9 +98,16 @@
                 </h2>
                 <p>Esta demo simula cómo el cliente agrega items y genera una orden. En producción se reemplaza por tu menú real.</p>
 
+                <div class="mt-actions" style="justify-content:flex-start; gap: 10px;">
+                    <button class="mt-btn" type="button" id="mtDemoViewClient">Vista cliente</button>
+                    <button class="mt-btn" type="button" id="mtDemoViewAdmin">Vista admin</button>
+                </div>
+
+                <div id="mtDemoClientView">
+
                 <div class="mt-grid">
                     <section class="mt-section">
-                        <h3>Menú</h3>
+                        <div class="mt-badge mt-badge--accent" style="display:inline-flex; margin: 4px 0 10px;">MenuTags</div>
                         <div class="mt-demo-items" id="mtDemoItems"></div>
                     </section>
 
@@ -116,15 +122,68 @@
                                 </div>
                             </div>
                             <div class="mt-actions">
-                                <button class="mt-btn" type="button" id="mtDemoSend">Generar texto</button>
+                                <button class="mt-btn" type="button" id="mtDemoSend">Hacer Pedido</button>
                                 <button class="mt-btn" type="button" id="mtDemoClear">Vaciar</button>
                             </div>
                             <div class="mt-field">
                                 <div class="mt-label">Texto de orden</div>
-                                <textarea class="mt-input" id="mtDemoText" rows="6" placeholder="Aquí aparecerá el texto listo para WhatsApp" readonly></textarea>
+                                <textarea class="mt-input" id="mtDemoText" rows="6" placeholder="Aquí aparecerá el texto listo para Enviar" readonly></textarea>
+                                <div id="mtDemoStatus" class="mt-hidden" aria-hidden="true"></div>
                             </div>
                         </div>
                     </section>
+                </div>
+                </div>
+
+                <div id="mtDemoAdminView" class="mt-hidden" aria-hidden="true">
+                    <div class="mt-grid">
+                        <section class="mt-section">
+                            <h3>Lista</h3>
+                            <div id="mtDemoAdminOrders"></div>
+                        </section>
+                        <section class="mt-section">
+                            <h3>Detalle</h3>
+                            <div class="mt-field">
+                                <div class="mt-label">Teléfono</div>
+                                <input class="mt-input" id="mtDemoAdminPhone" inputmode="tel" placeholder="Ej: 9932171855" />
+                            </div>
+                            <div class="mt-actions">
+                                <button class="mt-btn" type="button" id="mtDemoAdminAssignPhone">Registrar teléfono al pedido seleccionado</button>
+                                <button class="mt-btn" type="button" id="mtDemoAdminReset">Reiniciar demo</button>
+                            </div>
+                            <div class="mt-field mt-hidden" aria-hidden="true">
+                                <div class="mt-label">Pedido seleccionado</div>
+                                <input class="mt-input" id="mtDemoAdminSelected" readonly placeholder="Selecciona un pedido" />
+                            </div>
+                            <div class="mt-field">
+                                <div class="mt-label">Teléfono (cliente)</div>
+                                <input class="mt-input" id="mtDemoAdminDetailPhone" readonly placeholder="Sin teléfono" />
+                            </div>
+                            <div class="mt-field">
+                                <div class="mt-label">Pedidos históricos (cliente)</div>
+                                <input class="mt-input" id="mtDemoAdminDetailCount" readonly placeholder="0" />
+                            </div>
+                            <div class="mt-field">
+                                <div class="mt-label">Dirección</div>
+                                <input class="mt-input" id="mtDemoAdminDetailAddress" readonly placeholder="—" />
+                            </div>
+                            <div class="mt-field">
+                                <div class="mt-label">Mapa</div>
+                                <a class="mt-btn" id="mtDemoAdminMapLink" href="#" target="_blank" rel="noopener">Ver mapa</a>
+                            </div>
+                            <div class="mt-field">
+                                <div class="mt-label">Items</div>
+                                <ul id="mtDemoAdminDetailItems"></ul>
+                            </div>
+                            <div class="mt-total">
+                                <div class="mt-total-row">
+                                    <strong>Total</strong>
+                                    <strong id="mtDemoAdminDetailTotal">$0</strong>
+                                </div>
+                            </div>
+                        </section>
+                        
+                    </div>
                 </div>
             </section>
 
@@ -255,6 +314,10 @@
         (function () {
             "use strict";
 
+            var STORAGE_ORDERS = "mt:demo:orders";
+            var STORAGE_CUSTOMERS = "mt:demo:customers";
+            var STORAGE_VIEW = "mt:demo:view";
+
             var items = [
                 { id: "torta", name: "Torta (demo)", price: 65 },
                 { id: "taco", name: "Taco (demo)", price: 22 },
@@ -263,6 +326,127 @@
             ];
 
             var cart = [];
+            var demoStatusTimer = null;
+
+            function safeJsonParse(str, fallback) {
+                try {
+                    var v = JSON.parse(String(str || ""));
+                    return v === null || v === undefined ? fallback : v;
+                } catch (e) {
+                    return fallback;
+                }
+            }
+
+            function getOrders() {
+                return safeJsonParse(localStorage.getItem(STORAGE_ORDERS), []);
+            }
+
+            function setOrders(orders) {
+                localStorage.setItem(STORAGE_ORDERS, JSON.stringify(Array.isArray(orders) ? orders : []));
+            }
+
+            function getCustomers() {
+                return safeJsonParse(localStorage.getItem(STORAGE_CUSTOMERS), {});
+            }
+
+            function setCustomers(map) {
+                localStorage.setItem(STORAGE_CUSTOMERS, JSON.stringify(map && typeof map === "object" ? map : {}));
+            }
+
+            function uid() {
+                return "o_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+            }
+
+            function normalizePhone(raw) {
+                var s = String(raw || "").trim();
+                if (!s) return "";
+                s = s.replace(/[^0-9]/g, "");
+                if (s.length >= 12 && s.indexOf("521") === 0) s = s.slice(3);
+                if (s.length >= 11 && s.indexOf("52") === 0) s = s.slice(2);
+                return s;
+            }
+
+            function seedOrdersIfNeeded() {
+                var existing = getOrders();
+                if (existing && existing.length) return;
+
+                var addressPool = getDemoAddressPool();
+
+                function pickQty() {
+                    return 1 + Math.floor(Math.random() * 3);
+                }
+
+                function pickItems() {
+                    var pool = items.slice();
+                    var take = 2 + Math.floor(Math.random() * 3);
+                    var out = [];
+                    for (var i = 0; i < take; i++) {
+                        var idx = Math.floor(Math.random() * pool.length);
+                        var it = pool.splice(idx, 1)[0];
+                        if (!it) continue;
+                        out.push({ id: it.id, name: it.name, price: it.price, qty: pickQty() });
+                    }
+                    return out;
+                }
+
+                function sumTotal(lines) {
+                    return (lines || []).reduce(function (sum, it) { return sum + (it.price || 0) * (it.qty || 0); }, 0);
+                }
+
+                var orders = [];
+                for (var k = 0; k < 10; k++) {
+                    var lines = pickItems();
+                    var addr = addressPool[k % addressPool.length];
+                    orders.push({
+                        id: uid(),
+                        createdAt: Date.now() - (k + 1) * 1000 * 60 * (8 + Math.floor(Math.random() * 20)),
+                        items: lines,
+                        total: sumTotal(lines),
+                        phone: "",
+                        address: addr.address,
+                        lat: addr.lat + (Math.random() - 0.5) * 0.01,
+                        lng: addr.lng + (Math.random() - 0.5) * 0.01
+                    });
+                }
+                setOrders(orders);
+                setCustomers({});
+            }
+
+            function getDemoAddressPool() {
+                return [
+                    { address: "Av. 27 de Febrero 1200, Villahermosa", lat: 17.9892, lng: -92.9493 },
+                    { address: "Zona Luz, Centro, Villahermosa", lat: 17.9906, lng: -92.9299 },
+                    { address: "Col. Tamulté de las Barrancas, Villahermosa", lat: 17.9785, lng: -92.9581 },
+                    { address: "Col. Atasta, Villahermosa", lat: 17.9997, lng: -92.9474 },
+                    { address: "Col. Gaviotas, Villahermosa", lat: 17.9831, lng: -92.9054 }
+                ];
+            }
+
+            function addOrderFromCart() {
+                if (!cart.length) return null;
+                var addressPool = getDemoAddressPool();
+                var addr = addressPool[Math.floor(Math.random() * addressPool.length)];
+                var lines = cart.map(function (it) {
+                    return { id: it.id, name: it.name, price: it.price, qty: it.qty };
+                });
+
+                var order = {
+                    id: uid(),
+                    createdAt: Date.now(),
+                    items: lines,
+                    total: getTotal(),
+                    phone: "",
+                    address: addr.address,
+                    lat: addr.lat + (Math.random() - 0.5) * 0.01,
+                    lng: addr.lng + (Math.random() - 0.5) * 0.01
+                };
+
+                var orders = getOrders();
+                orders.push(order);
+                setOrders(orders);
+                setSelectedOrderId(order.id);
+                return order;
+            }
 
             function money(n) {
                 return "$" + (Math.round((n || 0) * 100) / 100).toFixed(0);
@@ -313,7 +497,6 @@
                             '<input class="mt-input" inputmode="numeric" value="' + getQty(it.id) + '" data-role="qty" />' +
                             '<button class="mt-btn" type="button" data-role="plus">+</button>' +
                             '</div>' +
-                            '<button class="mt-btn" type="button" data-role="add">Agregar</button>' +
                             '</div>' +
                             '</div>'
                         );
@@ -367,6 +550,149 @@
                 return lines.join("\n");
             }
 
+            function setDemoView(view) {
+                var clientView = document.getElementById("mtDemoClientView");
+                var adminView = document.getElementById("mtDemoAdminView");
+                if (!clientView || !adminView) return;
+
+                var v = view === "admin" ? "admin" : "client";
+                localStorage.setItem(STORAGE_VIEW, v);
+
+                if (v === "admin") {
+                    clientView.classList.add("mt-hidden");
+                    clientView.setAttribute("aria-hidden", "true");
+                    adminView.classList.remove("mt-hidden");
+                    adminView.setAttribute("aria-hidden", "false");
+                    renderAdmin();
+                    var fab = document.getElementById("mtCartFab");
+                    if (fab) {
+                        fab.classList.add("mt-hidden");
+                        fab.setAttribute("aria-hidden", "true");
+                    }
+                    if (window.mtSetCartCount) window.mtSetCartCount(0);
+                    else window.dispatchEvent(new CustomEvent("mt:setCartCount", { detail: { count: 0 } }));
+                } else {
+                    adminView.classList.add("mt-hidden");
+                    adminView.setAttribute("aria-hidden", "true");
+                    clientView.classList.remove("mt-hidden");
+                    clientView.setAttribute("aria-hidden", "false");
+                    var fab2 = document.getElementById("mtCartFab");
+                    if (fab2) {
+                        fab2.classList.remove("mt-hidden");
+                        fab2.setAttribute("aria-hidden", "false");
+                    }
+                    renderItems();
+                    renderCart();
+                }
+            }
+
+            function getSelectedOrderId() {
+                return String(localStorage.getItem("mt:demo:selectedOrder") || "");
+            }
+
+            function setSelectedOrderId(id) {
+                localStorage.setItem("mt:demo:selectedOrder", String(id || ""));
+                var input = document.getElementById("mtDemoAdminSelected");
+                if (input) input.value = id ? String(id) : "";
+            }
+
+            function renderAdmin() {
+                seedOrdersIfNeeded();
+                var wrap = document.getElementById("mtDemoAdminOrders");
+                var selectedInput = document.getElementById("mtDemoAdminSelected");
+                if (!wrap) return;
+
+                var orders = getOrders().slice().sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); }).slice(0, 5);
+                var customers = getCustomers();
+                var selected = getSelectedOrderId();
+
+                if (orders.length && !orders.some(function (o) { return o && o.id === selected; })) {
+                    setSelectedOrderId(orders[0].id);
+                    selected = orders[0].id;
+                }
+                if (selectedInput) selectedInput.value = selected;
+
+                function esc(s) {
+                    return String(s || "").replace(/[&<>\"]/g, function (c) {
+                        return c === "&" ? "&amp;" : c === "<" ? "&lt;" : c === ">" ? "&gt;" : "&quot;";
+                    });
+                }
+
+                function fmtPhone(p) {
+                    var n = normalizePhone(p);
+                    return n ? n : "Sin teléfono";
+                }
+
+                function mapsUrl(lat, lng) {
+                    if (!isFinite(lat) || !isFinite(lng)) return "#";
+                    return "https://www.google.com/maps?q=" + encodeURIComponent(lat + "," + lng);
+                }
+
+                function renderDetail(order) {
+                    var phoneEl = document.getElementById("mtDemoAdminDetailPhone");
+                    var countEl = document.getElementById("mtDemoAdminDetailCount");
+                    var addrEl = document.getElementById("mtDemoAdminDetailAddress");
+                    var mapEl = document.getElementById("mtDemoAdminMapLink");
+                    var itemsEl = document.getElementById("mtDemoAdminDetailItems");
+                    var totalEl = document.getElementById("mtDemoAdminDetailTotal");
+
+                    if (!phoneEl || !countEl || !addrEl || !mapEl || !itemsEl || !totalEl) return;
+
+                    if (!order) {
+                        phoneEl.value = "";
+                        countEl.value = "";
+                        addrEl.value = "";
+                        mapEl.href = "#";
+                        itemsEl.innerHTML = "";
+                        totalEl.textContent = money(0);
+                        return;
+                    }
+
+                    var phone = normalizePhone(order.phone);
+                    var count = phone && customers[phone] ? customers[phone].count || 0 : 0;
+                    phoneEl.value = fmtPhone(order.phone);
+                    countEl.value = String(count);
+                    addrEl.value = String(order.address || "—");
+                    mapEl.href = mapsUrl(order.lat, order.lng);
+
+                    var lines = (order.items || []).map(function (it) {
+                        return '<li><span class="mt-cart-line">' + esc(it.name) + '<small>' + esc(String(it.qty || 0)) + ' × ' + esc(money(it.price || 0)) + '</small></span><span class="mt-demo-item__price">' + esc(money((it.qty || 0) * (it.price || 0))) + '</span></li>';
+                    });
+                    itemsEl.innerHTML = lines.join("") || '<li><span class="mt-cart-line">Sin items</span><span class="mt-demo-item__price">' + esc(money(0)) + '</span></li>';
+                    totalEl.textContent = money(order.total || 0);
+                }
+
+                wrap.innerHTML = orders
+                    .map(function (o) {
+                        var phone = normalizePhone(o.phone);
+                        var count = phone && customers[phone] ? customers[phone].count || 0 : 0;
+                        var lines = (o.items || []).map(function (it) { return (it.qty || 0) + "× " + it.name; }).join(", ");
+                        var active = o.id === selected ? " style=\"outline:2px solid rgba(167,139,250,0.65);\"" : "";
+                        return (
+                            '<button type="button" class="mt-section" data-order="' + esc(o.id) + '"' + active + ' style="text-align:left; width:100%;">' +
+                            '<div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">' +
+                            '<strong>' + esc(new Date(o.createdAt || Date.now()).toLocaleString()) + '</strong>' +
+                            '<strong>' + esc(money(o.total || 0)) + '</strong>' +
+                            '</div>' +
+                            '<div style="opacity:0.9;">' + esc(lines) + '</div>' +
+                            '<div style="opacity:0.8; margin-top:6px;">Tel: ' + esc(fmtPhone(o.phone)) + (phone ? ' · Histórico: ' + esc(String(count)) + ' pedidos' : "") + '</div>' +
+                            '<div style="opacity:0.78; margin-top:6px;">Dir: ' + esc(String(o.address || "—")) + '</div>' +
+                            '</button>'
+                        );
+                    })
+                    .join("");
+
+                var selectedOrder = orders.find(function (o) { return o && o.id === selected; }) || null;
+                renderDetail(selectedOrder);
+
+                wrap.querySelectorAll("button[data-order]").forEach(function (btn) {
+                    btn.addEventListener("click", function () {
+                        setSelectedOrderId(btn.getAttribute("data-order"));
+                        renderAdmin();
+                    });
+                });
+            }
+
             function bind() {
                 var wrap = document.getElementById("mtDemoItems");
                 if (wrap) {
@@ -387,7 +713,7 @@
 
                         if (role === "minus") qty = Math.max(0, qty - 1);
                         if (role === "plus") qty = Math.min(99, qty + 1);
-                        if (role === "add" && qty === 0) qty = 1;
+                        if (role !== "minus" && role !== "plus") return;
 
                         setQty(id, qty);
                         renderItems();
@@ -411,10 +737,31 @@
                 if (sendBtn) {
                     sendBtn.addEventListener("click", function () {
                         var textEl = document.getElementById("mtDemoText");
+                        var statusEl = document.getElementById("mtDemoStatus");
                         if (!textEl) return;
+                        if (demoStatusTimer) {
+                            clearTimeout(demoStatusTimer);
+                            demoStatusTimer = null;
+                        }
+                        if (statusEl) {
+                            statusEl.classList.add("mt-hidden");
+                            statusEl.setAttribute("aria-hidden", "true");
+                            statusEl.innerHTML = "";
+                        }
                         textEl.value = buildText();
                         textEl.focus();
                         textEl.select();
+
+                        addOrderFromCart();
+
+                        demoStatusTimer = window.setTimeout(function () {
+                            if (!statusEl) return;
+                            statusEl.innerHTML =
+                                '<div class="mt-status mt-status--ok">ORDEN ACEPTADA</div>' +
+                                '<div class="mt-status mt-status--warn">PAGO PENDIENTE</div>';
+                            statusEl.classList.remove("mt-hidden");
+                            statusEl.setAttribute("aria-hidden", "false");
+                        }, 2000);
                     });
                 }
 
@@ -424,6 +771,16 @@
                         cart = [];
                         renderItems();
                         renderCart();
+                        var statusEl = document.getElementById("mtDemoStatus");
+                        if (demoStatusTimer) {
+                            clearTimeout(demoStatusTimer);
+                            demoStatusTimer = null;
+                        }
+                        if (statusEl) {
+                            statusEl.classList.add("mt-hidden");
+                            statusEl.setAttribute("aria-hidden", "true");
+                            statusEl.innerHTML = "";
+                        }
                     });
                 }
 
@@ -436,11 +793,55 @@
                         window.location.href = "https://wa.me/5219932171855?text=" + encodeURIComponent(text);
                     });
                 }
+
+                var viewClient = document.getElementById("mtDemoViewClient");
+                if (viewClient) viewClient.addEventListener("click", function () { setDemoView("client"); });
+
+                var viewAdmin = document.getElementById("mtDemoViewAdmin");
+                if (viewAdmin) viewAdmin.addEventListener("click", function () { setDemoView("admin"); });
+
+                var assignBtn = document.getElementById("mtDemoAdminAssignPhone");
+                if (assignBtn) {
+                    assignBtn.addEventListener("click", function () {
+                        var selectedId = getSelectedOrderId();
+                        if (!selectedId) return;
+                        var phoneInput = document.getElementById("mtDemoAdminPhone");
+                        var phone = normalizePhone(phoneInput ? phoneInput.value : "");
+                        if (!phone) return;
+
+                        var orders = getOrders();
+                        var order = orders.find(function (o) { return o && o.id === selectedId; });
+                        if (!order) return;
+                        order.phone = phone;
+                        setOrders(orders);
+
+                        var customers = getCustomers();
+                        if (!customers[phone]) customers[phone] = { count: 0 };
+                        customers[phone].count = (customers[phone].count || 0) + 1;
+                        setCustomers(customers);
+
+                        renderAdmin();
+                    });
+                }
+
+                var resetBtn = document.getElementById("mtDemoAdminReset");
+                if (resetBtn) {
+                    resetBtn.addEventListener("click", function () {
+                        localStorage.removeItem(STORAGE_ORDERS);
+                        localStorage.removeItem(STORAGE_CUSTOMERS);
+                        localStorage.removeItem("mt:demo:selectedOrder");
+                        setSelectedOrderId("");
+                        renderAdmin();
+                    });
+                }
             }
 
             renderItems();
             renderCart();
             bind();
+
+            seedOrdersIfNeeded();
+            setDemoView(localStorage.getItem(STORAGE_VIEW) || "client");
         })();
     </script>
 </body>

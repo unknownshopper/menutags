@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Ecoservis</title>
+    <meta name="description" content="Ecoservis: reparación, mantenimiento y remodelación. Cotiza por rubro y envía tu solicitud por WhatsApp." />
+    <meta name="theme-color" content="#0b1220" />
+
+    <link rel="icon" href="ecoservis.png" />
+    <link rel="apple-touch-icon" href="ecoservis.png" />
+    <link rel="canonical" href="ecoservis.html" />
+
+    <meta property="og:title" content="Ecoservis" />
+    <meta property="og:description" content="Reparación, mantenimiento y remodelación. Cotiza por rubro y envía tu solicitud por WhatsApp." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="ecoservis.png" />
+    <meta property="og:image:alt" content="Ecoservis" />
+    <meta property="og:url" content="ecoservis.html" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ecoservis" />
+    <meta name="twitter:description" content="Reparación, mantenimiento y remodelación. Cotiza por rubro y envía tu solicitud por WhatsApp." />
+    <meta name="twitter:image" content="ecoservis.png" />
+
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="ecoservis.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+<body class="mt-theme-landing">
+    <div class="mt-container">
+        <header class="mt-header">
+            <div class="mt-eco-head">
+                <img class="mt-eco-logo" src="ecoservis.png" alt="Ecoservis" />
+                <div>
+                    <div class="mt-brand mt-brand--giant">Ecoservis</div>
+                    <h1>Reparación, mantenimiento y remodelación</h1>
+                </div>
+            </div>
+
+            <div class="mt-actions">
+                <a class="mt-btn" href="#cotizar">Cotizar</a>
+                <a class="mt-btn" href="#contacto">Contacto</a>
+            </div>
+        </header>
+
+        <main class="mt-main">
+            <section class="mt-section mt-hero" id="inicio">
+                <div class="mt-hero-grid">
+                    <div>
+                        <h2 class="mt-hero-title">Cotiza por rubro, sin comprometer tu decisión.</h2>
+                        <p class="mt-hero-sub">Selecciona el área, marca conceptos comunes y envía tu solicitud por WhatsApp. La cotización final se confirma en sitio según materiales y alcance.</p>
+                        <div class="mt-badges">
+                            <div class="mt-badge mt-badge--accent">Servicio local</div>
+                            <div class="mt-badge">Respuesta por WhatsApp</div>
+                            <div class="mt-badge">Estimado transparente</div>
+                        </div>
+                    </div>
+                    <div class="mt-kpis">
+                        <div class="mt-kpi"><strong>+Rápido</strong><span>Define rubro y conceptos en minutos.</span></div>
+                        <div class="mt-kpi"><strong>+Claro</strong><span>Resumen listo para enviar por WhatsApp.</span></div>
+                        <div class="mt-kpi"><strong>+Flexible</strong><span>Estimado sin obligarte a decidir materiales.</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-section" id="cotizar">
+                <h2 class="mt-title-row">Cotización rápida</h2>
+                <p>Elige el rubro y marca lo que necesitas. Verás un estimado (cargo fijo + conceptos). Puedes agregar detalles en la descripción.</p>
+
+                <div class="mt-grid">
+                    <section class="mt-section">
+                        <h3>Datos</h3>
+                        <div class="mt-field">
+                            <div class="mt-label">Nombre</div>
+                            <input class="mt-input" id="ecoName" placeholder="Tu nombre" />
+                        </div>
+                        <div class="mt-field">
+                            <div class="mt-label">Zona / Dirección (aprox.)</div>
+                            <input class="mt-input" id="ecoAddress" placeholder="Colonia, referencias, etc." />
+                        </div>
+
+                        <div class="mt-field">
+                            <div class="mt-label">Ubicación del servicio</div>
+                            <div class="mt-eco-map" id="ecoMap" role="application" aria-label="Mapa para seleccionar ubicación"></div>
+                            <div class="mt-actions" style="justify-content:flex-start; gap: 10px; margin-top: 10px;">
+                                <button class="mt-btn" type="button" id="ecoUseMyLocation">Usar mi ubicación</button>
+                                <button class="mt-btn" type="button" id="ecoClearLocation">Quitar pin</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-field">
+                            <div class="mt-label">Municipio detectado</div>
+                            <input class="mt-input" id="ecoMunicipio" readonly placeholder="Selecciona un punto en el mapa" />
+                        </div>
+                        <div class="mt-field">
+                            <div class="mt-label">Costo de traslado (estimado)</div>
+                            <input class="mt-input" id="ecoTravelFee" readonly placeholder="$0" />
+                        </div>
+                        <div class="mt-field">
+                            <div class="mt-label">Rubro</div>
+                            <select class="mt-input" id="ecoRubro"></select>
+                        </div>
+                        <div class="mt-field">
+                            <div class="mt-label">Urgencia</div>
+                            <select class="mt-input" id="ecoUrgency">
+                                <option value="hoy">Hoy</option>
+                                <option value="esta_semana" selected>Esta semana</option>
+                                <option value="sin_prisa">Sin prisa</option>
+                            </select>
+                        </div>
+                    </section>
+
+                    <section class="mt-section">
+                        <h3>Conceptos</h3>
+                        <div class="mt-field">
+                            <div class="mt-label">Cargo fijo</div>
+                            <input class="mt-input" id="ecoBase" readonly />
+                        </div>
+                        <div class="mt-field">
+                            <div class="mt-label">Selecciona conceptos</div>
+                            <div id="ecoOptions" class="mt-eco-options"></div>
+                        </div>
+                        <div class="mt-field">
+                            <div class="mt-label">Descripción / Detalles</div>
+                            <textarea class="mt-input" id="ecoNotes" rows="5" placeholder="Ej: fuga en lavabo, pintura interior 2 recámaras, impermeabilizar 60m2, etc."></textarea>
+                        </div>
+                        <div class="mt-total">
+                            <div class="mt-total-row">
+                                <strong>Estimado</strong>
+                                <strong id="ecoTotal">$0</strong>
+                            </div>
+                        </div>
+                        <div class="mt-actions">
+                            <button class="mt-btn" type="button" id="ecoSend">Enviar por WhatsApp</button>
+                            <button class="mt-btn" type="button" id="ecoCopy">Copiar texto</button>
+                        </div>
+                        <div class="mt-field">
+                            <div class="mt-label">Texto listo para enviar</div>
+                            <textarea class="mt-input" id="ecoText" rows="7" readonly placeholder="Aquí aparecerá el resumen"></textarea>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <section class="mt-section" id="contacto">
+                <h2 class="mt-title-row">Contacto</h2>
+                <p>¿Tienes un proyecto de remodelación o mantenimiento recurrente? Escríbenos y lo revisamos.</p>
+                <div class="mt-actions">
+                    <a class="mt-btn" href="https://wa.me/5219931102606" target="_blank" rel="noopener">WhatsApp 993 110 2606</a>
+                </div>
+                <div class="mt-footer"> Ecoservis</div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="ecoservis.js"></script>
+</body>
+</html>

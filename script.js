@@ -8,9 +8,16 @@
         return document.querySelector("[data-mt-cart]");
     }
 
+    function findFabMount() {
+        var demo = document.getElementById("demo");
+        if (demo) return demo;
+        return document.body;
+    }
+
     function ensureCartFab() {
         if (document.getElementById("mtCartFab")) return;
-        if (!document.body) return;
+        var mount = findFabMount();
+        if (!mount) return;
 
         var btn = document.createElement("button");
         btn.type = "button";
@@ -25,7 +32,7 @@
             target.scrollIntoView({ behavior: "smooth", block: "start" });
         });
 
-        document.body.appendChild(btn);
+        mount.appendChild(btn);
     }
 
     var lastBadgeCount = null;
