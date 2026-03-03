@@ -28,6 +28,8 @@
         document.body.appendChild(btn);
     }
 
+    var lastBadgeCount = null;
+
     function setCartCount(count) {
         ensureCartFab();
 
@@ -36,6 +38,9 @@
 
         var n = parseInt(String(count || 0), 10);
         if (!isFinite(n) || n < 0) n = 0;
+
+        var changed = lastBadgeCount === null ? true : n !== lastBadgeCount;
+        lastBadgeCount = n;
 
         badge.textContent = String(n);
         if (n <= 0) {
@@ -46,6 +51,12 @@
 
         badge.classList.remove("mt-hidden");
         badge.setAttribute("aria-hidden", "false");
+
+        if (changed) {
+            badge.classList.remove("mt-badge-animate");
+            badge.offsetWidth;
+            badge.classList.add("mt-badge-animate");
+        }
     }
 
     setVh();
