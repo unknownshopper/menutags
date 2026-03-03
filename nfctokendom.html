@@ -1,1 +1,235 @@
 
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NFC Token + Dominio (Sandbox)</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --accent:#facc15;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --radius:16px;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    body{margin:0; color:var(--text); background:linear-gradient(180deg,#0b1220,#0f1a2f);}
+    header{padding:20px 16px; border-bottom:1px solid var(--border); background:rgba(0,0,0,.2)}
+    h1{margin:0 0 6px 0; font-size:18px}
+    p{margin:8px 0; color:var(--muted)}
+    main{max-width:980px; margin:0 auto; padding:18px 16px 40px}
+    .grid{display:grid; grid-template-columns:1fr; gap:14px}
+    @media (min-width: 900px){.grid{grid-template-columns:1fr 1fr}}
+    .card{border:1px solid var(--border); background:var(--card); border-radius:var(--radius); padding:14px}
+    .card h2{margin:0 0 10px 0; font-size:16px}
+    .k{display:inline-block; font-weight:700; color:var(--accent)}
+    code, pre{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    pre{margin:10px 0 0 0; padding:12px; border-radius:12px; background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.08); overflow:auto}
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    button{cursor:pointer; border-radius:12px; border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.18); color:var(--text); padding:10px 12px; font-weight:650}
+    button:hover{border-color:rgba(250,204,21,.35)}
+    .pill{padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.18)}
+    .ok{border-color:rgba(34,197,94,.35); color:rgba(220,252,231,.95)}
+    .no{border-color:rgba(239,68,68,.35); color:rgba(254,226,226,.95)}
+    .small{font-size:13px}
+    a{color:rgba(250,204,21,.9); text-decoration:none}
+    a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NFC Token + Dominio — Sandbox</h1>
+    <p class="small">Archivo aislado (HTML/CSS/JS) para entender por qué un flujo de <span class="k">token por NFC</span> funciona en <span class="k">subdominios propios</span> pero falla en GitHub Pages.</p>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="card">
+        <h2>1) El punto clave</h2>
+        <p>
+          Si el menú está en <span class="k">GitHub Pages</span> (ej. <code>unknownshopper.github.io</code>) y el gateway/token está en
+          <span class="k">unknownshoppers.com</span>, entonces:
+        </p>
+        <p>
+          - Las cookies con <code>Domain=.unknownshoppers.com</code> <strong>NO</strong> se comparten con <code>github.io</code>.
+        </p>
+        <p>
+          Resultado: aunque el NFC pase por <code>go.unknownshoppers.com</code> y se cree el token, el menú en GitHub Pages <strong>no</strong> lo puede “ver”.
+        </p>
+        <p class="pill">Solución real: que el menú viva en <strong>subdominios.unknownshoppers.com</strong>.</p>
+      </section>
+
+      <section class="card">
+        <h2>2) Flujo recomendado (un solo uso)</h2>
+        <p>Este es el flujo que sí te da “NFC-only” de verdad:</p>
+        <pre>1) NFC abre:
+   https://go.unknownshoppers.com/t/SZ-001
+
+2) Backend valida tag_id, crea token (expira rápido) y set-cookie:
+   mt_token=...; Domain=.unknownshoppers.com; Secure; HttpOnly; SameSite=Lax
+
+3) Backend redirige a:
+   https://srchorizo.unknownshoppers.com/
+
+4) El menú (JS) llama:
+   https://go.unknownshoppers.com/api/verify?menu=srchorizo
+
+5) verify marca el token como used=1 (un solo uso) y responde ok.</pre>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>3) ¿Por qué “funciona en uno y en otro no”?</h2>
+      <p><strong>Funciona</strong> cuando:</p>
+      <p class="pill ok small">Gateway: <code>go.unknownshoppers.com</code> y Menú: <code>srchorizo.unknownshoppers.com</code> (mismo “site” base: <code>unknownshoppers.com</code>)</p>
+
+      <p><strong>Falla</strong> cuando:</p>
+      <p class="pill no small">Gateway: <code>go.unknownshoppers.com</code> pero Menú: <code>unknownshopper.github.io</code> (otro dominio base, cookies no viajan)</p>
+
+      <p>Además de cookies, suelen pegar estos puntos:</p>
+      <p>
+        - <span class="k">CORS</span>: el menú hace <code>fetch</code> a <code>go.unknownshoppers.com</code>; el backend debe permitirlo.
+      </p>
+      <p>
+        - <span class="k">credentials</span>: si dependes de cookie, el <code>fetch</code> debe llevar <code>credentials: "include"</code>.
+      </p>
+      <p>
+        - <span class="k">HTTPS</span>: si usas <code>Secure</code> en cookie (debes), necesitas HTTPS real en subdominios.
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>4) Checklist backend (cPanel/PHP)</h2>
+        <pre>Cookies
+- Set-Cookie: mt_token=...;
+  Domain=.unknownshoppers.com;
+  Path=/;
+  Secure;
+  HttpOnly;
+  SameSite=Lax
+
+Verify endpoint
+- Valida token
+- Expira rápido (2 min recomendado)
+- Un solo uso: used=1 al primer verify OK
+
+CORS (si el menú y go están en diferentes subdominios)
+- Access-Control-Allow-Origin: https://srchorizo.unknownshoppers.com
+- Access-Control-Allow-Credentials: true
+
+Headers
+- Content-Type: application/json</pre>
+      </section>
+
+      <section class="card">
+        <h2>5) Snippet JS (lo que pegarías en cada menú)</h2>
+        <p class="small">Esto NO “protege” por sí solo; protege porque el backend controla token/cookie.</p>
+        <pre>// En https://srchorizo.unknownshoppers.com/
+(async function gate() {
+  try {
+    const res = await fetch(
+      'https://go.unknownshoppers.com/api/verify?menu=srchorizo',
+      { credentials: 'include' }
+    );
+    if (!res.ok) throw new Error('not authorized');
+  } catch (e) {
+    document.body.innerHTML =
+      '&lt;div style="padding:24px;font-family:system-ui"&gt;' +
+      '&lt;h2&gt;Acceso requerido&lt;/h2&gt;' +
+      '&lt;p&gt;Acerca tu teléfono al sticker NFC para abrir el menú.&lt;/p&gt;' +
+      '&lt;/div&gt;';
+  }
+})();</pre>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>6) Mini demo local (solo para entender)</h2>
+      <p class="small">
+        Esta demo no puede simular cookies cross-domain reales desde archivo estático, pero sí te deja ver
+        tu <span class="k">origen</span> actual, y ejemplos de por qué GitHub Pages no comparte cookies con tu dominio.
+      </p>
+
+      <div class="row">
+        <span class="pill small">Origen actual: <code id="origin"></code></span>
+        <span class="pill small">Host: <code id="host"></code></span>
+        <span class="pill small">HTTPS: <code id="https"></code></span>
+      </div>
+
+      <div class="row">
+        <button id="btnExplain">¿Qué pasaría si el menú está en GitHub Pages?</button>
+        <button id="btnExplain2">¿Qué pasaría si el menú está en subdominio propio?</button>
+      </div>
+
+      <pre id="out"></pre>
+    </section>
+
+    <section class="card">
+      <h2>7) Recomendación final</h2>
+      <p>
+        Para acceso NFC real, haz que <strong>TODO</strong> viva bajo <span class="k">unknownshoppers.com</span>:
+      </p>
+      <p class="pill small">Menús: <code>&lt;slug&gt;.unknownshoppers.com/</code> + Gateway: <code>go.unknownshoppers.com</code></p>
+      <p>
+        Si dejas menús en GitHub Pages, entonces el “token por cookie” no se puede compartir.
+        La única alternativa sería pasar token en URL (querystring), pero eso se comparte y se filtra.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var originEl = document.getElementById('origin');
+      var hostEl = document.getElementById('host');
+      var httpsEl = document.getElementById('https');
+      var out = document.getElementById('out');
+
+      originEl.textContent = window.location.origin;
+      hostEl.textContent = window.location.host;
+      httpsEl.textContent = window.location.protocol === 'https:' ? 'sí' : 'no';
+
+      function write(lines) {
+        out.textContent = lines.join('\n');
+      }
+
+      document.getElementById('btnExplain').addEventListener('click', function () {
+        write([
+          'Caso: menú en GitHub Pages (unknownshopper.github.io)',
+          '',
+          '1) NFC abre go.unknownshoppers.com/t/SZ-001 y backend set-cookie Domain=.unknownshoppers.com',
+          '2) Backend redirige a unknownshopper.github.io/menutags/srchorizo.html',
+          '3) El menú NO recibe la cookie, porque github.io es otro dominio base',
+          '',
+          'Resultado: verify falla (no hay token).',
+        ]);
+      });
+
+      document.getElementById('btnExplain2').addEventListener('click', function () {
+        write([
+          'Caso: menú en subdominio propio (srchorizo.unknownshoppers.com)',
+          '',
+          '1) NFC abre go.unknownshoppers.com/t/SZ-001 y backend set-cookie Domain=.unknownshoppers.com',
+          '2) Backend redirige a srchorizo.unknownshoppers.com/',
+          '3) El menú SÍ recibe la cookie (mismo dominio base unknownshoppers.com)',
+          '4) fetch verify con credentials: include => backend valida y marca token used=1',
+          '',
+          'Resultado: acceso OK una sola vez.',
+        ]);
+      });
+
+      write([
+        'Usa los botones para ver el razonamiento.',
+        '',
+        'Tip: este archivo es 100% aislado y lo puedes borrar cuando quieras.',
+      ]);
+    })();
+  </script>
+</body>
+</html>
+
