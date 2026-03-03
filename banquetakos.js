@@ -34,11 +34,32 @@
         return;
     }
 
+    var ORDER_DONE_KEY = "mtOrderDone:" + String(window.location.pathname || "");
+    var orderLocked = false;
+
+    function setOrderLocked(locked) {
+        orderLocked = !!locked;
+
+        var controls = document.querySelectorAll(
+            'button[data-action], input[data-field], select[data-field], #btWhatsApp, #btClear'
+        );
+
+        for (var i = 0; i < controls.length; i++) {
+            controls[i].disabled = orderLocked;
+        }
+
+        if (orderLocked) {
+            cartList.innerHTML = "<li>Este pedido ya fue enviado. Para hacer otro, vuelve a acercar el NFC.</li>";
+            totalEl.textContent = money(0);
+            if (window.mtSetCartCount) window.mtSetCartCount(0);
+        }
+    }
+
     var cart = [];
 
     function getQtyFromInput(inputEl) {
-        var v = parseInt(String((inputEl && inputEl.value) || "1"), 10);
-        if (!isFinite(v) || v < 1) v = 1;
+        var v = parseInt(String((inputEl && inputEl.value) || "0"), 10);
+        if (!isFinite(v) || v < 0) v = 0;
         if (v > 99) v = 99;
         if (inputEl) inputEl.value = String(v);
         return v;
@@ -58,10 +79,17 @@
         }, 0);
     }
 
+    function getCartCount() {
+        return cart.reduce(function (sum, it) {
+            return sum + (it.qty || 0);
+        }, 0);
+    }
+
     function renderCart() {
         if (!cart.length) {
             cartList.innerHTML = "<li>Tu pedido está vacío.</li>";
             totalEl.textContent = money(0);
+            if (window.mtSetCartCount) window.mtSetCartCount(0);
             return;
         }
 
@@ -95,6 +123,7 @@
             .join("");
 
         totalEl.textContent = money(getCartTotal());
+        if (window.mtSetCartCount) window.mtSetCartCount(getCartCount());
     }
 
     function addFromRow(li) {
@@ -108,6 +137,10 @@
 
         var qtyEl = li.querySelector('[data-field="qty"]');
         var qty = getQtyFromInput(qtyEl);
+
+        if (qty <= 0) {
+            qty = 1;
+        }
 
         var details = [];
 
@@ -132,7 +165,7 @@
             unit: unit,
         });
 
-        if (qtyEl) qtyEl.value = "1";
+        if (qtyEl) qtyEl.value = "0";
         renderCart();
     }
 
@@ -164,13 +197,20 @@
     }
 
     function sendWhatsApp() {
+        if (orderLocked) return;
         if (!cart.length) return;
+
+        try {
+            window.sessionStorage.setItem(ORDER_DONE_KEY, "1");
+        } catch (e) {}
+        setOrderLocked(true);
         var text = buildTicketText();
         var url = "https://wa.me/" + WA_PHONE + "?text=" + encodeURIComponent(text);
         window.location.href = url;
     }
 
     function clearCart() {
+        if (orderLocked) return;
         cart = [];
         renderCart();
     }
@@ -191,12 +231,13 @@
                 var liMinus = minusBtn.closest("li");
                 var inputMinus = liMinus && liMinus.querySelector('[data-field="qty"]');
                 if (!inputMinus) return;
-                inputMinus.value = String(Math.max(1, getQtyFromInput(inputMinus) - 1));
+                inputMinus.value = String(Math.max(0, getQtyFromInput(inputMinus) - 1));
                 return;
             }
 
             var addBtn = e.target.closest('button[data-action="add"]');
             if (addBtn) {
+                if (orderLocked) return;
                 addFromRow(addBtn.closest("li"));
             }
         });
@@ -218,6 +259,7 @@
     lists.forEach(bindList);
 
     cartList.addEventListener("click", function (e) {
+        if (orderLocked) return;
         var btn = e.target.closest("button[data-remove]");
         if (!btn) return;
         var idx = parseInt(btn.getAttribute("data-remove"), 10);
@@ -229,5 +271,11 @@
     waBtn.addEventListener("click", sendWhatsApp);
     clearBtn.addEventListener("click", clearCart);
 
-    renderCart();
+    try {
+        setOrderLocked(window.sessionStorage.getItem(ORDER_DONE_KEY) === "1");
+    } catch (e) {}
+
+    if (!orderLocked) {
+        renderCart();
+    }
 })();

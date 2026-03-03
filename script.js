@@ -53,6 +53,11 @@
     window.mtSetCartCount = setCartCount;
     ensureCartFab();
 
+    window.addEventListener("mt:setCartCount", function (e) {
+        if (!e || !e.detail) return;
+        setCartCount(e.detail.count);
+    });
+
     window.addEventListener("resize", setVh, { passive: true });
     window.addEventListener("orientationchange", setVh, { passive: true });
 })();

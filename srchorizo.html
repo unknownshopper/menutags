@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Menú</title>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="SR CHORIZO">
+    <meta property="og:description" content="Menú y pedido por WhatsApp.">
+    <meta property="og:url" content="https://unknownshopper.github.io/menutags/srchorizo.html">
+    <meta property="og:image" content="https://unknownshopper.github.io/menutags/srchorizo.png">
+    <meta property="og:image:alt" content="Logo Sr Chorizo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SR CHORIZO">
+    <meta name="twitter:description" content="Menú y pedido por WhatsApp.">
+    <meta name="twitter:image" content="https://unknownshopper.github.io/menutags/srchorizo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="mt-theme-srchorizo">
+    <header class="mt-header">
+        <img class="mt-logo" src="srchorizo.png" alt="Sr Chorizo" />
+        <div>
+            <div class="mt-brand">MenuTags</div>
+            <h1>Sr Chorizo</h1>
+        </div>
+    </header>
+
+    <main class="mt-main">
+        <section class="mt-section" id="szOrder">
+            <h2>Pedido</h2>
+            <p>Arma tu pedido y envíalo por WhatsApp.</p>
+        </section>
+
+        <section class="mt-section" id="szMenuChoripan">
+            <h2>Choripán</h2>
+            <ul id="szListChoripan">
+                <li data-kind="choripan" data-item="Choripán" data-price="85" data-extra-cheese="25">
+                    <div><strong>Choripán</strong> <span>($85)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <label class="mt-checkbox">
+                            <input type="checkbox" data-field="cheese" />
+                            <span>+ Queso (+$25)</span>
+                        </label>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="mt-section" id="szMenuBebidas">
+            <h2>Bebidas</h2>
+            <ul id="szListBebidas">
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Boing Guayaba" data-price="35">
+                    <div><strong>Boing Guayaba</strong> <span>($35)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Boing Mango" data-price="35">
+                    <div><strong>Boing Mango</strong> <span>($35)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Boing Fresa" data-price="35">
+                    <div><strong>Boing Fresa</strong> <span>($35)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Boing Manzana" data-price="35">
+                    <div><strong>Boing Manzana</strong> <span>($35)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="mt-section" id="szMenuPostres">
+            <h2>Postres</h2>
+            <ul id="szListPostres">
+                <li data-kind="postre" data-item="Churro con helado" data-price-1="65" data-price-2="95">
+                    <div><strong>Churro con helado</strong> <span>(1 bola $65 / 2 bolas $95)</span></div>
+                    <div class="mt-item-controls">
+                        <select class="mt-input" data-field="scoops">
+                            <option value="1">1 bola</option>
+                            <option value="2">2 bolas</option>
+                        </select>
+                        <select class="mt-input" data-field="flavor1">
+                            <option value="Chocolate">Chocolate</option>
+                            <option value="Vainilla">Vainilla</option>
+                            <option value="Cajeta">Cajeta</option>
+                        </select>
+                        <select class="mt-input" data-field="flavor2" disabled>
+                            <option value="Chocolate">Chocolate</option>
+                            <option value="Vainilla">Vainilla</option>
+                            <option value="Cajeta">Cajeta</option>
+                        </select>
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="mt-section" id="szCart" data-mt-cart>
+            <h2>Resumen de pedido</h2>
+            <ul id="szCartList"></ul>
+            <div class="mt-total">
+                <div class="mt-total-row">
+                    <span>Total</span>
+                    <strong id="szTotal">$0</strong>
+                </div>
+            </div>
+            <div class="mt-row">
+                <button class="mt-btn" type="button" id="szWhatsApp">Hacer pedido</button>
+                <button class="mt-pill" type="button" id="szClear">Vaciar</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+    <script src="srchorizo.js"></script>
+</body>
+</html>

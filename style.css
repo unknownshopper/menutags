@@ -40,6 +40,105 @@
      overflow-y: auto;
  }
 
+ .mt-theme-banquetakos {
+     overflow-x: hidden;
+     overflow-y: auto;
+ }
+
+ .mt-theme-srchorizo {
+     overflow-x: hidden;
+     overflow-y: auto;
+ }
+
+ .mt-theme-srchorizo {
+     color: rgba(255, 255, 255, 0.95);
+     background:
+         radial-gradient(1100px 600px at 20% 10%, rgba(250, 204, 21, 0.18), transparent 55%),
+         radial-gradient(900px 500px at 90% 30%, rgba(255, 255, 255, 0.10), transparent 55%),
+         linear-gradient(180deg, #7f1d1d, #b91c1c);
+ }
+
+ .mt-theme-srchorizo .mt-header {
+     border-color: rgba(250, 204, 21, 0.28);
+     background: linear-gradient(180deg, rgba(250, 204, 21, 0.10), rgba(0, 0, 0, 0.06));
+ }
+
+ .mt-theme-srchorizo .mt-brand {
+     color: rgba(255, 255, 255, 0.75);
+ }
+
+ .mt-theme-srchorizo h1,
+ .mt-theme-srchorizo h2,
+ .mt-theme-srchorizo h3 {
+     color: rgba(255, 255, 255, 0.96);
+ }
+
+ .mt-theme-srchorizo p {
+     color: rgba(255, 255, 255, 0.78);
+ }
+
+ .mt-theme-srchorizo .mt-section {
+     border-color: rgba(250, 204, 21, 0.22);
+     background: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.10));
+     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24);
+ }
+
+ .mt-theme-srchorizo li {
+     border-color: rgba(250, 204, 21, 0.18);
+     background: rgba(0, 0, 0, 0.14);
+ }
+
+ .mt-theme-srchorizo .mt-input {
+     color: rgba(255, 255, 255, 0.95);
+     border-color: rgba(250, 204, 21, 0.24);
+     background: rgba(0, 0, 0, 0.22);
+ }
+
+ .mt-theme-srchorizo .mt-input::placeholder {
+     color: rgba(255, 255, 255, 0.60);
+ }
+
+ .mt-theme-srchorizo .mt-btn {
+     color: rgba(255, 255, 255, 0.96);
+     border-color: rgba(250, 204, 21, 0.42);
+     background: rgba(250, 204, 21, 0.18);
+ }
+
+ .mt-theme-srchorizo .mt-btn:hover {
+     background: rgba(250, 204, 21, 0.24);
+     border-color: rgba(250, 204, 21, 0.52);
+ }
+
+ .mt-theme-srchorizo .mt-pill {
+     color: rgba(255, 255, 255, 0.95);
+     border-color: rgba(255, 255, 255, 0.22);
+     background: rgba(0, 0, 0, 0.14);
+ }
+
+ .mt-theme-srchorizo .mt-pill:hover {
+     background: rgba(0, 0, 0, 0.22);
+     border-color: rgba(250, 204, 21, 0.35);
+ }
+
+ .mt-theme-srchorizo .mt-total {
+     border-top-color: rgba(250, 204, 21, 0.22);
+ }
+
+ .mt-theme-srchorizo .mt-checkbox {
+     display: inline-flex;
+     align-items: center;
+     gap: 10px;
+     padding: 8px 10px;
+     border-radius: 12px;
+     border: 1px solid rgba(250, 204, 21, 0.22);
+     background: rgba(0, 0, 0, 0.16);
+     color: rgba(255, 255, 255, 0.90);
+ }
+
+ .mt-theme-srchorizo .mt-checkbox input {
+     accent-color: #facc15;
+ }
+
  .mt-theme-mingo .mt-header {
      border-color: rgba(220, 38, 38, 0.20);
      background: linear-gradient(180deg, rgba(220, 38, 38, 0.06), rgba(220, 38, 38, 0.03));
@@ -409,6 +508,14 @@
  .mt-theme-mingo .mt-main {
      overflow: visible;
  }
+
+ .mt-theme-banquetakos .mt-main {
+     overflow: visible;
+ }
+
+ .mt-theme-srchorizo .mt-main {
+     overflow: visible;
+ }
  
  .mt-section {
      border: 1px solid var(--border);
@@ -449,6 +556,60 @@
  li {
      padding: 12px 12px;
      border-radius: 14px;
+     border: 1px solid rgba(255, 255, 255, 0.12);
+     background: rgba(255, 255, 255, 0.05);
+ }
+
+ .mt-grid {
+     display: grid;
+     gap: 14px;
+ }
+
+ .mt-cart-fab {
+     position: fixed;
+     right: calc(16px + env(safe-area-inset-right, 0px));
+     top: calc(16px + env(safe-area-inset-top, 0px));
+     z-index: 50;
+     display: inline-flex;
+     align-items: center;
+     gap: 10px;
+     padding: 12px 14px;
+     border-radius: 999px;
+     border: 1px solid var(--border);
+     background: rgba(255, 255, 255, 0.10);
+     color: var(--text);
+     box-shadow: var(--shadow);
+     backdrop-filter: blur(10px);
+ }
+
+ .mt-cart-fab__label {
+     font-size: 14px;
+     font-weight: 650;
+ }
+
+ .mt-cart-badge {
+     min-width: 26px;
+     height: 26px;
+     padding: 0 8px;
+     border-radius: 999px;
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 12px;
+     font-weight: 750;
+     background: var(--accent);
+     color: #ffffff;
+     border: 1px solid rgba(255, 255, 255, 0.22);
+ }
+
+ .mt-theme-mingo .mt-cart-badge {
+     background: rgba(220, 38, 38, 0.92);
+ }
+
+ @media (min-width: 720px) {
+     h1 {
+         font-size: 34px;
+     }
  
      .mt-header {
          flex-direction: row;
@@ -460,11 +621,11 @@
          width: 100px;
          height: 100px;
      }
- 
+
      .mt-actions {
          padding-top: 0;
      }
- 
+
      .mt-grid {
          grid-template-columns: 1fr 1fr;
      }
