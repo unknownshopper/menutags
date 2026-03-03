@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GGM Casa x Casa</title>
+    <link rel="stylesheet" href="ggm.css" />
+  </head>
+  <body>
+    <header class="ggm-header">
+      <div class="ggm-header__inner">
+        <div class="ggm-brand">GGM</div>
+        <div>
+          <h1 class="ggm-title">Casa x Casa</h1>
+          <div class="ggm-subtitle">Solicitud ciudadana por NFC</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="ggm-main">
+      <section class="ggm-card" id="ggmIntro">
+        <div class="ggm-row ggm-row--space">
+          <div>
+            <div class="ggm-label">Brigadista (Tag ID)</div>
+            <div class="ggm-pill"><span id="ggmTagId">—</span></div>
+          </div>
+          <div class="ggm-row">
+            <button class="ggm-btn ggm-btn--ghost" id="ggmShareLink" type="button">Compartir enlace</button>
+          </div>
+        </div>
+        <p class="ggm-help">Llena el formulario y envíalo por WhatsApp. Se guarda un respaldo local por si falla la señal.</p>
+      </section>
+
+      <section class="ggm-card" id="ggmFormCard">
+        <h2 class="ggm-h2">Datos</h2>
+        <form id="ggmForm" class="ggm-form">
+          <div class="ggm-field">
+            <label class="ggm-label" for="ggmName">Nombre</label>
+            <input class="ggm-input" id="ggmName" name="name" autocomplete="name" required />
+          </div>
+
+          <div class="ggm-field">
+            <label class="ggm-label" for="ggmAddress">Dirección</label>
+            <input class="ggm-input" id="ggmAddress" name="address" autocomplete="street-address" placeholder="Calle, número, colonia" required />
+          </div>
+
+          <h2 class="ggm-h2">Ubicación (mapa)</h2>
+          <div class="ggm-row ggm-row--wrap">
+            <button class="ggm-btn" id="ggmGetLocation" type="button">Obtener ubicación</button>
+            <a class="ggm-btn ggm-btn--ghost" id="ggmOpenMap" href="#" target="_blank" rel="noopener">Abrir mapa</a>
+            <button class="ggm-btn ggm-btn--ghost" id="ggmClearLocation" type="button">Quitar ubicación</button>
+          </div>
+
+          <input id="ggmLat" name="lat" type="hidden" />
+          <input id="ggmLng" name="lng" type="hidden" />
+          <input id="ggmMapLink" name="mapLink" type="hidden" />
+
+          <h2 class="ggm-h2">Solicitud</h2>
+          <div class="ggm-field">
+            <label class="ggm-label" for="ggmRequest">Descripción</label>
+            <textarea class="ggm-textarea" id="ggmRequest" name="request" rows="5" placeholder="Describe la solicitud" required></textarea>
+          </div>
+
+          <div class="ggm-row ggm-row--wrap ggm-actions">
+            <button class="ggm-btn ggm-btn--primary" id="ggmSend" type="submit">Enviar por WhatsApp</button>
+            <button class="ggm-btn" id="ggmSaveDraft" type="button">Guardar respaldo</button>
+            <button class="ggm-btn ggm-btn--danger" id="ggmClearDraft" type="button">Limpiar</button>
+          </div>
+
+          <div class="ggm-status" id="ggmStatus" aria-live="polite"></div>
+        </form>
+      </section>
+
+      <section class="ggm-card" id="ggmHistoryCard">
+        <div class="ggm-row ggm-row--space">
+          <h2 class="ggm-h2" style="margin:0">Historial local</h2>
+          <div class="ggm-row ggm-row--wrap">
+            <button class="ggm-btn ggm-btn--ghost" id="ggmExport" type="button">Exportar JSON</button>
+            <button class="ggm-btn ggm-btn--ghost" id="ggmClearHistory" type="button">Borrar historial</button>
+          </div>
+        </div>
+        <ul class="ggm-list" id="ggmHistory"></ul>
+      </section>
+    </main>
+
+    <script src="ggm.js"></script>
+  </body>
+</html>

@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GGM Casa x Casa — Admin</title>
+    <link rel="stylesheet" href="ggm.css" />
+    <style>
+      .ggm-table-wrap {
+        overflow: auto;
+        border-radius: var(--ggm-radius);
+        border: 1px solid var(--ggm-border);
+        background: rgba(0, 0, 0, 0.12);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 920px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        vertical-align: top;
+      }
+      th {
+        position: sticky;
+        top: 0;
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(8px);
+        z-index: 1;
+        font-size: 13px;
+        color: var(--ggm-muted);
+      }
+      td {
+        font-size: 13px;
+        color: var(--ggm-text);
+      }
+      .ggm-td-muted {
+        color: var(--ggm-muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+      }
+      .ggm-inline {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .ggm-input--sm {
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 13px;
+        width: 190px;
+      }
+      .ggm-btn--sm {
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="ggm-header">
+      <div class="ggm-header__inner">
+        <div class="ggm-brand">GGM</div>
+        <div>
+          <h1 class="ggm-title">Admin — Registros</h1>
+          <div class="ggm-subtitle">Vista local (este dispositivo)</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="ggm-main">
+      <section class="ggm-card">
+        <div class="ggm-row ggm-row--space ggm-row--wrap">
+          <div>
+            <div class="ggm-label">Fuente</div>
+            <div class="ggm-pill"><code>localStorage</code> → <code>ggm:casaxcasa:history</code></div>
+          </div>
+          <div class="ggm-row ggm-row--wrap">
+            <button class="ggm-btn ggm-btn--ghost" id="admRefresh" type="button">Actualizar</button>
+            <button class="ggm-btn ggm-btn--ghost" id="admExport" type="button">Exportar JSON</button>
+            <button class="ggm-btn ggm-btn--danger" id="admClear" type="button">Borrar todo</button>
+          </div>
+        </div>
+        <p class="ggm-help">Aquí puedes ver solicitudes y agregar el WhatsApp del ciudadano cuando te lo manden por otro medio.</p>
+        <div class="ggm-status" id="admStatus" aria-live="polite"></div>
+      </section>
+
+      <section class="ggm-card">
+        <div class="ggm-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Brigadista (Tag)</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Ubicación</th>
+                <th>Solicitud</th>
+                <th>WhatsApp ciudadano</th>
+              </tr>
+            </thead>
+            <tbody id="admBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var STORAGE_HISTORY_KEY = "ggm:casaxcasa:history";
+
+        function qs(sel) {
+          return document.querySelector(sel);
+        }
+
+        function setStatus(msg) {
+          var el = qs("#admStatus");
+          if (!el) return;
+          el.textContent = msg || "";
+        }
+
+        function safeJsonParse(s, fallback) {
+          try {
+            return JSON.parse(s);
+          } catch (e) {
+            return fallback;
+          }
+        }
+
+        function escapeHtml(s) {
+          return String(s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
+
+        function getHistory() {
+          var raw = localStorage.getItem(STORAGE_HISTORY_KEY) || "[]";
+          var list = safeJsonParse(raw, []);
+          if (!Array.isArray(list)) return [];
+          return list;
+        }
+
+        function setHistory(list) {
+          localStorage.setItem(STORAGE_HISTORY_KEY, JSON.stringify(list));
+        }
+
+        function normalizePhone(v) {
+          if (!v) return "";
+          return String(v).replace(/[^0-9]/g, "").slice(0, 20);
+        }
+
+        function upsertPhone(id, phone) {
+          var list = getHistory();
+          var changed = false;
+          for (var i = 0; i < list.length; i++) {
+            if (!list[i] || typeof list[i] !== "object") continue;
+            if (list[i].id === id) {
+              list[i].citizenWhatsApp = phone;
+              changed = true;
+              break;
+            }
+          }
+          if (changed) {
+            setHistory(list);
+          }
+          return changed;
+        }
+
+        function mapsLink(it) {
+          if (it.mapLink) return it.mapLink;
+          if (it.lat && it.lng) {
+            return "https://www.google.com/maps?q=" + encodeURIComponent(it.lat + "," + it.lng);
+          }
+          return "";
+        }
+
+        function render() {
+          var tbody = qs("#admBody");
+          var list = getHistory();
+          if (!list.length) {
+            tbody.innerHTML = "<tr><td class=\"ggm-td-muted\" colspan=\"7\">Sin registros aún.</td></tr>";
+            setStatus("0 registros.");
+            return;
+          }
+
+          tbody.innerHTML = list
+            .map(function (it) {
+              var ts = it.createdAt ? new Date(it.createdAt).toLocaleString() : "";
+              var tag = it.tagId || "";
+              var name = it.name || "";
+              var addr = it.address || "";
+              var req = it.request || "";
+              var m = mapsLink(it);
+              var locCell = m
+                ? '<a class="ggm-link" href="' + escapeHtml(m) + '" target="_blank" rel="noopener">Abrir</a>'
+                : '<span class="ggm-td-muted">—</span>';
+
+              var phoneVal = it.citizenWhatsApp ? String(it.citizenWhatsApp) : "";
+              var id = it.id ? String(it.id) : "";
+
+              return (
+                "<tr data-id=\"" +
+                escapeHtml(id) +
+                "\">" +
+                "<td class=\"ggm-td-muted\">" +
+                escapeHtml(ts) +
+                "</td>" +
+                "<td class=\"ggm-td-muted\">" +
+                escapeHtml(tag) +
+                "</td>" +
+                "<td>" +
+                escapeHtml(name) +
+                "</td>" +
+                "<td>" +
+                escapeHtml(addr) +
+                "</td>" +
+                "<td>" +
+                locCell +
+                "</td>" +
+                "<td>" +
+                escapeHtml(req) +
+                "</td>" +
+                "<td>" +
+                '<div class="ggm-inline">' +
+                '<input class="ggm-input ggm-input--sm" placeholder="Ej: 9931234567" value="' +
+                escapeHtml(phoneVal) +
+                '" data-role="phone" />' +
+                '<button class="ggm-btn ggm-btn--sm" type="button" data-role="save">Guardar</button>' +
+                "</div>" +
+                "</td>" +
+                "</tr>"
+              );
+            })
+            .join("");
+
+          setStatus(list.length + " registros.");
+        }
+
+        function exportHistory() {
+          var list = getHistory();
+          var payload = {
+            exportedAt: new Date().toISOString(),
+            count: list.length,
+            items: list,
+          };
+          var json = JSON.stringify(payload, null, 2);
+          var blob = new Blob([json], { type: "application/json" });
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "ggm_casaxcasa_admin_export.json";
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function () {
+            URL.revokeObjectURL(a.href);
+            a.remove();
+          }, 0);
+        }
+
+        function clearAll() {
+          if (!confirm("¿Borrar todos los registros de este dispositivo?")) return;
+          localStorage.removeItem(STORAGE_HISTORY_KEY);
+          render();
+          setStatus("Registros borrados.");
+        }
+
+        function bind() {
+          qs("#admRefresh").addEventListener("click", function () {
+            render();
+          });
+
+          qs("#admExport").addEventListener("click", function () {
+            exportHistory();
+            setStatus("Exportación lista.");
+          });
+
+          qs("#admClear").addEventListener("click", function () {
+            clearAll();
+          });
+
+          qs("#admBody").addEventListener("click", function (e) {
+            var btn = e.target && e.target.getAttribute ? e.target : null;
+            if (!btn) return;
+            if (btn.getAttribute("data-role") !== "save") return;
+
+            var tr = btn.closest("tr");
+            if (!tr) return;
+            var id = tr.getAttribute("data-id") || "";
+            var input = tr.querySelector("input[data-role=phone]");
+            if (!input) return;
+            var phone = normalizePhone(input.value);
+            input.value = phone;
+            if (!id) {
+              setStatus("Este registro no tiene id. Actualiza el origen (casaxcasa) y vuelve a crear registros.");
+              return;
+            }
+            var ok = upsertPhone(id, phone);
+            setStatus(ok ? "Guardado." : "No se encontró el registro.");
+          });
+        }
+
+        bind();
+        render();
+      })();
+    </script>
+  </body>
+</html>

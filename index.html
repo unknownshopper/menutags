@@ -3,43 +3,445 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Menú</title>
+    <title>MenuTags</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="mt-theme-landing">
     <div class="mt-container">
         <header class="mt-header">
             <div>
-                <div class="mt-brand">MenuTags</div>
-                <h1>Menú</h1>
+                <div class="mt-brand mt-brand--giant">MenuTags</div>
+                <h1>Menús digitales con respuesta rápida</h1>
             </div>
 
             <div class="mt-actions">
-                <a class="mt-btn" href="indexadmin.html">Cambiar a vista Admin</a>
+                <a class="mt-btn" href="#demo">Ver demo</a>
+                <a class="mt-btn" href="#contacto">Contacto</a>
+                <a class="mt-btn" href="indexadmin.html">Admin</a>
             </div>
         </header>
 
         <main class="mt-main">
-            <div class="mt-grid">
-                <section class="mt-section">
-                    <h2>Platillos</h2>
-                    <ul>
-                        <li>Tortas</li>
-                        <li>Hamburguesas</li>
-                        <li>Tacos</li>
-                    </ul>
-                </section>
+            <section class="mt-section mt-hero">
+                <svg class="mt-section-art mt-section-art--lg" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+                    <path d="M26 78c26-44 76-64 122-49 46 16 72 61 64 105-8 44-48 76-94 77-46 1-86-29-98-72-6-22-5-42 6-61z" stroke="rgba(167,139,250,0.9)" stroke-width="10" opacity="0.9"/>
+                    <path d="M58 112c10-18 30-28 50-25 20 3 36 19 39 39 3 20-8 40-27 49" stroke="rgba(34,197,94,0.75)" stroke-width="10" stroke-linecap="round"/>
+                    <path d="M76 80h64" stroke="rgba(255,255,255,0.75)" stroke-width="10" stroke-linecap="round"/>
+                    <path d="M76 98h48" stroke="rgba(255,255,255,0.6)" stroke-width="10" stroke-linecap="round"/>
+                </svg>
+                <div class="mt-hero-grid">
+                    <div>
+                        <h2 class="mt-hero-title">Tu menú, cotización y pedido en minutos.</h2>
+                        <p class="mt-hero-sub">Menús interactivos que generan órdenes claras, reducen errores y aceleran la respuesta por WhatsApp. Ideal para negocios locales.</p>
+                        <div class="mt-badges">
+                            <div class="mt-badge mt-badge--accent">
+                                <svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18c-1.5-1-3-2.5-3-6s1.5-5 3-6"/><path d="M13 18c-1.5-1-3-2.5-3-6s1.5-5 3-6"/><path d="M17 18c-1.5-1-3-2.5-3-6s1.5-5 3-6"/></svg>
+                                NFC / QR listo
+                            </div>
+                            <div class="mt-badge">
+                                <svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="4" width="10" height="16" rx="2"/><path d="M11 18h2"/></svg>
+                                Sin apps
+                            </div>
+                            <div class="mt-badge">
+                                <svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l1.7 5.3H19l-4.3 3.1L16.4 16 12 12.9 7.6 16l1.7-5.6L5 7.3h5.3z"/></svg>
+                                Rápido de implementar
+                            </div>
+                            <div class="mt-badge">
+                                <svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/><path d="M7 8h10"/><path d="M7 12h7"/></svg>
+                                Orden formateada
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-kpis">
+                        <div class="mt-kpi"><strong><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>+Velocidad</strong><span>Menos fricción para ordenar y confirmar.</span></div>
+                        <div class="mt-kpi"><strong><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><path d="M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"/></svg>+Claridad</strong><span>Pedido con cantidades, extras y totales.</span></div>
+                        <div class="mt-kpi"><strong><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>+Costo justo</strong><span>Más negocio para ti, menos comisión.</span></div>
+                    </div>
+                </div>
+            </section>
 
-                <section class="mt-section">
-                    <h2>Bebidas</h2>
-                    <ul>
-                        <li>Horchata</li>
-                        <li>Jamaica</li>
-                    </ul>
-                </section>
-            </div>
+            <section class="mt-section" id="servicio">
+                <svg class="mt-section-art" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+                    <rect x="34" y="26" width="132" height="148" rx="18" stroke="rgba(255,255,255,0.65)" stroke-width="10"/>
+                    <path d="M62 70h76" stroke="rgba(167,139,250,0.9)" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M62 100h60" stroke="rgba(34,197,94,0.75)" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M62 130h42" stroke="rgba(255,255,255,0.55)" stroke-width="12" stroke-linecap="round"/>
+                </svg>
+                <h2 class="mt-title-row">
+                    <span class="mt-icon-badge"><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10"/><path d="M7 8h10"/><path d="M7 12h10"/></svg></span>
+                    Servicio de menú
+                </h2>
+                <p>Te ayudamos a presentar tus productos con un menú digital moderno y a recibir pedidos listos para responder.</p>
+                <p><strong>Privacidad:</strong> nuestro sistema no guarda datos de tus clientes. El pedido se enlaza y se envía directamente al WhatsApp del restaurante.</p>
+                <p><strong>Importante:</strong> nosotros no vendemos ni cobramos por ti. El restaurante se encarga del seguimiento, cobro y control para cerrar la venta.</p>
+                <div class="mt-grid">
+                    <section class="mt-section">
+                        <h3>Cotización rápida</h3>
+                        <p>Envíanos tu menú (texto/foto) y armamos una propuesta con tiempos y alcance.</p>
+                    </section>
+                    <section class="mt-section">
+                        <h3>Respuesta inmediata</h3>
+                        <p>Los clientes generan su orden y se envía formateada para que confirmes en WhatsApp.</p>
+                    </section>
+                </div>
+            </section>
+
+            <section class="mt-section" id="demo">
+                <svg class="mt-section-art" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+                    <rect x="28" y="44" width="144" height="104" rx="16" stroke="rgba(255,255,255,0.6)" stroke-width="10"/>
+                    <path d="M58 78h84" stroke="rgba(167,139,250,0.9)" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M58 104h60" stroke="rgba(34,197,94,0.75)" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M58 130h42" stroke="rgba(255,255,255,0.5)" stroke-width="12" stroke-linecap="round"/>
+                </svg>
+                <h2 class="mt-title-row">
+                    <span class="mt-icon-badge"><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 8h10"/><path d="M7 12h7"/></svg></span>
+                    Menú interactivo (demo)
+                </h2>
+                <p>Esta demo simula cómo el cliente agrega items y genera una orden. En producción se reemplaza por tu menú real.</p>
+
+                <div class="mt-grid">
+                    <section class="mt-section">
+                        <h3>Menú</h3>
+                        <div class="mt-demo-items" id="mtDemoItems"></div>
+                    </section>
+
+                    <section class="mt-section" data-mt-cart>
+                        <h3>Orden generada</h3>
+                        <div class="mt-demo-cart">
+                            <ul id="mtDemoCart"></ul>
+                            <div class="mt-total">
+                                <div class="mt-total-row">
+                                    <strong>Total</strong>
+                                    <strong id="mtDemoTotal">$0</strong>
+                                </div>
+                            </div>
+                            <div class="mt-actions">
+                                <button class="mt-btn" type="button" id="mtDemoSend">Generar texto</button>
+                                <button class="mt-btn" type="button" id="mtDemoClear">Vaciar</button>
+                            </div>
+                            <div class="mt-field">
+                                <div class="mt-label">Texto de orden</div>
+                                <textarea class="mt-input" id="mtDemoText" rows="6" placeholder="Aquí aparecerá el texto listo para WhatsApp" readonly></textarea>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <section class="mt-section" id="local">
+                <svg class="mt-section-art" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+                    <path d="M40 164h120" stroke="rgba(255,255,255,0.5)" stroke-width="10" stroke-linecap="round"/>
+                    <path d="M58 164V88l42-28 42 28v76" stroke="rgba(167,139,250,0.85)" stroke-width="10" stroke-linejoin="round"/>
+                    <path d="M84 164v-40h32v40" stroke="rgba(34,197,94,0.75)" stroke-width="10" stroke-linejoin="round"/>
+                    <path d="M92 108h16" stroke="rgba(255,255,255,0.55)" stroke-width="10" stroke-linecap="round"/>
+                </svg>
+                <h2 class="mt-title-row">
+                    <span class="mt-icon-badge"><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M6 21V7l6-4 6 4v14"/><path d="M9 21v-6h6v6"/></svg></span>
+                    Impulso al empresariado y negocios locales
+                </h2>
+                <p>Queremos que más negocios locales compitan con mejores precios sin perder márgenes por comisiones altas.</p>
+                <div class="mt-grid">
+                    <section class="mt-section">
+                        <h3>Más margen</h3>
+                        <p>La orden llega directo a tu WhatsApp. Sin intermediarios, sin comisiones por pedido.</p>
+                    </section>
+                    <section class="mt-section">
+                        <h3>Mejor experiencia</h3>
+                        <p>Menú ligero, rápido y claro. Menos errores y menos tiempo tomando pedidos.</p>
+                    </section>
+                </div>
+            </section>
+
+            <section class="mt-section" id="costos">
+                <svg class="mt-section-art" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+                    <path d="M100 26v148" stroke="rgba(255,255,255,0.42)" stroke-width="10" stroke-linecap="round"/>
+                    <path d="M132 54H84c-18 0-30 10-30 26s12 26 30 26h24c18 0 30 10 30 26s-12 26-30 26H62" stroke="rgba(167,139,250,0.9)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M64 64h0" stroke="rgba(34,197,94,0.75)" stroke-width="12" stroke-linecap="round"/>
+                </svg>
+                <h2 class="mt-title-row">
+                    <span class="mt-icon-badge"><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                    Costos
+                </h2>
+                <p>Paquetes orientativos. Ajustamos según cantidad de productos, extras, variantes y número de menús.</p>
+                <div class="mt-pricing">
+                    <div class="mt-price-card">
+                        <h3 class="mt-price-title"><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6H9"/><path d="M20 12H9"/><path d="M20 18H9"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg>Básico</h3>
+                        <div class="mt-price-amount">A partir de $3000 <small>MXN</small></div>
+                        <p>Incluye sticker NFC/QR y servicio local. Ideal para todos los restaurantes que quieren empezar rápido.</p>
+                    </div>
+                    <div class="mt-price-card">
+                        <h3 class="mt-price-title"><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l4 4 14-14"/><path d="M7 13h0"/></svg>A Domicilio</h3>
+                        <div class="mt-price-amount">A partir de $5000 <small>MXN</small></div>
+                        <p>Incluye formulario de pedido a domicilio con mapa y métodos de pago (no incluye pagos en línea).</p>
+                    </div>
+                    <div class="mt-price-card">
+                        <h3 class="mt-price-title"><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H9l-5 3V7z"/><path d="M8 8h8"/><path d="M8 12h6"/></svg>Pro (Base de datos)</h3>
+                        <div class="mt-price-amount">Cotización <small>según alcance</small></div>
+                        <p><strong>Servicio separado:</strong> si necesitas más que el enlace directo a WhatsApp, aquí implementamos base de datos, panel admin, pagos en línea e integración con redes sociales (share/preview).</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-section" id="especificaciones">
+                <svg class="mt-section-art" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+                    <circle cx="100" cy="100" r="64" stroke="rgba(255,255,255,0.45)" stroke-width="10"/>
+                    <path d="M74 104l18 18 38-44" stroke="rgba(34,197,94,0.8)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M60 62h0" stroke="rgba(167,139,250,0.9)" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M140 62h0" stroke="rgba(167,139,250,0.9)" stroke-width="12" stroke-linecap="round"/>
+                </svg>
+                <h2 class="mt-title-row">
+                    <span class="mt-icon-badge"><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><path d="M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"/></svg></span>
+                    Especificaciones técnicas
+                </h2>
+                <table class="mt-specs">
+                    <tr>
+                        <td>A Domicilio</td>
+                        <td>Formulario de pedido a domicilio con mapa + métodos de pago (sin pagos en línea).</td>
+                    </tr>
+                    <tr>
+                        <td>Interfaz</td>
+                        <td>HTML/CSS/JS ligero, responsive, optimizado para móviles.</td>
+                    </tr>
+                    <tr>
+                        <td>Entrega de orden</td>
+                        <td>Texto formateado para WhatsApp (puede incluir totales, notas y extras).</td>
+                    </tr>
+                    <tr>
+                        <td>Acceso</td>
+                        <td>Compatible con NFC y QR (según configuración).</td>
+                    </tr>
+                    <tr>
+                        <td>Operación</td>
+                        <td>Puede funcionar offline para capturas locales (según módulo).</td>
+                    </tr>
+                    <tr>
+                        <td>Compatibilidad</td>
+                        <td>Safari iOS, Chrome Android, navegadores modernos.</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="mt-section" id="contacto">
+                <svg class="mt-section-art" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+                    <path d="M154 136v24c0 10-8 18-18 18-62-3-112-53-115-115 0-10 8-18 18-18h24c9 0 16 7 18 16 1 8 3 16 6 23 3 7 1 15-5 20l-10 8c10 20 26 36 46 46l8-10c5-6 13-8 20-5 7 3 15 5 23 6 9 2 16 9 16 18z" stroke="rgba(167,139,250,0.88)" stroke-width="10" stroke-linejoin="round"/>
+                    <path d="M82 58h36" stroke="rgba(255,255,255,0.55)" stroke-width="10" stroke-linecap="round"/>
+                    <path d="M72 78h56" stroke="rgba(34,197,94,0.75)" stroke-width="10" stroke-linecap="round"/>
+                </svg>
+                <h2 class="mt-title-row">
+                    <span class="mt-icon-badge"><svg class="mt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.5-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg></span>
+                    Contacto
+                </h2>
+                <p>Cuéntanos tu negocio y el tamaño de tu menú. Te respondemos con una cotización rápida.</p>
+                <p><strong>Nota:</strong> la orden se genera en el navegador y se envía por WhatsApp; no almacenamos datos de clientes en nuestros servidores.</p>
+                <div class="mt-grid">
+                    
+                    <section class="mt-section">
+                        <h3>Datos</h3>
+                        <div class="mt-field">
+                            <div class="mt-label">Mensaje</div>
+                            <input class="mt-input" id="mtContactMsg" placeholder="Ej: Tengo 35 productos y quiero 2 menús" />
+                        </div>
+                        <div class="mt-actions">
+                            <button class="mt-btn" type="button" id="mtContactSend">Enviar por WhatsApp</button>
+                        </div>
+                    </section>
+                </div>
+                <div class="mt-footer">© MenuTags desarrollado por <a href="https://theunknownshoppers.com">The Unknown Shopper</a> & <a href="https://olmecacode.pages.dev/">Olmeca CODE</a></div>
+            </section>
         </main>
     </div>
     <script src="script.js"></script>
+    <script>
+        (function () {
+            "use strict";
+
+            var items = [
+                { id: "torta", name: "Torta (demo)", price: 65 },
+                { id: "taco", name: "Taco (demo)", price: 22 },
+                { id: "agua", name: "Agua fresca (demo)", price: 18 },
+                { id: "postre", name: "Postre (demo)", price: 35 },
+            ];
+
+            var cart = [];
+
+            function money(n) {
+                return "$" + (Math.round((n || 0) * 100) / 100).toFixed(0);
+            }
+
+            function getQty(id) {
+                var found = cart.find(function (x) { return x.id === id; });
+                return found ? found.qty : 0;
+            }
+
+            function setQty(id, qty) {
+                qty = parseInt(String(qty || 0), 10);
+                if (!isFinite(qty) || qty < 0) qty = 0;
+                if (qty > 99) qty = 99;
+                var found = cart.find(function (x) { return x.id === id; });
+                if (!found && qty > 0) {
+                    var base = items.find(function (it) { return it.id === id; });
+                    if (!base) return;
+                    cart.push({ id: base.id, name: base.name, price: base.price, qty: qty });
+                } else if (found) {
+                    found.qty = qty;
+                    if (found.qty <= 0) cart = cart.filter(function (x) { return x.id !== id; });
+                }
+            }
+
+            function getTotal() {
+                return cart.reduce(function (sum, it) { return sum + it.price * it.qty; }, 0);
+            }
+
+            function getCount() {
+                return cart.reduce(function (sum, it) { return sum + it.qty; }, 0);
+            }
+
+            function renderItems() {
+                var wrap = document.getElementById("mtDemoItems");
+                if (!wrap) return;
+                wrap.innerHTML = items
+                    .map(function (it) {
+                        return (
+                            '<div class="mt-demo-item" data-id="' + it.id + '">' +
+                            '<div class="mt-demo-item__top">' +
+                            '<div class="mt-demo-item__name">' + it.name + '</div>' +
+                            '<div class="mt-demo-item__price">' + money(it.price) + '</div>' +
+                            '</div>' +
+                            '<div class="mt-demo-item__actions">' +
+                            '<div class="mt-qty mt-qty--compact">' +
+                            '<button class="mt-btn" type="button" data-role="minus">-</button>' +
+                            '<input class="mt-input" inputmode="numeric" value="' + getQty(it.id) + '" data-role="qty" />' +
+                            '<button class="mt-btn" type="button" data-role="plus">+</button>' +
+                            '</div>' +
+                            '<button class="mt-btn" type="button" data-role="add">Agregar</button>' +
+                            '</div>' +
+                            '</div>'
+                        );
+                    })
+                    .join("");
+            }
+
+            function renderCart() {
+                var ul = document.getElementById("mtDemoCart");
+                var totalEl = document.getElementById("mtDemoTotal");
+                var textEl = document.getElementById("mtDemoText");
+                if (!ul || !totalEl) return;
+
+                if (!cart.length) {
+                    ul.innerHTML = '<li><span class="mt-cart-line">Tu orden está vacía.</span><span class="mt-demo-item__price">' + money(0) + '</span></li>';
+                    totalEl.textContent = money(0);
+                    if (textEl) textEl.value = "";
+                    if (window.mtSetCartCount) window.mtSetCartCount(0);
+                    else window.dispatchEvent(new CustomEvent("mt:setCartCount", { detail: { count: 0 } }));
+                    return;
+                }
+
+                ul.innerHTML = cart
+                    .map(function (it) {
+                        return (
+                            '<li>' +
+                            '<span class="mt-cart-line">' + it.name + '<small>' + it.qty + ' × ' + money(it.price) + '</small></span>' +
+                            '<span class="mt-demo-item__price">' + money(it.qty * it.price) + '</span>' +
+                            '</li>'
+                        );
+                    })
+                    .join("");
+                totalEl.textContent = money(getTotal());
+
+                var count = getCount();
+                if (window.mtSetCartCount) window.mtSetCartCount(count);
+                else window.dispatchEvent(new CustomEvent("mt:setCartCount", { detail: { count: count } }));
+            }
+
+            function buildText() {
+                if (!cart.length) return "";
+                var lines = [];
+                lines.push("*Orden (demo)*");
+                lines.push("Fecha: " + new Date().toLocaleString());
+                lines.push("");
+                cart.forEach(function (it) {
+                    lines.push(it.qty + " × " + it.name + " — " + money(it.qty * it.price));
+                });
+                lines.push("");
+                lines.push("Total: " + money(getTotal()));
+                return lines.join("\n");
+            }
+
+            function bind() {
+                var wrap = document.getElementById("mtDemoItems");
+                if (wrap) {
+                    wrap.addEventListener("click", function (e) {
+                        var btn = e.target;
+                        if (!btn || !btn.getAttribute) return;
+                        var role = btn.getAttribute("data-role");
+                        if (!role) return;
+                        var card = btn.closest(".mt-demo-item");
+                        if (!card) return;
+                        var id = card.getAttribute("data-id");
+                        if (!id) return;
+
+                        var input = card.querySelector('input[data-role="qty"]');
+                        var current = input ? input.value : String(getQty(id));
+                        var qty = parseInt(String(current || 0), 10);
+                        if (!isFinite(qty) || qty < 0) qty = 0;
+
+                        if (role === "minus") qty = Math.max(0, qty - 1);
+                        if (role === "plus") qty = Math.min(99, qty + 1);
+                        if (role === "add" && qty === 0) qty = 1;
+
+                        setQty(id, qty);
+                        renderItems();
+                        renderCart();
+                    });
+
+                    wrap.addEventListener("input", function (e) {
+                        var el = e.target;
+                        if (!el || !el.getAttribute) return;
+                        if (el.getAttribute("data-role") !== "qty") return;
+                        var card = el.closest(".mt-demo-item");
+                        if (!card) return;
+                        var id = card.getAttribute("data-id");
+                        if (!id) return;
+                        setQty(id, el.value);
+                        renderCart();
+                    });
+                }
+
+                var sendBtn = document.getElementById("mtDemoSend");
+                if (sendBtn) {
+                    sendBtn.addEventListener("click", function () {
+                        var textEl = document.getElementById("mtDemoText");
+                        if (!textEl) return;
+                        textEl.value = buildText();
+                        textEl.focus();
+                        textEl.select();
+                    });
+                }
+
+                var clearBtn = document.getElementById("mtDemoClear");
+                if (clearBtn) {
+                    clearBtn.addEventListener("click", function () {
+                        cart = [];
+                        renderItems();
+                        renderCart();
+                    });
+                }
+
+                var contactBtn = document.getElementById("mtContactSend");
+                if (contactBtn) {
+                    contactBtn.addEventListener("click", function () {
+                        var msg = (document.getElementById("mtContactMsg").value || "").trim();
+                        var text = "Hola, quiero cotizar un menú digital.";
+                        if (msg) text += "\n\n" + msg;
+                        window.location.href = "https://wa.me/5219932171855?text=" + encodeURIComponent(text);
+                    });
+                }
+            }
+
+            renderItems();
+            renderCart();
+            bind();
+        })();
+    </script>
 </body>
 </html>
