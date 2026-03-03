@@ -175,8 +175,8 @@
         lines.push("Fecha: " + new Date().toLocaleString());
         lines.push("");
         if (state.name) lines.push("Nombre: " + state.name);
-        if (state.address) lines.push("Zona/Dirección: " + state.address);
-        if (state.municipio) lines.push("Municipio: " + state.municipio);
+        if (state.address) lines.push("Zona (mapa): " + state.address);
+        if (state.manualAddress) lines.push("Dirección: " + state.manualAddress);
         if (state.urgency) lines.push("Urgencia: " + state.urgency);
         lines.push("Rubro: " + state.rubroName);
         lines.push("");
@@ -211,6 +211,8 @@
         var options = getSelectedOptions(rubro);
         var name = (getEl("ecoName").value || "").trim();
         var address = (getEl("ecoAddress").value || "").trim();
+        var manualAddressEl = getEl("ecoManualAddress");
+        var manualAddress = (manualAddressEl && manualAddressEl.value ? manualAddressEl.value : "").trim();
         var urgency = getUrgencyLabel(getEl("ecoUrgency").value);
         var notes = (getEl("ecoNotes").value || "").trim();
 
@@ -228,6 +230,7 @@
             total: total,
             name: name,
             address: address,
+            manualAddress: manualAddress,
             urgency: urgency,
             notes: notes,
             municipio: municipio,
@@ -288,10 +291,51 @@
         );
     }
 
+    function getApproxAddressFromNominatim(data) {
+        if (!data) return "";
+        var addr = data.address ? data.address : null;
+        if (!addr) return data.display_name ? String(data.display_name) : "";
+
+        var houseNumber = addr.house_number || addr.housenumber || "";
+        var street = "";
+        if (addr.road) {
+            street = String(addr.road);
+            if (houseNumber) street = street + ", No. " + String(houseNumber);
+        } else if (addr.residential) {
+            street = String(addr.residential);
+            if (houseNumber) street = street + ", No. " + String(houseNumber);
+        } else if (addr.pedestrian) {
+            street = String(addr.pedestrian);
+            if (houseNumber) street = street + ", No. " + String(houseNumber);
+        }
+
+        var colonia = addr.neighbourhood || addr.suburb || addr.quarter || addr.hamlet || "";
+        var city = addr.city || addr.town || addr.village || addr.hamlet || "";
+        var municipio = addr.municipality || addr.city_district || addr.county || "";
+        var state = addr.state || "";
+        var postcode = addr.postcode || "";
+        var country = addr.country || "";
+
+        var parts = [];
+        if (street) parts.push(street);
+        if (colonia) parts.push("Col. " + String(colonia));
+        if (city) parts.push(String(city));
+        if (municipio && parts.indexOf(String(municipio)) === -1) parts.push(String(municipio));
+        if (state) parts.push(String(state));
+        if (postcode) parts.push("CP " + String(postcode));
+        if (country) parts.push(String(country));
+
+        var composed = parts.join(", ");
+
+        if (composed) return composed;
+        return data.display_name ? String(data.display_name) : "";
+    }
+
+
     function reverseGeocode(lat, lng) {
         return fetch(
             NOMINATIM_REVERSE +
-                "?format=jsonv2&zoom=12&addressdetails=1&lat=" +
+                "?format=jsonv2&zoom=18&addressdetails=1&namedetails=1&extratags=1&lat=" +
                 encodeURIComponent(String(lat)) +
                 "&lon=" +
                 encodeURIComponent(String(lng)),
@@ -299,6 +343,7 @@
                 method: "GET",
                 headers: {
                     "Accept": "application/json",
+                    "Accept-Language": "es-MX,es",
                 },
             }
         )
@@ -355,7 +400,15 @@
         placeMarker(lat, lng);
         reverseGeocode(lat, lng).then(function (data) {
             var muni = data ? getMunicipioFromNominatim(data) : "";
+            var approx = data ? getApproxAddressFromNominatim(data) : "";
             setLocation(lat, lng, muni);
+
+            var addrEl = getEl("ecoAddress");
+            if (addrEl && approx) {
+                addrEl.value = approx;
+            }
+
+            update();
         });
     }
 
@@ -416,7 +469,7 @@
             opts.addEventListener("change", update);
         }
 
-        ["ecoName", "ecoAddress", "ecoUrgency", "ecoNotes"].forEach(function (id) {
+        ["ecoName", "ecoManualAddress", "ecoUrgency", "ecoNotes"].forEach(function (id) {
             var el = getEl(id);
             if (!el) return;
             el.addEventListener("input", update);

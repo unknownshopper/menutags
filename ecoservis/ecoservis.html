@@ -76,11 +76,6 @@
                             <input class="mt-input" id="ecoName" placeholder="Tu nombre" />
                         </div>
                         <div class="mt-field">
-                            <div class="mt-label">Zona / Dirección (aprox.)</div>
-                            <input class="mt-input" id="ecoAddress" placeholder="Colonia, referencias, etc." />
-                        </div>
-
-                        <div class="mt-field">
                             <div class="mt-label">Ubicación del servicio</div>
                             <div class="mt-eco-map" id="ecoMap" role="application" aria-label="Mapa para seleccionar ubicación"></div>
                             <div class="mt-actions" style="justify-content:flex-start; gap: 10px; margin-top: 10px;">
@@ -90,8 +85,13 @@
                         </div>
 
                         <div class="mt-field">
-                            <div class="mt-label">Municipio detectado</div>
-                            <input class="mt-input" id="ecoMunicipio" readonly placeholder="Selecciona un punto en el mapa" />
+                            <div class="mt-label">Zona / Dirección (aprox.)</div>
+                            <input class="mt-input" id="ecoAddress" readonly placeholder="Selecciona un punto en el mapa" />
+                        </div>
+
+                        <div class="mt-field">
+                            <div class="mt-label">Dirección</div>
+                            <input class="mt-input" id="ecoManualAddress" placeholder="Calle, número, colonia, referencias, etc." />
                         </div>
                         <div class="mt-field">
                             <div class="mt-label">Costo de traslado (estimado)</div>
