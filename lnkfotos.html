@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Bienvenido</title>
+    <meta name="description" content="Redes sociales y acceso rápido a cotizar o comprar." />
+    <meta name="theme-color" content="#0b1220" />
+    <link rel="canonical" href="https://menutags.unknownshoppers.com/lnkfotos.html" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MenuTags" />
+    <meta property="og:title" content="Bienvenido" />
+    <meta property="og:description" content="Redes sociales y acceso rápido a cotizar o comprar." />
+    <meta property="og:url" content="https://menutags.unknownshoppers.com/lnkfotos.html" />
+    <meta property="og:image" content="https://menutags.unknownshoppers.com/logomenutag.png" />
+    <meta property="og:image:alt" content="MenuTags" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bienvenido" />
+    <meta name="twitter:description" content="Redes sociales y acceso rápido a cotizar o comprar." />
+    <meta name="twitter:image" content="https://menutags.unknownshoppers.com/logomenutag.png" />
+
+    <link rel="icon" href="logomenutag.png" />
+    <link rel="apple-touch-icon" href="logomenutag.png" />
+
+    <style>
+        :root {
+            --text: rgba(255, 255, 255, 0.92);
+            --muted: rgba(255, 255, 255, 0.72);
+            --muted2: rgba(255, 255, 255, 0.58);
+            --line: rgba(255, 255, 255, 0.14);
+            --card: rgba(255, 255, 255, 0.06);
+            --shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+            --radius: 18px;
+            --max: 560px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            background:
+                radial-gradient(900px 520px at 20% 12%, rgba(167,139,250,0.22), transparent 60%),
+                radial-gradient(800px 520px at 86% 36%, rgba(34,197,94,0.14), transparent 58%),
+                linear-gradient(180deg, #080d18 0%, #0b1220 42%, #070b14 100%);
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .wrap {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 26px 16px 46px;
+        }
+
+        .card {
+            border: 1px solid rgba(255,255,255,0.12);
+            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--shadow);
+        }
+
+        .top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            object-fit: cover;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .title {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .title h1 {
+            margin: 0;
+            font-size: 18px;
+            letter-spacing: 0.2px;
+        }
+
+        .title p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .note {
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .links {
+            margin-top: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 14px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.14);
+            transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+            backdrop-filter: blur(10px);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.22);
+        }
+
+        .btn:active { transform: translateY(0px); }
+
+        .btn strong { font-size: 14px; }
+        .btn span { color: var(--muted); font-size: 12px; }
+
+        .left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .chip {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.8);
+            white-space: nowrap;
+        }
+
+        .btn.is-disabled {
+            opacity: 0.45;
+            filter: grayscale(0.2);
+            cursor: not-allowed;
+        }
+
+        .btn.is-disabled:hover {
+            transform: none;
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.14);
+        }
+
+        .btn.is-disabled .chip {
+            color: rgba(255,255,255,0.65);
+        }
+
+        .footer {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            color: var(--muted2);
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .footer a {
+            color: rgba(255,255,255,0.72);
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(255,255,255,0.25);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <main class="card" aria-label="Bienvenida">
+            <div class="top">
+                <img id="mtLogo" class="logo" src="logomenutag.png" alt="Logo" />
+                <div class="title">
+                    <h1 id="mtTitle">Bienvenido</h1>
+                    <p id="mtSubtitle">Toca el NFC para ver redes, cotizar o comprar.</p>
+                </div>
+            </div>
+
+            <p id="mtNote" class="note">Elige una opción:</p>
+
+            <section class="links" aria-label="Enlaces">
+                <a id="lnkInstagram" class="btn" href="#" target="_blank" rel="noopener noreferrer">
+                    <div class="left">
+                        <strong>Instagram</strong>
+                        <span id="igLabel">Perfil</span>
+                    </div>
+                    <div class="chip">Abrir</div>
+                </a>
+
+                <a id="lnkFacebook" class="btn" href="#" target="_blank" rel="noopener noreferrer">
+                    <div class="left">
+                        <strong>Facebook</strong>
+                        <span id="fbLabel">Página</span>
+                    </div>
+                    <div class="chip">Abrir</div>
+                </a>
+
+                <a id="lnkTikTok" class="btn" href="#" target="_blank" rel="noopener noreferrer">
+                    <div class="left">
+                        <strong>TikTok</strong>
+                        <span id="ttLabel">Videos</span>
+                    </div>
+                    <div class="chip">Abrir</div>
+                </a>
+
+                <a id="lnkWhatsApp" class="btn" href="#" target="_blank" rel="noopener noreferrer">
+                    <div class="left">
+                        <strong>WhatsApp</strong>
+                        <span id="waLabel">Chat</span>
+                    </div>
+                    <div class="chip">Chat</div>
+                </a>
+
+                <a id="lnkQuote" class="btn" href="#" target="_blank" rel="noopener noreferrer">
+                    <div class="left">
+                        <strong>Cotizar</strong>
+                        <span>Cotización rápida</span>
+                    </div>
+                    <div class="chip">Cotizar</div>
+                </a>
+
+                <a id="lnkBuy" class="btn" href="#" target="_blank" rel="noopener noreferrer">
+                    <div class="left">
+                        <strong id="buyTitle">Comprar</strong>
+                        <span id="buyLabel">Catálogo / Link de pago</span>
+                    </div>
+                    <div class="chip">Ir</div>
+                </a>
+            </section>
+
+            <footer class="footer">
+                <div><a href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.72); text-decoration: none; border-bottom: 1px dashed rgba(255,255,255,0.25);">MENUTAGS</a> by <a href="https://unknownshoppers.com/" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.72); text-decoration: none; border-bottom: 1px dashed rgba(255,255,255,0.25);">The Unknown Shopper</a></div>
+                <div><a href="index.html">Inicio</a></div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            var yearEl = document.getElementById('mtYear');
+            if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+            var params = new URLSearchParams(window.location.search || '');
+            function get(k) { return (params.get(k) || '').trim(); }
+
+            function setText(id, v) {
+                var el = document.getElementById(id);
+                if (el && v) el.textContent = v;
+            }
+
+            function disableBtn(el, label) {
+                if (!el) return;
+                el.classList.add('is-disabled');
+                el.setAttribute('href', '#');
+                el.addEventListener('click', function (e) { e.preventDefault(); });
+                if (label) {
+                    var chip = el.querySelector('.chip');
+                    if (chip) chip.textContent = label;
+                }
+            }
+
+            function setLink(id, url, disabledChipLabel) {
+                var el = document.getElementById(id);
+                if (!el) return;
+
+                if (!url) {
+                    disableBtn(el, disabledChipLabel || 'Sin link');
+                    return;
+                }
+
+                el.classList.remove('is-disabled');
+                el.setAttribute('href', url);
+            }
+
+            // Branding
+            setText('mtTitle', get('title'));
+            setText('mtSubtitle', get('subtitle'));
+            setText('mtNote', get('note'));
+
+            var logo = get('logo');
+            if (logo) {
+                var logoEl = document.getElementById('mtLogo');
+                if (logoEl) logoEl.setAttribute('src', logo);
+            }
+
+            // Social links
+            setText('igLabel', get('ig_label'));
+            setText('fbLabel', get('fb_label'));
+            setText('ttLabel', get('tt_label'));
+            setText('waLabel', get('wa_label'));
+
+            setLink('lnkInstagram', get('ig'), 'Sin IG');
+            setLink('lnkFacebook', get('fb'), 'Sin FB');
+            setLink('lnkTikTok', get('tt'), 'Sin TikTok');
+
+            // WhatsApp y cotizar
+            // wa: link completo https://wa.me/...
+            var wa = get('wa');
+            setLink('lnkWhatsApp', wa, 'Sin WA');
+
+            // quote: link de cotización (si no existe, usa wa con texto)
+            var quote = get('quote');
+            if (!quote && wa) {
+                quote = wa + (wa.indexOf('?') >= 0 ? '&' : '?') + 'text=' + encodeURIComponent(get('quote_text') || 'Hola, quiero cotizar');
+            }
+            setLink('lnkQuote', quote, 'Sin cotizar');
+
+            // Comprar
+            setText('buyTitle', get('buy_title'));
+            setText('buyLabel', get('buy_label'));
+            setLink('lnkBuy', get('buy'), 'Sin compra');
+        })();
+    </script>
+</body>
+</html>
