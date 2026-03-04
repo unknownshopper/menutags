@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Eventos con NFC | MenuTags</title>
+    <meta name="description" content="Carta de servicios: NFC para bodas, XV años y cumpleaños. Confirmación, ubicación, lugares asignados, instrucciones y seguimiento post-evento para organizar mejor a tus asistentes." />
+    <meta name="theme-color" content="#0b1220" />
+    <link rel="canonical" href="https://menutags.unknownshoppers.com/eventos.html" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MenuTags" />
+    <meta property="og:title" content="Eventos con NFC — Organización óptima de asistentes" />
+    <meta property="og:description" content="Bodas, XV años, cumpleaños y eventos corporativos: confirmación, ubicación, lugares asignados, instrucciones y feedback post-evento. Todo en un enlace NFC." />
+    <meta property="og:url" content="https://menutags.unknownshoppers.com/eventos.html" />
+    <meta property="og:image" content="https://menutags.unknownshoppers.com/logomenutag.png" />
+    <meta property="og:image:alt" content="MenuTags" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Eventos con NFC — Organización óptima de asistentes" />
+    <meta name="twitter:description" content="Confirmación, ubicación, lugares asignados, instrucciones y feedback post-evento para organizar mejor a tus asistentes." />
+    <meta name="twitter:image" content="https://menutags.unknownshoppers.com/logomenutag.png" />
+
+    <link rel="icon" href="logomenutag.png" />
+    <link rel="apple-touch-icon" href="logomenutag.png" />
+
+    <style>
+        :root {
+            --bg: #0b1220;
+            --card: rgba(255, 255, 255, 0.06);
+            --card2: rgba(255, 255, 255, 0.08);
+            --text: rgba(255, 255, 255, 0.92);
+            --muted: rgba(255, 255, 255, 0.72);
+            --muted2: rgba(255, 255, 255, 0.62);
+            --line: rgba(255, 255, 255, 0.14);
+            --accent: rgba(167, 139, 250, 0.95);
+            --good: rgba(34, 197, 94, 0.85);
+            --shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+            --radius: 18px;
+            --radius-sm: 14px;
+            --max: 1100px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            background:
+                radial-gradient(900px 500px at 20% 12%, rgba(167,139,250,0.24), transparent 60%),
+                radial-gradient(800px 520px at 86% 36%, rgba(34,197,94,0.16), transparent 58%),
+                linear-gradient(180deg, #080d18 0%, #0b1220 42%, #070b14 100%);
+            color: var(--text);
+            line-height: 1.42;
+        }
+
+        a { color: inherit; }
+
+        .wrap {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 28px 18px 56px;
+        }
+
+        .hero {
+            border: 1px solid rgba(255,255,255,0.12);
+            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+            border-radius: var(--radius);
+            padding: 22px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: -60px -40px auto auto;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle at 30% 30%, rgba(167,139,250,0.35), transparent 65%);
+            pointer-events: none;
+            filter: blur(2px);
+        }
+
+        .hero-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand strong { letter-spacing: 0.2px; }
+        .brand span { color: var(--muted2); font-size: 13px; }
+
+        h1 {
+            margin: 14px 0 10px;
+            font-size: clamp(28px, 4.2vw, 44px);
+            line-height: 1.05;
+            letter-spacing: -0.4px;
+        }
+
+        .sub {
+            margin: 0;
+            color: var(--muted);
+            font-size: 16px;
+            max-width: 66ch;
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .pill {
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.05);
+            border-radius: 999px;
+            padding: 8px 10px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .cta {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid rgba(255,255,255,0.16);
+            background: rgba(255,255,255,0.06);
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 650;
+            font-size: 14px;
+            transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.24);
+        }
+
+        .btn--good {
+            border-color: rgba(34,197,94,0.32);
+            background: linear-gradient(180deg, rgba(34,197,94,0.18), rgba(34,197,94,0.1));
+        }
+
+        .btn--accent {
+            border-color: rgba(167,139,250,0.35);
+            background: linear-gradient(180deg, rgba(167,139,250,0.22), rgba(167,139,250,0.12));
+        }
+
+        .grid {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 14px;
+        }
+
+        .card {
+            border: 1px solid rgba(255,255,255,0.12);
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: 0 18px 44px rgba(0,0,0,0.22);
+        }
+
+        .card h2 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .card p {
+            margin: 0 0 10px;
+            color: var(--muted);
+        }
+
+        .card ul {
+            margin: 0;
+            padding-left: 18px;
+            color: var(--muted);
+        }
+
+        .span-12 { grid-column: span 12; }
+        .span-7 { grid-column: span 7; }
+        .span-6 { grid-column: span 6; }
+        .span-5 { grid-column: span 5; }
+
+        .feature {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            margin-top: 6px;
+            background: var(--accent);
+            box-shadow: 0 0 0 6px rgba(167,139,250,0.12);
+            flex: 0 0 auto;
+        }
+
+        .dot--good {
+            background: var(--good);
+            box-shadow: 0 0 0 6px rgba(34,197,94,0.12);
+        }
+
+        .feature strong { display: block; margin-bottom: 4px; }
+        .feature span { color: var(--muted2); font-size: 13px; }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .module {
+            border-radius: 16px;
+            padding: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+        }
+
+        .module strong { display: block; margin-bottom: 6px; }
+        .module p { margin: 0; color: var(--muted2); font-size: 13px; }
+
+        .footer {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            color: var(--muted2);
+            font-size: 13px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .footer a {
+            color: var(--muted);
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(255,255,255,0.25);
+        }
+
+        @media (max-width: 900px) {
+            .span-7, .span-6, .span-5, .span-12 { grid-column: span 12; }
+            .module-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <section class="hero">
+            <div class="hero-top">
+                <img class="logo" src="logomenutag.png" alt="MenuTags" />
+                <div class="brand">
+                    <strong>MenuTags</strong>
+                    <span>Servicios para Eventos con NFC</span>
+                </div>
+            </div>
+
+            <h1>Tu evento, organizado con un toque.</h1>
+            <p class="sub">
+                Usa NFC para que tus invitados encuentren toda la información en segundos: confirmación, ubicación,
+                lugar asignado, instrucciones y comunicación post-evento. Ideal para <strong>bodas</strong>,
+                <strong>cumpleaños</strong>, <strong>XV años</strong> y eventos corporativos.
+            </p>
+
+            <div class="pill-row" aria-label="Casos de uso">
+                <div class="pill">Bodas</div>
+                <div class="pill">XV años</div>
+                <div class="pill">Cumpleaños</div>
+                <div class="pill">Graduaciones</div>
+                <div class="pill">Eventos empresariales</div>
+            </div>
+
+            <div class="cta">
+                <a class="btn btn--good" href="https://wa.me/529931102606?text=Hola%20quiero%20cotizar%20Eventos%20con%20NFC%20(%20boda%2FXV%2Fcumple%20).%20Fecha%3A%20%20Invitados%3A%20%20Ciudad%3A%20">Cotizar por WhatsApp</a>
+                <a class="btn btn--accent" href="#modulos">Ver módulos</a>
+                <a class="btn" href="index.html">Volver a inicio</a>
+            </div>
+        </section>
+
+        <section class="grid" id="servicios">
+            <article class="card span-7">
+                <h2>¿Qué proponemos?</h2>
+                <p>
+                    Una carta digital del evento que vive en un enlace (y se abre con NFC/QR). La información puede ser
+                    pública o segmentada por invitado, según lo que necesites.
+                </p>
+                <div class="module-grid">
+                    <div class="module">
+                        <strong>Invitación inteligente</strong>
+                        <p>Invitados con acceso a información y acciones claras (confirmar, ver mapa, indicaciones).</p>
+                    </div>
+                    <div class="module">
+                        <strong>Administración práctica</strong>
+                        <p>Organiza asistentes, confirma asistencia y reduce confusiones el día del evento.</p>
+                    </div>
+                    <div class="module">
+                        <strong>Actualizaciones en tiempo real</strong>
+                        <p>Si cambia una indicación o ubicación, el enlace muestra siempre la última versión.</p>
+                    </div>
+                    <div class="module">
+                        <strong>Post-evento</strong>
+                        <p>Recoge comentarios, agradecimientos y contenido después del evento.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card span-5">
+                <h2>Ventajas para organizar mejor</h2>
+                <div class="feature">
+                    <div class="dot dot--good" aria-hidden="true"></div>
+                    <div>
+                        <strong>Confirmación (RSVP) sin fricción</strong>
+                        <span>Disminuye el seguimiento manual y mejora la lista final de asistentes.</span>
+                    </div>
+                </div>
+                <div class="feature" style="margin-top:10px;">
+                    <div class="dot" aria-hidden="true"></div>
+                    <div>
+                        <strong>Ubicación y llegada</strong>
+                        <span>Mapa, ruta y recomendaciones para evitar retrasos.</span>
+                    </div>
+                </div>
+                <div class="feature" style="margin-top:10px;">
+                    <div class="dot" aria-hidden="true"></div>
+                    <div>
+                        <strong>Orden y claridad el día del evento</strong>
+                        <span>Lugar asignado, protocolos, horarios y avisos en un solo lugar.</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card span-12" id="modulos">
+                <h2>Módulos recomendados</h2>
+                <p>Puedes armar el servicio con los bloques que mejor se adapten a tu evento.</p>
+                <div class="module-grid">
+                    <div class="module">
+                        <strong>Confirmación de asistencia</strong>
+                        <p>“Asistir / No asistir”, número de acompañantes y notas (alergias, requerimientos).</p>
+                    </div>
+                    <div class="module">
+                        <strong>Ubicación del evento</strong>
+                        <p>Mapa con un toque, referencias, estacionamiento y recomendaciones de llegada.</p>
+                    </div>
+                    <div class="module">
+                        <strong>Lugar asignado</strong>
+                        <p>Mesa, zona o asiento. Útil para bodas, XV, graduaciones y cenas formales.</p>
+                    </div>
+                    <div class="module">
+                        <strong>Instrucciones y reglas</strong>
+                        <p>Código de vestimenta, horarios, protocolo, accesos, qué llevar y qué no.</p>
+                    </div>
+                    <div class="module">
+                        <strong>Avisos</strong>
+                        <p>Cambios de último minuto: lluvia, cambio de salón, itinerario actualizado, etc.</p>
+                    </div>
+                    <div class="module">
+                        <strong>Comentarios post-evento</strong>
+                        <p>Encuesta corta: satisfacción, sugerencias, agradecimientos y recopilación de fotos.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card span-6">
+                <h2>¿Dónde va el NFC?</h2>
+                <ul>
+                    <li>Invitación física o tarjeta.</li>
+                    <li>Sticker en un recordatorio (sobre / caja / souvenir).</li>
+                    <li>En mesa de recepción / bienvenida (para mapa e instrucciones).</li>
+                    <li>En el acceso (para confirmar llegada o mostrar indicaciones).</li>
+                </ul>
+            </article>
+
+            <article class="card span-6">
+                <h2>Contacto / Cotización</h2>
+                <p>
+                    Cuéntame el tipo de evento, fecha aproximada y número de invitados. Te propongo el paquete ideal y
+                    el flujo más práctico.
+                </p>
+                <div class="cta">
+                    <a class="btn btn--good" href="https://wa.me/529931102606?text=Hola%20quiero%20cotizar%20Eventos%20con%20NFC%20(%20boda%2FXV%2Fcumple%20).%20Fecha%3A%20%20Invitados%3A%20%20Ciudad%3A%20">WhatsApp</a>
+                    <a class="btn btn--accent" href="#servicios">Ver beneficios</a>
+                </div>
+            </article>
+        </section>
+
+        <footer class="footer">
+            <div>MenuTags · NFC / QR · Eventos</div>
+            <div>
+                <a href="#modulos">Módulos</a>
+                &nbsp;·&nbsp;
+                <a href="index.html">Inicio</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
