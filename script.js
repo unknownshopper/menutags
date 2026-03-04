@@ -22,8 +22,9 @@
         var btn = document.createElement("button");
         btn.type = "button";
         btn.id = "mtCartFab";
-        btn.className = "mt-cart-fab";
+        btn.className = "mt-cart-fab mt-hidden";
         btn.setAttribute("aria-label", "Ver pedido");
+        btn.setAttribute("aria-hidden", "true");
         btn.innerHTML = '<span class="mt-cart-fab__label">Pedido</span><span id="mtCartBadge" class="mt-cart-badge mt-hidden" aria-hidden="true">0</span>';
 
         btn.addEventListener("click", function () {
@@ -39,6 +40,19 @@
 
     function setCartCount(count) {
         ensureCartFab();
+
+        var fab = document.getElementById("mtCartFab");
+        if (fab) {
+            var nFab = parseInt(String(count || 0), 10);
+            if (!isFinite(nFab) || nFab < 0) nFab = 0;
+            if (nFab <= 0) {
+                fab.classList.add("mt-hidden");
+                fab.setAttribute("aria-hidden", "true");
+            } else {
+                fab.classList.remove("mt-hidden");
+                fab.setAttribute("aria-hidden", "false");
+            }
+        }
 
         var badge = document.getElementById("mtCartBadge");
         if (!badge) return;
@@ -69,7 +83,6 @@
     setVh();
 
     window.mtSetCartCount = setCartCount;
-    ensureCartFab();
 
     window.addEventListener("mt:setCartCount", function (e) {
         if (!e || !e.detail) return;

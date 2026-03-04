@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Mingo — Reporte</title>
+    <meta name="description" content="Reporte de ventas de Mingo: día, semana, mes y meses anteriores." />
+    <meta name="theme-color" content="#0b1220" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mingo — Reporte" />
+    <meta property="og:description" content="Ventas del día, semana y mes. Historial por mes." />
+    <meta property="og:image" content="https://unknownshopper.github.io/menutags/mingologo.png" />
+    <meta property="og:image:alt" content="Logo Mingo" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Mingo — Reporte" />
+    <meta name="twitter:description" content="Ventas del día, semana y mes. Historial por mes." />
+    <meta name="twitter:image" content="https://unknownshopper.github.io/menutags/mingologo.png" />
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="mt-theme-mingo">
+    <div class="mt-container">
+        <header class="mt-header">
+            <div class="mt-header-left">
+                <img class="mt-logo" src="mingologo.png" alt="Mingo" />
+                <div class="mt-header-text">
+                    <div class="mt-brand">MenuTags</div>
+                    <h1>Reporte de ventas</h1>
+                </div>
+            </div>
+            <div class="mt-actions">
+                <a class="mt-btn" href="mingo.html">Volver al menú</a>
+            </div>
+        </header>
+
+        <main class="mt-main">
+            <section class="mt-section">
+                <h2>Resumen</h2>
+                <p>Este reporte se basa en pedidos enviados desde este dispositivo/navegador (localStorage).</p>
+
+                <div class="mt-actions" style="justify-content:flex-start; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                    <button class="mt-btn" type="button" id="mrRangeDay">Día</button>
+                    <button class="mt-btn" type="button" id="mrRangeWeek">Semana</button>
+                    <button class="mt-btn" type="button" id="mrRangeMonth">Mes</button>
+                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <label style="color: var(--muted); font-weight:650;">Mes:</label>
+                        <select class="mt-input" id="mrMonth"></select>
+                    </div>
+                </div>
+
+                <div class="mt-grid" style="margin-top: 14px;">
+                    <section class="mt-section">
+                        <h3>Totales</h3>
+                        <div class="mt-total">
+                            <div class="mt-total-row"><strong>Ventas</strong><strong id="mrTotalSales">$0</strong></div>
+                            <div class="mt-total-row"><strong>Pedidos</strong><strong id="mrTotalOrders">0</strong></div>
+                            <div class="mt-total-row"><strong>Ticket promedio</strong><strong id="mrAvgTicket">$0</strong></div>
+                        </div>
+                    </section>
+
+                    <section class="mt-section">
+                        <h3>Top productos</h3>
+                        <ul id="mrTopItems">
+                            <li>Sin datos.</li>
+                        </ul>
+                    </section>
+                </div>
+            </section>
+
+            <section class="mt-section">
+                <h2>Ventas</h2>
+                <ul id="mrSalesList">
+                    <li>Sin ventas registradas.</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <script src="mingoreporte.js"></script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+(function () {
+    "use strict";
+
+    var SALES_KEY = "mt:sales:mingo";
+
+    function qs(id) {
+        return document.getElementById(id);
+    }
+
+    function safeJsonParse(str, fallback) {
+        try {
+            return JSON.parse(str);
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    function getSales() {
+        try {
+            var raw = window.localStorage.getItem(SALES_KEY);
+            var arr = safeJsonParse(raw, []);
+            return Array.isArray(arr) ? arr : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function money(n) {
+        var v = Math.round((Number(n) || 0) * 100) / 100;
+        return "$" + v.toFixed(0);
+    }
+
+    function pad2(n) {
+        return String(n < 10 ? "0" + n : n);
+    }
+
+    function monthKey(d) {
+        return d.getFullYear() + "-" + pad2(d.getMonth() + 1);
+    }
+
+    function monthLabel(key) {
+        var parts = String(key || "").split("-");
+        if (parts.length !== 2) return String(key || "");
+        var y = parts[0];
+        var m = parseInt(parts[1], 10);
+        var names = [
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre",
+        ];
+        return (names[m - 1] || parts[1]) + " " + y;
+    }
+
+    function startOfDay(d) {
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    }
+
+    function startOfWeekMonday(d) {
+        var day = d.getDay();
+        var diff = (day + 6) % 7;
+        var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() - diff);
+        monday.setHours(0, 0, 0, 0);
+        return monday.getTime();
+    }
+
+    function startOfMonth(d) {
+        return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+    }
+
+    function computeRange(state) {
+        var now = new Date();
+
+        if (state.range === "day") {
+            var sDay = startOfDay(now);
+            return { start: sDay, end: now.getTime(), label: "Día" };
+        }
+
+        if (state.range === "week") {
+            var sWeek = startOfWeekMonday(now);
+            return { start: sWeek, end: now.getTime(), label: "Semana" };
+        }
+
+        if (state.range === "month") {
+            var key = state.monthKey || monthKey(now);
+            var parts = key.split("-");
+            var y = parseInt(parts[0], 10);
+            var m = parseInt(parts[1], 10) - 1;
+            var sMonth = new Date(y, m, 1).getTime();
+            var eMonth = new Date(y, m + 1, 1).getTime() - 1;
+            return { start: sMonth, end: eMonth, label: "Mes" };
+        }
+
+        var s = startOfDay(now);
+        return { start: s, end: now.getTime(), label: "Día" };
+    }
+
+    function normalizeSales(sales) {
+        return sales
+            .filter(function (s) {
+                return s && isFinite(s.createdAt) && isFinite(s.total);
+            })
+            .sort(function (a, b) {
+                return (b.createdAt || 0) - (a.createdAt || 0);
+            });
+    }
+
+    function computeTopItems(sales) {
+        var map = {};
+        sales.forEach(function (s) {
+            (s.items || []).forEach(function (it) {
+                var key = "";
+                if (it.kind === "torta") {
+                    key = "Torta " + String(it.size || "");
+                } else if (it.kind === "taco") {
+                    key = "Taco " + String(it.taco || "");
+                } else if (it.kind === "bebida") {
+                    key = "Bebida " + String(it.bebida || "");
+                } else if (it.kind === "postre") {
+                    key = "Postre " + String(it.postre || "");
+                } else {
+                    key = String(it.kind || "Item");
+                }
+                var qty = Number(it.qty) || 0;
+                if (!map[key]) map[key] = { name: key, qty: 0 };
+                map[key].qty += qty;
+            });
+        });
+
+        return Object.keys(map)
+            .map(function (k) {
+                return map[k];
+            })
+            .sort(function (a, b) {
+                return (b.qty || 0) - (a.qty || 0);
+            })
+            .slice(0, 10);
+    }
+
+    function render(state) {
+        var totalSalesEl = qs("mrTotalSales");
+        var totalOrdersEl = qs("mrTotalOrders");
+        var avgTicketEl = qs("mrAvgTicket");
+        var topEl = qs("mrTopItems");
+        var listEl = qs("mrSalesList");
+        var monthSel = qs("mrMonth");
+
+        var sales = normalizeSales(getSales());
+
+        var months = {};
+        sales.forEach(function (s) {
+            var key = monthKey(new Date(s.createdAt));
+            months[key] = true;
+        });
+
+        var monthKeys = Object.keys(months).sort().reverse();
+        var currentMonth = monthKey(new Date());
+        if (monthKeys.indexOf(currentMonth) === -1) monthKeys.unshift(currentMonth);
+
+        if (monthSel) {
+            var existing = monthSel.getAttribute("data-filled") === "1";
+            if (!existing) {
+                monthSel.innerHTML = monthKeys
+                    .map(function (k) {
+                        return '<option value="' + k + '">' + monthLabel(k) + "</option>";
+                    })
+                    .join("");
+                monthSel.setAttribute("data-filled", "1");
+            }
+
+            if (state.monthKey && monthSel.value !== state.monthKey) {
+                monthSel.value = state.monthKey;
+            }
+            if (!state.monthKey) {
+                state.monthKey = monthSel.value || currentMonth;
+            }
+        }
+
+        var range = computeRange(state);
+
+        var filtered = sales.filter(function (s) {
+            return (s.createdAt || 0) >= range.start && (s.createdAt || 0) <= range.end;
+        });
+
+        var total = filtered.reduce(function (sum, s) {
+            return sum + (Number(s.total) || 0);
+        }, 0);
+        var orders = filtered.length;
+        var avg = orders ? total / orders : 0;
+
+        if (totalSalesEl) totalSalesEl.textContent = money(total);
+        if (totalOrdersEl) totalOrdersEl.textContent = String(orders);
+        if (avgTicketEl) avgTicketEl.textContent = money(avg);
+
+        if (topEl) {
+            var top = computeTopItems(filtered);
+            topEl.innerHTML = top.length
+                ? top
+                      .map(function (t) {
+                          return "<li><strong>" + t.qty + "</strong> <span>" + t.name + "</span></li>";
+                      })
+                      .join("")
+                : "<li>Sin datos.</li>";
+        }
+
+        if (listEl) {
+            listEl.innerHTML = filtered.length
+                ? filtered
+                      .slice()
+                      .sort(function (a, b) {
+                          return (b.createdAt || 0) - (a.createdAt || 0);
+                      })
+                      .slice(0, 80)
+                      .map(function (s) {
+                          var dt = new Date(s.createdAt || Date.now()).toLocaleString();
+                          var lines = (s.items || [])
+                              .map(function (it) {
+                                  var label = it.kind || "item";
+                                  if (it.kind === "torta") label = "Torta " + String(it.size || "");
+                                  if (it.kind === "taco") label = "Taco " + String(it.taco || "");
+                                  if (it.kind === "bebida") label = "Bebida " + String(it.bebida || "");
+                                  if (it.kind === "postre") label = "Postre " + String(it.postre || "");
+                                  return (Number(it.qty) || 0) + "× " + label;
+                              })
+                              .join(", ");
+                          return (
+                              "<li>" +
+                              "<div style=\"display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;\">" +
+                              "<strong>" + dt + "</strong>" +
+                              "<strong>" + money(s.total) + "</strong>" +
+                              "</div>" +
+                              "<div style=\"opacity:0.9; margin-top:6px;\">" + (lines || "—") + "</div>" +
+                              "</li>"
+                          );
+                      })
+                      .join("")
+                : "<li>Sin ventas registradas.</li>";
+        }
+    }
+
+    function setActiveButtons(state) {
+        var dayBtn = qs("mrRangeDay");
+        var weekBtn = qs("mrRangeWeek");
+        var monthBtn = qs("mrRangeMonth");
+
+        function set(btn, active) {
+            if (!btn) return;
+            btn.style.opacity = active ? "1" : "0.78";
+        }
+
+        set(dayBtn, state.range === "day");
+        set(weekBtn, state.range === "week");
+        set(monthBtn, state.range === "month");
+
+        var monthSel = qs("mrMonth");
+        if (monthSel) {
+            monthSel.disabled = state.range !== "month";
+            monthSel.style.opacity = state.range === "month" ? "1" : "0.65";
+        }
+    }
+
+    function bind() {
+        var state = { range: "day", monthKey: "" };
+
+        function refresh() {
+            setActiveButtons(state);
+            render(state);
+        }
+
+        var dayBtn = qs("mrRangeDay");
+        var weekBtn = qs("mrRangeWeek");
+        var monthBtn = qs("mrRangeMonth");
+        var monthSel = qs("mrMonth");
+
+        if (dayBtn)
+            dayBtn.addEventListener("click", function () {
+                state.range = "day";
+                refresh();
+            });
+        if (weekBtn)
+            weekBtn.addEventListener("click", function () {
+                state.range = "week";
+                refresh();
+            });
+        if (monthBtn)
+            monthBtn.addEventListener("click", function () {
+                state.range = "month";
+                refresh();
+            });
+        if (monthSel)
+            monthSel.addEventListener("change", function () {
+                state.monthKey = monthSel.value;
+                state.range = "month";
+                refresh();
+            });
+
+        refresh();
+    }
+
+    bind();
+})();

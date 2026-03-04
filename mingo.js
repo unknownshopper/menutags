@@ -1,7 +1,7 @@
  (function () {
-     function qs(id) {
-         return document.getElementById(id);
-     }
+    function qs(id) {
+        return document.getElementById(id);
+    }
 
     function money(n) {
         return "$" + String(n);
@@ -38,7 +38,59 @@
     }
 
     var ORDER_DONE_KEY = "mtOrderDone:" + String(window.location.pathname || "");
+    var SALES_KEY = "mt:sales:mingo";
     var orderLocked = false;
+
+    function safeJsonParse(str, fallback) {
+        try {
+            return JSON.parse(str);
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    function getSales() {
+        try {
+            return safeJsonParse(window.localStorage.getItem(SALES_KEY), []) || [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function setSales(sales) {
+        try {
+            window.localStorage.setItem(SALES_KEY, JSON.stringify(sales || []));
+        } catch (e) {}
+    }
+
+    function recordSale() {
+        var total = getCartTotal();
+        var sale = {
+            id: "sale_" + String(Date.now()) + "_" + String(Math.floor(Math.random() * 1e6)),
+            createdAt: Date.now(),
+            total: total,
+            items: cart.map(function (it) {
+                return {
+                    kind: it.kind,
+                    qty: it.qty,
+                    size: it.size,
+                    protein: it.protein,
+                    taco: it.taco,
+                    bebida: it.bebida,
+                    postre: it.postre,
+                    unit: getUnitPrice(it),
+                    lineTotal: getLineTotal(it),
+                };
+            }),
+        };
+
+        var sales = getSales();
+        sales.push(sale);
+        if (sales.length > 2500) {
+            sales = sales.slice(sales.length - 2500);
+        }
+        setSales(sales);
+    }
 
     function setOrderLocked(locked) {
         orderLocked = !!locked;
@@ -133,39 +185,86 @@
         if (window.mtSetCartCount) window.mtSetCartCount(getCartCount());
     }
 
-    function addFromRow(li) {
-        if (!li) return;
+    function buildKeyFromItem(it) {
+        if (!it) return "";
+        if (it.kind === "torta") return ["torta", it.size || "", it.protein || ""].join("|");
+        if (it.kind === "taco") return ["taco", it.taco || "", it.protein || ""].join("|");
+        if (it.kind === "bebida") return ["bebida", it.bebida || ""].join("|");
+        if (it.kind === "postre") return ["postre", it.postre || ""].join("|");
+        return String(it.kind || "");
+    }
+
+    function buildItemFromRow(li) {
+        if (!li) return null;
         var rowKind = li.getAttribute("data-kind") || "";
         var qtyEl = li.querySelector('[data-field="qty"]');
         var qty = getQtyFromInput(qtyEl);
 
-        if (qty <= 0) {
-            qty = 1;
-        }
-
         if (rowKind === "torta") {
-            var size = li.getAttribute("data-size") || "";
-            var protein = (li.querySelector('[data-field="protein"]') || {}).value || "";
-            cart.push({ kind: "torta", qty: qty, size: size, protein: protein });
+            return {
+                kind: "torta",
+                qty: qty,
+                size: li.getAttribute("data-size") || "",
+                protein: (li.querySelector('[data-field="protein"]') || {}).value || "",
+            };
         }
 
         if (rowKind === "taco") {
-            var taco = li.getAttribute("data-taco") || "";
-            var proteinTaco = (li.querySelector('[data-field="protein"]') || {}).value || "";
-            cart.push({ kind: "taco", qty: qty, taco: taco, protein: proteinTaco });
+            return {
+                kind: "taco",
+                qty: qty,
+                taco: li.getAttribute("data-taco") || "",
+                protein: (li.querySelector('[data-field="protein"]') || {}).value || "",
+            };
         }
 
         if (rowKind === "bebida") {
-            var bebida = li.getAttribute("data-bebida") || "";
-            cart.push({ kind: "bebida", qty: qty, bebida: bebida });
+            return {
+                kind: "bebida",
+                qty: qty,
+                bebida: li.getAttribute("data-bebida") || "",
+            };
         }
 
         if (rowKind === "postre") {
-            var postre = li.getAttribute("data-postre") || "";
-            cart.push({ kind: "postre", qty: qty, postre: postre });
+            return {
+                kind: "postre",
+                qty: qty,
+                postre: li.getAttribute("data-postre") || "",
+            };
         }
 
-        if (qtyEl) qtyEl.value = "0";
+        return null;
+    }
+
+    function syncRowToCart(li) {
+        if (orderLocked) return;
+        var item = buildItemFromRow(li);
+        if (!item) return;
+
+        var key = buildKeyFromItem(item);
+        if (!key) return;
+
+        var idx = -1;
+        for (var i = 0; i < cart.length; i++) {
+            if (buildKeyFromItem(cart[i]) === key) {
+                idx = i;
+                break;
+            }
+        }
+
+        if ((item.qty || 0) <= 0) {
+            if (idx >= 0) cart.splice(idx, 1);
+            renderCart();
+            return;
+        }
+
+        if (idx >= 0) {
+            cart[idx] = item;
+        } else {
+            cart.push(item);
+        }
+
         renderCart();
     }
 
@@ -203,6 +302,8 @@
         try {
             window.sessionStorage.setItem(ORDER_DONE_KEY, "1");
         } catch (e) {}
+
+        recordSale();
         setOrderLocked(true);
 
         var text = buildTicketText();
@@ -227,6 +328,7 @@
                 var input = li && li.querySelector('[data-field="qty"]');
                 if (!input) return;
                 input.value = String(Math.min(99, getQtyFromInput(input) + 1));
+                syncRowToCart(li);
                 return;
             }
 
@@ -236,20 +338,29 @@
                 var inputMinus = liMinus && liMinus.querySelector('[data-field="qty"]');
                 if (!inputMinus) return;
                 inputMinus.value = String(Math.max(0, getQtyFromInput(inputMinus) - 1));
+                syncRowToCart(liMinus);
                 return;
             }
-
-            var addBtn = e.target.closest('button[data-action="add"]');
-            if (addBtn) {
-                if (orderLocked) return;
-                addFromRow(addBtn.closest("li"));
-            }
         });
+
+        listEl.addEventListener("input", function (e) {
+            var input = e.target && e.target.matches && e.target.matches('[data-field="qty"]') ? e.target : null;
+            if (!input) return;
+            getQtyFromInput(input);
+            syncRowToCart(input.closest("li"));
+        }, true);
 
         listEl.addEventListener("blur", function (e) {
             var input = e.target && e.target.matches && e.target.matches('[data-field="qty"]') ? e.target : null;
             if (!input) return;
             getQtyFromInput(input);
+            syncRowToCart(input.closest("li"));
+        }, true);
+
+        listEl.addEventListener("change", function (e) {
+            var sel = e.target && e.target.matches && e.target.matches('select[data-field="protein"]') ? e.target : null;
+            if (!sel) return;
+            syncRowToCart(sel.closest("li"));
         }, true);
     }
 
@@ -278,7 +389,10 @@
 
     if (loader) {
         window.setTimeout(function () {
-            loader.classList.add("mt-hidden");
-        }, 4000);
+            loader.classList.add("is-hiding");
+            window.setTimeout(function () {
+                loader.classList.add("mt-hidden");
+            }, 260);
+        }, 2000);
     }
 })();
