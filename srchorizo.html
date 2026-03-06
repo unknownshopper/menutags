@@ -37,18 +37,276 @@
         <section class="mt-section" id="szMenuChoripan">
             <h2>Choripán</h2>
             <ul id="szListChoripan">
-                <li data-kind="choripan" data-item="Choripán" data-price="85" data-extra-cheese="25">
-                    <div><strong>Choripán</strong> <span>($85)</span></div>
+                <li data-kind="item" data-item="Choripán clásico" data-price="95">
+                    <div><strong>Clásico</strong> <span>($95)</span></div>
                     <div class="mt-item-controls">
                         <div class="mt-qty mt-qty--compact">
                             <button class="mt-pill" type="button" data-action="minus">-</button>
                             <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
                             <button class="mt-pill" type="button" data-action="plus">+</button>
                         </div>
-                        <label class="mt-checkbox">
-                            <input type="checkbox" data-field="cheese" />
-                            <span>+ Queso (+$25)</span>
-                        </label>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Choripán de picaña Choise" data-price="188">
+                    <div><strong>Con picaña Choise</strong> <span>($188)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Choripán con queso" data-price="105">
+                    <div><strong>Con queso</strong> <span>($105)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Choripán con longaniza" data-price="115">
+                    <div><strong>Con longaniza</strong> <span>($115)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Choripán con arrachera" data-price="180">
+                    <div><strong>Con arrachera</strong> <span>($180)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Choripán combinado (arrachera, longaniza, chorizo argentino y queso)" data-price="200">
+                    <div><strong>Choripán combinado</strong> <span>($200)</span></div>
+                    <div class="mt-brand" style="margin-top:6px;">Arrachera · Longaniza · Chorizo argentino · Queso</div>
+                    <div class="mt-item-controls" style="margin-top:10px;">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="mt-section" id="szMenuGringas">
+            <h2>Gringas</h2>
+            <ul id="szListGringas">
+                <li data-kind="item" data-item="Gringa arrachera" data-price="85">
+                    <div><strong>De arrachera</strong> <span>($85)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Gringa de chorizo argentino" data-price="70">
+                    <div><strong>De chorizo argentino</strong> <span>($70)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Gringa longaniza" data-price="50">
+                    <div><strong>De longaniza</strong> <span>($50)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Gringa de picaña Choise" data-price="100">
+                    <div><strong>De picaña Choise</strong> <span>($100)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Gringa combinada (arrachera, picaña, chorizo, longaniza)" data-price="140">
+                    <div><strong>Combinada</strong> <span>($140)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="mt-section" id="szMenuTacos">
+            <h2>Quesadillas &amp; Tacos</h2>
+            <ul id="szListTacos">
+                <li data-kind="item" data-item="Quesadilla de queso" data-price="30">
+                    <div><strong>Quesadilla de queso</strong> <span>($30)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Tacos maíz amarillo picaña Choise" data-price="60">
+                    <div><strong>Tacos maíz amarillo picaña Choise</strong> <span>($60)</span></div>
+                    <div class="mt-brand" style="margin-top:6px;">(según menú)</div>
+                    <div class="mt-item-controls" style="margin-top:10px;">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Taco maíz amarillo arrachera" data-price="30">
+                    <div><strong>Taco maíz amarillo arrachera</strong> <span>($30)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Taco maíz amarillo chorizo argentino" data-price="20">
+                    <div><strong>Taco maíz amarillo chorizo argentino</strong> <span>($20)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Taco maíz amarillo longaniza" data-price="15">
+                    <div><strong>Taco maíz amarillo longaniza</strong> <span>($15)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Taco maíz amarillo combinado" data-price="20">
+                    <div><strong>Taco maíz amarillo combinado</strong> <span>($20)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="mt-section" id="szMenuParrilladas">
+            <h2>Parrilladas</h2>
+            <ul id="szListParrilladas">
+                <li data-kind="item" data-item="Parrillada medio kilo arrachera" data-price="260">
+                    <div><strong>Medio kilo arrachera</strong> <span>($260)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Parrillada kilo arrachera" data-price="360">
+                    <div><strong>1 kilo arrachera</strong> <span>($360)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Parrillada picaña Choise medio kilo" data-price="290">
+                    <div><strong>Medio kilo picaña Choise</strong> <span>($290)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Parrillada picaña Choise 1 kilo" data-price="410">
+                    <div><strong>1 kilo picaña Choise</strong> <span>($410)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Parrillada de embutidos medio kilo" data-price="180">
+                    <div><strong>Medio kilo embutidos</strong> <span>($180)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Parrillada de embutidos 1 kilo" data-price="260">
+                    <div><strong>1 kilo embutidos</strong> <span>($260)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
                         <button class="mt-btn" type="button" data-action="add">Agregar</button>
                     </div>
                 </li>
@@ -58,8 +316,8 @@
         <section class="mt-section" id="szMenuBebidas">
             <h2>Bebidas</h2>
             <ul id="szListBebidas">
-                <li data-kind="bebida" data-item="Bebida" data-bebida="Boing Guayaba" data-price="35">
-                    <div><strong>Boing Guayaba</strong> <span>($35)</span></div>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Agua de horchata" data-price="35">
+                    <div><strong>Agua de horchata</strong> <span>($35)</span></div>
                     <div class="mt-item-controls">
                         <div class="mt-qty mt-qty--compact">
                             <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -69,8 +327,8 @@
                         <button class="mt-btn" type="button" data-action="add">Agregar</button>
                     </div>
                 </li>
-                <li data-kind="bebida" data-item="Bebida" data-bebida="Boing Mango" data-price="35">
-                    <div><strong>Boing Mango</strong> <span>($35)</span></div>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Agua de jamaica" data-price="35">
+                    <div><strong>Agua de jamaica</strong> <span>($35)</span></div>
                     <div class="mt-item-controls">
                         <div class="mt-qty mt-qty--compact">
                             <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -80,8 +338,8 @@
                         <button class="mt-btn" type="button" data-action="add">Agregar</button>
                     </div>
                 </li>
-                <li data-kind="bebida" data-item="Bebida" data-bebida="Boing Fresa" data-price="35">
-                    <div><strong>Boing Fresa</strong> <span>($35)</span></div>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Agua natural 250ml" data-price="18">
+                    <div><strong>Agua natural (250ml)</strong> <span>($18)</span></div>
                     <div class="mt-item-controls">
                         <div class="mt-qty mt-qty--compact">
                             <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -91,9 +349,120 @@
                         <button class="mt-btn" type="button" data-action="add">Agregar</button>
                     </div>
                 </li>
-                <li data-kind="bebida" data-item="Bebida" data-bebida="Boing Manzana" data-price="35">
-                    <div><strong>Boing Manzana</strong> <span>($35)</span></div>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Coca" data-price="38">
+                    <div><strong>Coca</strong> <span>($38)</span></div>
                     <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Lechita" data-price="40.5">
+                    <div><strong>Lechita</strong> <span>($40.5)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Boing (cualquier sabor)" data-price="40.5">
+                    <div><strong>Boing (cualquier sabor)</strong> <span>($40.5)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Preparado michelada (fresa/tamarindo/mango/clásica)" data-price="50">
+                    <div><strong>Preparado michelada</strong> <span>($50)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Cerveza Corona 1/4" data-price="35">
+                    <div><strong>Cerveza Corona 1/4</strong> <span>($35)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Promo 2 Corona 1/4" data-price="60">
+                    <div><strong>Promo 2 Corona 1/4</strong> <span>($60)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Cerveza Pacífico latona" data-price="50">
+                    <div><strong>Cerveza Pacífico latona</strong> <span>($50)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Cerveza Modelo lata" data-price="50">
+                    <div><strong>Cerveza Modelo lata</strong> <span>($50)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Cerveza XX Lager 1/4" data-price="35">
+                    <div><strong>Cerveza XX Lager 1/4</strong> <span>($35)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Promo 2 XX Lager 1/4" data-price="60">
+                    <div><strong>Promo 2 XX Lager 1/4</strong> <span>($60)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="bebida" data-item="Bebida" data-bebida="Shot mezcal (tajín + gajo de naranja)" data-price="60">
+                    <div><strong>Shot mezcal</strong> <span>($60)</span></div>
+                    <div class="mt-brand" style="margin-top:6px;">Tajín · Gajo de naranja</div>
+                    <div class="mt-item-controls" style="margin-top:10px;">
                         <div class="mt-qty mt-qty--compact">
                             <button class="mt-pill" type="button" data-action="minus">-</button>
                             <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
@@ -108,23 +477,37 @@
         <section class="mt-section" id="szMenuPostres">
             <h2>Postres</h2>
             <ul id="szListPostres">
-                <li data-kind="postre" data-item="Churro con helado" data-price-1="65" data-price-2="95">
-                    <div><strong>Churro con helado</strong> <span>(1 bola $65 / 2 bolas $95)</span></div>
+                <li data-kind="item" data-item="Rebanada de pastel Bruce" data-price="130">
+                    <div><strong>Rebanada de pastel Bruce</strong> <span>($130)</span></div>
                     <div class="mt-item-controls">
-                        <select class="mt-input" data-field="scoops">
-                            <option value="1">1 bola</option>
-                            <option value="2">2 bolas</option>
-                        </select>
-                        <select class="mt-input" data-field="flavor1">
-                            <option value="Chocolate">Chocolate</option>
-                            <option value="Vainilla">Vainilla</option>
-                            <option value="Cajeta">Cajeta</option>
-                        </select>
-                        <select class="mt-input" data-field="flavor2" disabled>
-                            <option value="Chocolate">Chocolate</option>
-                            <option value="Vainilla">Vainilla</option>
-                            <option value="Cajeta">Cajeta</option>
-                        </select>
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+                <li data-kind="item" data-item="Churrisimo" data-price="85">
+                    <div><strong>Churrisimo</strong> <span>($85)</span></div>
+                    <div class="mt-item-controls">
+                        <div class="mt-qty mt-qty--compact">
+                            <button class="mt-pill" type="button" data-action="minus">-</button>
+                            <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                            <button class="mt-pill" type="button" data-action="plus">+</button>
+                        </div>
+                        <button class="mt-btn" type="button" data-action="add">Agregar</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="mt-section" id="szMenuExtras">
+            <h2>Extras</h2>
+            <ul id="szListExtras">
+                <li data-kind="item" data-item="Para llevar" data-price="5">
+                    <div><strong>Para llevar</strong> <span>($5)</span></div>
+                    <div class="mt-item-controls">
                         <div class="mt-qty mt-qty--compact">
                             <button class="mt-pill" type="button" data-action="minus">-</button>
                             <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
@@ -150,7 +533,7 @@
                 <button class="mt-pill" type="button" id="szClear">Vaciar</button>
             </div>
         </section>
-        <div class="mt-footer"><a href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener"></a>MENUTAGS</a> by <a href="https://unknownshoppers.com/" target="_blank" rel="noopener">The Unknown Shopper</a></div>
+        <div class="mt-footer"><a href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener">MENUTAGS</a> by <a href="https://unknownshoppers.com/" target="_blank" rel="noopener">The Unknown Shopper</a></div>
     </main>
 
     <script src="script.js"></script>

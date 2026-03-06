@@ -8,19 +8,26 @@
 
     function money(n) {
         var v = Math.round((Number(n) || 0) * 100) / 100;
-        return "$" + v.toFixed(0);
+        if (Math.abs(v - Math.round(v)) < 0.00001) {
+            return "$" + String(Math.round(v));
+        }
+        return "$" + v.toFixed(1);
     }
 
     var listChoripan = qs("szListChoripan");
+    var listGringas = qs("szListGringas");
+    var listTacos = qs("szListTacos");
+    var listParrilladas = qs("szListParrilladas");
     var listBebidas = qs("szListBebidas");
     var listPostres = qs("szListPostres");
+    var listExtras = qs("szListExtras");
 
     var cartList = qs("szCartList");
     var totalEl = qs("szTotal");
     var waBtn = qs("szWhatsApp");
     var clearBtn = qs("szClear");
 
-    if (!listChoripan || !listBebidas || !listPostres || !cartList || !totalEl || !waBtn || !clearBtn) {
+    if (!listChoripan || !listGringas || !listTacos || !listParrilladas || !listBebidas || !listPostres || !listExtras || !cartList || !totalEl || !waBtn || !clearBtn) {
         return;
     }
 
@@ -56,9 +63,6 @@
     }
 
     function getUnitPrice(it) {
-        if (it.kind === "choripan") {
-            return it.unit + (it.cheese ? it.extraCheese : 0);
-        }
         return it.unit || 0;
     }
 
@@ -90,20 +94,8 @@
             .map(function (it, i) {
                 var details = [];
 
-                if (it.kind === "choripan") {
-                    details.push("Choripán" + (it.cheese ? " (+ queso)" : ""));
-                }
-
                 if (it.kind === "bebida") {
                     details.push(it.bebida || "Bebida");
-                }
-
-                if (it.kind === "postre") {
-                    if (it.scoops === 2) {
-                        details.push("2 bolas: " + (it.flavor1 || "") + " + " + (it.flavor2 || ""));
-                    } else {
-                        details.push("1 bola: " + (it.flavor1 || ""));
-                    }
                 }
 
                 return (
@@ -145,28 +137,21 @@
         var qty = getQtyFromInput(qtyEl);
         if (qty <= 0) qty = 1;
 
-        if (kind === "choripan") {
-            var unit = parseInt(String(li.getAttribute("data-price") || "0"), 10);
-            if (!isFinite(unit) || unit < 0) unit = 0;
-
-            var extraCheese = parseInt(String(li.getAttribute("data-extra-cheese") || "0"), 10);
-            if (!isFinite(extraCheese) || extraCheese < 0) extraCheese = 0;
-
-            var cheese = !!(li.querySelector('[data-field="cheese"]') || {}).checked;
+        if (kind === "item") {
+            var unitItem = parseFloat(String(li.getAttribute("data-price") || "0"));
+            if (!isFinite(unitItem) || unitItem < 0) unitItem = 0;
 
             cart.push({
-                kind: "choripan",
-                title: item || "Choripán",
+                kind: "item",
+                title: item || "Producto",
                 qty: qty,
-                unit: unit,
-                extraCheese: extraCheese,
-                cheese: cheese,
+                unit: unitItem,
             });
         }
 
         if (kind === "bebida") {
             var bebida = li.getAttribute("data-bebida") || "";
-            var unitB = parseInt(String(li.getAttribute("data-price") || "0"), 10);
+            var unitB = parseFloat(String(li.getAttribute("data-price") || "0"));
             if (!isFinite(unitB) || unitB < 0) unitB = 0;
 
             cart.push({
@@ -175,29 +160,6 @@
                 bebida: bebida,
                 qty: qty,
                 unit: unitB,
-            });
-        }
-
-        if (kind === "postre") {
-            var scoops = parseInt(String((li.querySelector('[data-field="scoops"]') || {}).value || "1"), 10);
-            if (!isFinite(scoops) || (scoops !== 1 && scoops !== 2)) scoops = 1;
-
-            var price1 = parseInt(String(li.getAttribute("data-price-1") || "0"), 10);
-            var price2 = parseInt(String(li.getAttribute("data-price-2") || "0"), 10);
-            if (!isFinite(price1) || price1 < 0) price1 = 0;
-            if (!isFinite(price2) || price2 < 0) price2 = 0;
-
-            var flavor1 = String(((li.querySelector('[data-field="flavor1"]') || {}).value) || "");
-            var flavor2 = String(((li.querySelector('[data-field="flavor2"]') || {}).value) || "");
-
-            cart.push({
-                kind: "postre",
-                title: item || "Postre",
-                qty: qty,
-                unit: scoops === 2 ? price2 : price1,
-                scoops: scoops,
-                flavor1: flavor1,
-                flavor2: flavor2,
             });
         }
 
@@ -213,20 +175,8 @@
             var lineTotal = getLineTotal(it);
             var details = [];
 
-            if (it.kind === "choripan") {
-                if (it.cheese) details.push("+ queso");
-            }
-
             if (it.kind === "bebida") {
                 details.push(it.bebida || "");
-            }
-
-            if (it.kind === "postre") {
-                if (it.scoops === 2) {
-                    details.push("2 bolas: " + (it.flavor1 || "") + " + " + (it.flavor2 || ""));
-                } else {
-                    details.push("1 bola: " + (it.flavor1 || ""));
-                }
             }
 
             lines.push(
@@ -305,23 +255,17 @@
         );
 
         listEl.addEventListener("change", function (e) {
-            var scoopsEl = e.target && e.target.matches && e.target.matches('[data-field="scoops"]') ? e.target : null;
-            if (!scoopsEl) return;
-
-            var li = scoopsEl.closest("li");
-            if (!li) return;
-
-            var scoops = parseInt(String(scoopsEl.value || "1"), 10);
-            var flavor2 = li.querySelector('[data-field="flavor2"]');
-            if (!flavor2) return;
-
-            flavor2.disabled = scoops !== 2;
+            return;
         });
     }
 
     bindList(listChoripan);
+    bindList(listGringas);
+    bindList(listTacos);
+    bindList(listParrilladas);
     bindList(listBebidas);
     bindList(listPostres);
+    bindList(listExtras);
 
     cartList.addEventListener("click", function (e) {
         if (orderLocked) return;
