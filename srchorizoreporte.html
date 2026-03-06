@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Reporte - Sr Chorizo</title>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="SR CHORIZO - Reporte">
+    <meta property="og:description" content="Registro y reporte de pedidos.">
+    <meta property="og:url" content="https://unknownshopper.github.io/menutags/srchorizoreporte.html">
+    <meta property="og:image" content="https://unknownshopper.github.io/menutags/srchorizo.png">
+    <meta property="og:image:alt" content="Logo Sr Chorizo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SR CHORIZO - Reporte">
+    <meta name="twitter:description" content="Registro y reporte de pedidos.">
+    <meta name="twitter:image" content="https://unknownshopper.github.io/menutags/srchorizo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="mt-theme-srchorizo">
+    <header class="mt-header">
+        <img class="mt-logo" src="srchorizo.png" alt="Sr Chorizo" />
+        <div>
+            <div class="mt-brand">MenuTags</div>
+            <h1>Reporte</h1>
+        </div>
+    </header>
+
+    <main class="mt-main">
+        <section class="mt-section" id="szrInfo">
+            <h2>Resumen</h2>
+            <p>Este reporte usa el historial guardado en este dispositivo (localStorage). Si cambias de celular o borras datos del navegador, se pierde el historial.</p>
+            <div class="mt-row" style="margin-top:12px; gap:10px; flex-wrap:wrap;">
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span class="mt-brand">Vista</span>
+                    <select class="mt-input" id="szrView">
+                        <option value="day">Día</option>
+                        <option value="week">Semana</option>
+                        <option value="month">Mes</option>
+                    </select>
+                </label>
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span class="mt-brand">Fecha</span>
+                    <input class="mt-input" type="date" id="szrDate" />
+                </label>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <span class="mt-brand">Acciones</span>
+                    <div class="mt-row" style="gap:10px; flex-wrap:wrap;">
+                        <button class="mt-btn" type="button" id="szrExportCsv">Exportar CSV</button>
+                        <button class="mt-pill" type="button" id="szrExportJson">JSON</button>
+                        <button class="mt-pill" type="button" id="szrClear">Borrar historial</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-section" id="szrKpis">
+            <h2>Totales</h2>
+            <div class="mt-grid">
+                <div class="mt-status" id="szrKpiOrders">Pedidos: 0</div>
+                <div class="mt-status" id="szrKpiRevenue">Ventas: $0</div>
+            </div>
+        </section>
+
+        <section class="mt-section" id="szrGroups">
+            <h2>Por periodo</h2>
+            <ul id="szrGroupList"></ul>
+        </section>
+
+        <section class="mt-section" id="szrOrders">
+            <h2>Pedidos</h2>
+            <ul id="szrOrderList"></ul>
+        </section>
+
+        <div class="mt-footer"><a href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener">MENUTAGS</a> by <a href="https://unknownshoppers.com/" target="_blank" rel="noopener">The Unknown Shopper</a></div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        (function () {
+            var ORDERS_KEY = "mt:orders:srchorizo:v1";
+
+            function safeJsonParse(text, fallback) {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    return fallback;
+                }
+            }
+
+            function money(n) {
+                var v = Math.round((Number(n) || 0) * 100) / 100;
+                if (Math.abs(v - Math.round(v)) < 0.00001) return "$" + String(Math.round(v));
+                return "$" + v.toFixed(1);
+            }
+
+            function qs(id) {
+                return document.getElementById(id);
+            }
+
+            function loadOrders() {
+                try {
+                    var raw = window.localStorage.getItem(ORDERS_KEY);
+                    var data = safeJsonParse(raw || "[]", []);
+                    if (!Array.isArray(data)) return [];
+                    return data;
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function saveOrders(orders) {
+                try {
+                    window.localStorage.setItem(ORDERS_KEY, JSON.stringify(orders || []));
+                } catch (e) {}
+            }
+
+            function toDateInputValue(d) {
+                var y = d.getFullYear();
+                var m = String(d.getMonth() + 1).padStart(2, "0");
+                var day = String(d.getDate()).padStart(2, "0");
+                return y + "-" + m + "-" + day;
+            }
+
+            function startOfDay(d) {
+                return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            }
+
+            function addDays(d, days) {
+                var nd = new Date(d.getTime());
+                nd.setDate(nd.getDate() + days);
+                return nd;
+            }
+
+            function startOfWeekMonday(d) {
+                var sd = startOfDay(d);
+                var dow = sd.getDay();
+                var delta = (dow + 6) % 7;
+                return addDays(sd, -delta);
+            }
+
+            function startOfMonth(d) {
+                return new Date(d.getFullYear(), d.getMonth(), 1);
+            }
+
+            function endExclusive(start, view) {
+                if (view === "day") return addDays(start, 1);
+                if (view === "week") return addDays(start, 7);
+                return new Date(start.getFullYear(), start.getMonth() + 1, 1);
+            }
+
+            function formatISODate(d) {
+                return toDateInputValue(d);
+            }
+
+            function formatPeriodLabel(start, view) {
+                if (view === "day") return formatISODate(start);
+                if (view === "week") {
+                    var end = addDays(start, 6);
+                    return formatISODate(start) + " a " + formatISODate(end);
+                }
+                var y = start.getFullYear();
+                var m = String(start.getMonth() + 1).padStart(2, "0");
+                return y + "-" + m;
+            }
+
+            function normalizeOrders(raw) {
+                return raw
+                    .map(function (o) {
+                        var createdAt = o && o.createdAt ? new Date(o.createdAt) : null;
+                        if (!createdAt || isNaN(createdAt.getTime())) return null;
+                        return {
+                            id: String(o.id || ""),
+                            createdAt: createdAt,
+                            total: Number(o.total || 0) || 0,
+                            items: Array.isArray(o.items) ? o.items : [],
+                        };
+                    })
+                    .filter(Boolean)
+                    .sort(function (a, b) {
+                        return b.createdAt.getTime() - a.createdAt.getTime();
+                    });
+            }
+
+            function groupKeyForDate(d, view) {
+                var start;
+                if (view === "day") start = startOfDay(d);
+                else if (view === "week") start = startOfWeekMonday(d);
+                else start = startOfMonth(d);
+                return start.toISOString();
+            }
+
+            function getStartForSelected(view, dateStr) {
+                var base = dateStr ? new Date(dateStr + "T00:00:00") : new Date();
+                if (view === "day") return startOfDay(base);
+                if (view === "week") return startOfWeekMonday(base);
+                return startOfMonth(base);
+            }
+
+            function filterOrdersByWindow(orders, start, endEx) {
+                return orders.filter(function (o) {
+                    var t = o.createdAt.getTime();
+                    return t >= start.getTime() && t < endEx.getTime();
+                });
+            }
+
+            function buildGroups(orders, view) {
+                var groups = {};
+                orders.forEach(function (o) {
+                    var key = groupKeyForDate(o.createdAt, view);
+                    if (!groups[key]) {
+                        groups[key] = { start: new Date(key), count: 0, total: 0 };
+                    }
+                    groups[key].count += 1;
+                    groups[key].total += o.total;
+                });
+                return Object.keys(groups)
+                    .map(function (k) { return groups[k]; })
+                    .sort(function (a, b) { return b.start.getTime() - a.start.getTime(); });
+            }
+
+            function escapeHtml(s) {
+                return String(s || "")
+                    .replace(/&/g, "&​amp;")
+                    .replace(/</g, "&​lt;")
+                    .replace(/>/g, "&​gt;")
+                    .replace(/\"/g, "&​quot;")
+                    .replace(/'/g, "&​#39;");
+            }
+
+            var viewEl = qs("szrView");
+            var dateEl = qs("szrDate");
+            var groupList = qs("szrGroupList");
+            var orderList = qs("szrOrderList");
+            var kpiOrders = qs("szrKpiOrders");
+            var kpiRevenue = qs("szrKpiRevenue");
+            var exportCsvBtn = qs("szrExportCsv");
+            var exportJsonBtn = qs("szrExportJson");
+            var clearBtn = qs("szrClear");
+
+            function render() {
+                var raw = loadOrders();
+                var orders = normalizeOrders(raw);
+
+                var view = (viewEl && viewEl.value) || "day";
+                var start = getStartForSelected(view, (dateEl && dateEl.value) || "");
+                var endEx = endExclusive(start, view);
+                var windowOrders = filterOrdersByWindow(orders, start, endEx);
+
+                var total = windowOrders.reduce(function (sum, o) { return sum + o.total; }, 0);
+                if (kpiOrders) kpiOrders.textContent = "Pedidos: " + String(windowOrders.length);
+                if (kpiRevenue) kpiRevenue.textContent = "Ventas: " + money(total);
+
+                var groups = buildGroups(orders, view);
+                if (groupList) {
+                    if (!groups.length) {
+                        groupList.innerHTML = "<li>No hay pedidos guardados.</li>";
+                    } else {
+                        groupList.innerHTML = groups
+                            .map(function (g) {
+                                var label = formatPeriodLabel(g.start, view);
+                                return (
+                                    "<li>" +
+                                    "<div><strong>" + escapeHtml(label) + "</strong></div>" +
+                                    "<div class=\"mt-row\" style=\"justify-content:space-between; margin-top:6px;\">" +
+                                    "<span>Pedidos: <strong>" + String(g.count) + "</strong></span>" +
+                                    "<span>Total: <strong>" + escapeHtml(money(g.total)) + "</strong></span>" +
+                                    "</div>" +
+                                    "</li>"
+                                );
+                            })
+                            .join("");
+                    }
+                }
+
+                if (orderList) {
+                    if (!windowOrders.length) {
+                        orderList.innerHTML = "<li>No hay pedidos en este rango.</li>";
+                    } else {
+                        orderList.innerHTML = windowOrders
+                            .map(function (o) {
+                                var time = o.createdAt.toLocaleString();
+                                var itemsText = o.items
+                                    .map(function (it) {
+                                        var qty = Number(it.qty || 0) || 0;
+                                        var title = String(it.title || "");
+                                        return qty + "x " + title;
+                                    })
+                                    .join(" · ");
+                                return (
+                                    "<li>" +
+                                    "<div class=\"mt-row\" style=\"justify-content:space-between; gap:10px;\">" +
+                                    "<div><strong>" + escapeHtml(time) + "</strong><div style=\"color:rgba(255,255,255,0.72); margin-top:4px;\">" + escapeHtml(itemsText) + "</div></div>" +
+                                    "<div><strong>" + escapeHtml(money(o.total)) + "</strong></div>" +
+                                    "</div>" +
+                                    "</li>"
+                                );
+                            })
+                            .join("");
+                    }
+                }
+            }
+
+            function download(filename, content, type) {
+                var blob = new Blob([content], { type: type || "text/plain" });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement("a");
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(function () { URL.revokeObjectURL(url); }, 2500);
+            }
+
+            function exportJson() {
+                var raw = loadOrders();
+                download("srchorizo_pedidos.json", JSON.stringify(raw || [], null, 2), "application/json");
+            }
+
+            function exportCsv() {
+                var orders = normalizeOrders(loadOrders());
+                var header = ["id", "createdAt", "total", "items"].join(",");
+                var rows = orders.map(function (o) {
+                    var items = o.items
+                        .map(function (it) {
+                            var qty = Number(it.qty || 0) || 0;
+                            var title = String(it.title || "").replace(/\"/g, "\"\"");
+                            return qty + "x " + title;
+                        })
+                        .join(" | ")
+                        .replace(/\"/g, "\"\"");
+                    return [
+                        "\"" + String(o.id || "") + "\"",
+                        "\"" + String(o.createdAt.toISOString()) + "\"",
+                        String(Math.round((Number(o.total || 0) || 0) * 100) / 100),
+                        "\"" + items + "\"",
+                    ].join(",");
+                });
+                download("srchorizo_pedidos.csv", [header].concat(rows).join("\n"), "text/csv");
+            }
+
+            function clearHistory() {
+                if (!confirm("¿Borrar historial de pedidos en este dispositivo?")) return;
+                saveOrders([]);
+                render();
+            }
+
+            if (dateEl && !dateEl.value) {
+                dateEl.value = toDateInputValue(new Date());
+            }
+
+            if (viewEl) viewEl.addEventListener("change", render);
+            if (dateEl) dateEl.addEventListener("change", render);
+            if (exportJsonBtn) exportJsonBtn.addEventListener("click", exportJson);
+            if (exportCsvBtn) exportCsvBtn.addEventListener("click", exportCsv);
+            if (clearBtn) clearBtn.addEventListener("click", clearHistory);
+
+            render();
+        })();
+    </script>
+</body>
+</html>

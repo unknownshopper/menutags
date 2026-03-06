@@ -32,7 +32,70 @@
     }
 
     var ORDER_DONE_KEY = "mtOrderDone:" + String(window.location.pathname || "");
+    var ORDERS_KEY = "mt:orders:srchorizo:v1";
     var orderLocked = false;
+
+    function safeJsonParse(text, fallback) {
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    function loadOrders() {
+        try {
+            var raw = window.localStorage.getItem(ORDERS_KEY);
+            var data = safeJsonParse(raw || "[]", []);
+            if (!Array.isArray(data)) return [];
+            return data;
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveOrders(orders) {
+        try {
+            window.localStorage.setItem(ORDERS_KEY, JSON.stringify(orders || []));
+        } catch (e) {}
+    }
+
+    function makeOrderRecord() {
+        var now = new Date();
+        var total = getCartTotal();
+        var items = cart.map(function (it) {
+            var title = String(it.title || "");
+            var qty = Number(it.qty || 0) || 0;
+            var unit = Number(getUnitPrice(it) || 0) || 0;
+            var kind = String(it.kind || "");
+            var meta = {};
+            if (it.kind === "bebida") meta.bebida = String(it.bebida || "");
+            return {
+                kind: kind,
+                title: title,
+                qty: qty,
+                unit: unit,
+                lineTotal: Math.round(qty * unit * 100) / 100,
+                meta: meta,
+            };
+        });
+
+        return {
+            id: "sz_" + String(now.getTime()) + "_" + String(Math.floor(Math.random() * 1000000)),
+            createdAt: now.toISOString(),
+            total: Math.round(total * 100) / 100,
+            currency: "MXN",
+            source: String(window.location.pathname || ""),
+            items: items,
+        };
+    }
+
+    function persistCurrentOrder() {
+        var record = makeOrderRecord();
+        var orders = loadOrders();
+        orders.push(record);
+        saveOrders(orders);
+    }
 
     function setOrderLocked(locked) {
         orderLocked = !!locked;
@@ -201,6 +264,8 @@
     function sendWhatsApp() {
         if (orderLocked) return;
         if (!cart.length) return;
+
+        persistCurrentOrder();
 
         try {
             window.sessionStorage.setItem(ORDER_DONE_KEY, "1");
