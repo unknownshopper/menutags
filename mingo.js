@@ -141,10 +141,32 @@
         }
 
         if (orderLocked) {
-            cartList.innerHTML = "<li>Este pedido ya fue enviado. Para hacer otro, vuelve a acercar el NFC.</li>";
+            var qtyInputs = document.querySelectorAll('[data-field="qty"]');
+            for (var q = 0; q < qtyInputs.length; q++) {
+                qtyInputs[q].value = "0";
+            }
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {}
+            cartList.innerHTML =
+                "<li>" +
+                "<div><strong>Este pedido ya fue enviado.</strong></div>" +
+                "<div class=\"mt-row\" style=\"margin-top:10px;\">" +
+                "<button class=\"mt-btn\" type=\"button\" id=\"mtUnlockOrder\">Hacer otro pedido</button>" +
+                "</div>" +
+                "</li>";
             totalEl.textContent = money(0);
             if (window.mtSetCartCount) window.mtSetCartCount(0);
         }
+    }
+
+    function unlockOrder() {
+        try {
+            window.sessionStorage.removeItem(ORDER_DONE_KEY);
+        } catch (e) {}
+        setOrderLocked(false);
+        cart = [];
+        renderCart();
     }
 
     var cart = [];
@@ -441,6 +463,82 @@
         return lines.join("\n");
     }
 
+    function safeParseInt(value) {
+        var n = parseInt(String(value || ""), 10);
+        if (!isFinite(n)) return null;
+        return n;
+    }
+
+    function makeFirestoreOrderRecord() {
+        var t = window.mtFirebase && window.mtFirebase.getQueryParam ? window.mtFirebase.getQueryParam("t") : null;
+        var k = window.mtFirebase && window.mtFirebase.getQueryParam ? window.mtFirebase.getQueryParam("k") : null;
+        var tableId = t ? String(t) : null;
+        var tableToken = k ? String(k) : null;
+
+        var items = cart.map(function (it) {
+            var title =
+                it.kind === "torta" ? "Torta" :
+                it.kind === "taco" ? "Taco dorado" :
+                it.kind === "tacoquebrado" ? "Taco quebrado" :
+                it.kind === "suave" ? "Taco suave" :
+                it.kind === "suavemix" ? "Suaves mix" :
+                it.kind === "combo" ? "Combo" :
+                it.kind === "bebida" ? "Bebida" :
+                it.kind === "extra" ? "Extra" :
+                "Postre";
+
+            var meta = {
+                kind: it.kind || "",
+            };
+            if (it.kind === "torta") meta.size = it.size || "";
+            if (it.kind === "taco") meta.taco = it.taco || "";
+            if (it.kind === "tacoquebrado") meta.taco = "Quebrado";
+            if (it.kind === "suave") meta.pack = it.pack || "";
+            if (it.kind === "suavemix") meta.pack = "mix";
+            if (it.kind === "combo") meta.combo = it.combo || "";
+            if (it.kind === "bebida") meta.bebida = it.bebida || "";
+            if (it.kind === "extra") meta.extra = it.extra || "";
+            if (it.kind === "postre") meta.postre = it.postre || "";
+            if (it.kind === "torta" || it.kind === "taco" || it.kind === "tacoquebrado" || it.kind === "suave") meta.protein = it.protein || "";
+
+            var qty = safeParseInt(it.qty) || 0;
+            var unit = getUnitPrice(it);
+            var lineTotal = getLineTotal(it);
+
+            return {
+                title: title,
+                qty: qty,
+                unit: unit,
+                lineTotal: lineTotal,
+                meta: meta,
+            };
+        });
+
+        var total = getCartTotal();
+
+        return {
+            source: "customer",
+            status: "sent",
+            tableId: tableId,
+            tableToken: tableToken,
+            currency: "MXN",
+            total: total,
+            items: items,
+        };
+    }
+
+    function persistOrderToFirestoreBestEffort() {
+        if (!window.mtFirebase || !window.mtFirebase.createOrder || !window.mtFirebase.ensureAnon) return;
+        var record = makeFirestoreOrderRecord();
+        window.mtFirebase.ensureAnon()
+            .then(function () {
+                return window.mtFirebase.createOrder("mingo", record);
+            })
+            .catch(function () {
+                // best-effort: never block WhatsApp
+            });
+    }
+
     function sendWhatsApp() {
         if (orderLocked) return;
         if (!cart.length) {
@@ -451,8 +549,13 @@
             window.sessionStorage.setItem(ORDER_DONE_KEY, "1");
         } catch (e) {}
 
+        persistOrderToFirestoreBestEffort();
         recordSale();
         setOrderLocked(true);
+
+        try {
+            window.scrollTo(0, 0);
+        } catch (e) {}
 
         var text = buildTicketText();
         var url = "https://wa.me/" + WA_PHONE + "?text=" + encodeURIComponent(text);
@@ -547,6 +650,13 @@
 
     if (!orderLocked) {
         renderCart();
+    } else {
+        var unlockBtn = document.getElementById("mtUnlockOrder");
+        if (unlockBtn) {
+            unlockBtn.addEventListener("click", function () {
+                unlockOrder();
+            });
+        }
     }
 
     if (loader) {

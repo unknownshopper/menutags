@@ -2,6 +2,20 @@
     var WA_PHONE = "+529932313162";
     var HEADER = "Pedido Sr Chorizo";
 
+    function getQueryParam(name) {
+        try {
+            return new URLSearchParams(window.location.search || "").get(name);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    var seatId = (getQueryParam("seat") || "").trim();
+    if (!seatId) seatId = null;
+
+    var tabId = (getQueryParam("tab") || "").trim();
+    if (!tabId) tabId = null;
+
     function qs(id) {
         return document.getElementById(id);
     }
@@ -86,6 +100,8 @@
             total: Math.round(total * 100) / 100,
             currency: "MXN",
             source: String(window.location.pathname || ""),
+            seatId: seatId,
+            tabId: tabId,
             items: items,
         };
     }
@@ -109,6 +125,13 @@
         }
 
         if (orderLocked) {
+            var qtyInputs = document.querySelectorAll('[data-field="qty"]');
+            for (var q = 0; q < qtyInputs.length; q++) {
+                qtyInputs[q].value = "0";
+            }
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {}
             cartList.innerHTML = "<li>Este pedido ya fue enviado. Para hacer otro, vuelve a acercar el NFC.</li>";
             totalEl.textContent = money(0);
             if (window.mtSetCartCount) window.mtSetCartCount(0);
@@ -116,6 +139,55 @@
     }
 
     var cart = [];
+
+    function buildItemFromRow(li) {
+        if (!li) return null;
+        var kind = li.getAttribute("data-kind") || "";
+        var item = li.getAttribute("data-item") || "";
+
+        var qtyEl = li.querySelector('[data-field="qty"]');
+        var qty = getQtyFromInput(qtyEl);
+
+        if (qty <= 0) return null;
+
+        if (kind === "item") {
+            var unitItem = parseFloat(String(li.getAttribute("data-price") || "0"));
+            if (!isFinite(unitItem) || unitItem < 0) unitItem = 0;
+            return {
+                kind: "item",
+                title: item || "Producto",
+                qty: qty,
+                unit: unitItem,
+            };
+        }
+
+        if (kind === "bebida") {
+            var bebida = li.getAttribute("data-bebida") || "";
+            var unitB = parseFloat(String(li.getAttribute("data-price") || "0"));
+            if (!isFinite(unitB) || unitB < 0) unitB = 0;
+            return {
+                kind: "bebida",
+                title: "Bebida",
+                bebida: bebida,
+                qty: qty,
+                unit: unitB,
+            };
+        }
+
+        return null;
+    }
+
+    function rebuildCartFromUi() {
+        if (orderLocked) return;
+        var rows = document.querySelectorAll('li[data-kind]');
+        var next = [];
+        for (var i = 0; i < rows.length; i++) {
+            var it = buildItemFromRow(rows[i]);
+            if (it) next.push(it);
+        }
+        cart = next;
+        renderCart();
+    }
 
     function getQtyFromInput(inputEl) {
         var v = parseInt(String((inputEl && inputEl.value) || "0"), 10);
@@ -233,6 +305,12 @@
     function buildTicketText() {
         var lines = [HEADER, ""]; 
 
+        if (seatId) {
+            lines.push("Asiento: " + seatId);
+            if (tabId) lines.push("Cuenta: " + tabId);
+            lines.push("");
+        }
+
         cart.forEach(function (it, i) {
             var unit = getUnitPrice(it);
             var lineTotal = getLineTotal(it);
@@ -261,17 +339,82 @@
         return lines.join("\n");
     }
 
+    function safeParseInt(value) {
+        var n = parseInt(String(value || ""), 10);
+        if (!isFinite(n)) return null;
+        return n;
+    }
+
+    function makeFirestoreOrderRecord() {
+        var items = cart.map(function (it) {
+            var title = String(it.title || "Producto");
+            var qty = safeParseInt(it.qty) || 0;
+            var unit = Number(getUnitPrice(it) || 0) || 0;
+            var lineTotal = Math.round(qty * unit * 100) / 100;
+            var meta = {};
+            if (it.kind === "bebida") meta.bebida = String(it.bebida || "");
+            return {
+                title: title,
+                qty: qty,
+                unit: unit,
+                lineTotal: lineTotal,
+                meta: meta,
+            };
+        });
+
+        return {
+            source: "operator",
+            status: "sent",
+            seatId: seatId,
+            tabId: tabId,
+            currency: "MXN",
+            total: Math.round(getCartTotal() * 100) / 100,
+            items: items,
+        };
+    }
+
+    function clearQtyInputs() {
+        var qtyInputs = document.querySelectorAll('[data-field="qty"]');
+        for (var q = 0; q < qtyInputs.length; q++) {
+            qtyInputs[q].value = "0";
+        }
+    }
+
+    function persistOrderToFirestoreBestEffort() {
+        if (!window.mtFirebase || !window.mtFirebase.createOrder) return;
+        var record = makeFirestoreOrderRecord();
+        var p = window.mtFirebase.ensureAnon ? window.mtFirebase.ensureAnon() : Promise.resolve();
+        p.then(function () {
+            return window.mtFirebase.createOrder("srchorizo", record);
+        }).catch(function () {
+            // best-effort: never block WhatsApp
+        });
+    }
+
     function sendWhatsApp() {
         if (orderLocked) return;
         if (!cart.length) return;
 
-        persistCurrentOrder();
+        persistOrderToFirestoreBestEffort();
 
-        try {
-            window.sessionStorage.setItem(ORDER_DONE_KEY, "1");
-        } catch (e) {}
-        setOrderLocked(true);
         var text = buildTicketText();
+
+        if (!seatId) {
+            try {
+                window.sessionStorage.setItem(ORDER_DONE_KEY, "1");
+            } catch (e) {}
+            setOrderLocked(true);
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {}
+        } else {
+            clearQtyInputs();
+            cart = [];
+            renderCart();
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {}
+        }
         var url = "https://wa.me/" + WA_PHONE + "?text=" + encodeURIComponent(text);
         window.location.href = url;
     }
@@ -290,6 +433,7 @@
                 var input = li && li.querySelector('[data-field="qty"]');
                 if (!input) return;
                 input.value = String(Math.min(99, getQtyFromInput(input) + 1));
+                rebuildCartFromUi();
                 return;
             }
 
@@ -299,15 +443,22 @@
                 var inputMinus = liMinus && liMinus.querySelector('[data-field="qty"]');
                 if (!inputMinus) return;
                 inputMinus.value = String(Math.max(0, getQtyFromInput(inputMinus) - 1));
+                rebuildCartFromUi();
                 return;
             }
 
             var addBtn = e.target.closest('button[data-action="add"]');
             if (addBtn) {
-                if (orderLocked) return;
-                addFromRow(addBtn.closest("li"));
+                return;
             }
         });
+
+        listEl.addEventListener("input", function (e) {
+            var input = e.target && e.target.matches && e.target.matches('[data-field="qty"]') ? e.target : null;
+            if (!input) return;
+            getQtyFromInput(input);
+            rebuildCartFromUi();
+        }, true);
 
         listEl.addEventListener(
             "blur",
@@ -315,6 +466,7 @@
                 var input = e.target && e.target.matches && e.target.matches('[data-field="qty"]') ? e.target : null;
                 if (!input) return;
                 getQtyFromInput(input);
+                rebuildCartFromUi();
             },
             true
         );
@@ -346,10 +498,15 @@
     clearBtn.addEventListener("click", clearCart);
 
     try {
-        setOrderLocked(window.sessionStorage.getItem(ORDER_DONE_KEY) === "1");
+        if (seatId) {
+            window.sessionStorage.removeItem(ORDER_DONE_KEY);
+            setOrderLocked(false);
+        } else {
+            setOrderLocked(window.sessionStorage.getItem(ORDER_DONE_KEY) === "1");
+        }
     } catch (e) {}
 
     if (!orderLocked) {
-        renderCart();
+        rebuildCartFromUi();
     }
 })();

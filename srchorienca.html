@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Sr Chorizo — Encargado</title>
+    <meta name="description" content="Vista de encargado: seleccionar mesa/sala/periquera, tomar pedidos, entregar y cobrar." />
+    <meta name="theme-color" content="#0b1220" />
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="mt-theme-srchorizo">
+    <div class="mt-container">
+        <header class="mt-header">
+            <div class="mt-header-left">
+                <img class="mt-logo" src="srchorizo.png" alt="Sr Chorizo" />
+                <div class="mt-header-text">
+                    <div class="mt-brand">MenuTags</div>
+                    <h1>Encargado</h1>
+                </div>
+            </div>
+            <div class="mt-actions">
+                <a class="mt-btn" href="srchorizoreporte.html">Reporte</a>
+            </div>
+        </header>
+
+        <main class="mt-main">
+            <section class="mt-section" id="sceFunnel">
+                <h2>Flujo</h2>
+                <div class="mt-row" style="gap:10px; flex-wrap:wrap; align-items:center;">
+                    <div class="mt-status" id="sceSelected">Selecciona un asiento</div>
+                    <label style="display:flex; flex-direction:column; gap:6px; min-width: 150px;">
+                        <span class="mt-brand">Cuenta</span>
+                        <select class="mt-input" id="sceTab" disabled></select>
+                    </label>
+                    <button class="mt-pill" type="button" id="sceNewTab" disabled>Nueva cuenta</button>
+                    <button class="mt-btn" type="button" id="sceTakeOrder" disabled>Tomar pedido</button>
+                    <button class="mt-pill" type="button" id="sceDelivered" disabled>Entregado</button>
+                    <button class="mt-pill" type="button" id="scePaid" disabled>Cobrado</button>
+                    <button class="mt-pill" type="button" id="sceClear" disabled>Limpiar</button>
+                </div>
+                <div class="mt-status" id="sceNote" style="margin-top:12px; opacity:0.92;">
+                    Este tablero se guarda en este dispositivo (localStorage).
+                </div>
+            </section>
+
+            <section class="mt-section" id="sceMap">
+                <h2>Croquis</h2>
+
+                <div class="mt-grid" style="grid-template-columns: 1fr; gap: 14px;">
+                    <section class="mt-section" style="margin:0;">
+                        <h3>Mesas</h3>
+                        <div class="sce-grid" data-group="me"></div>
+                    </section>
+
+                    <section class="mt-section" style="margin:0;">
+                        <h3>Periqueras</h3>
+                        <div class="sce-grid" data-group="pe"></div>
+                    </section>
+
+                    <section class="mt-section" style="margin:0;">
+                        <h3>Salas</h3>
+                        <div class="sce-grid" data-group="sa"></div>
+                    </section>
+
+                    <section class="mt-section" style="margin:0;">
+                        <h3>Barra / Mesón</h3>
+                        <div class="sce-grid" data-group="ba"></div>
+                        <div class="sce-grid" data-group="ms" style="margin-top:10px;"></div>
+                    </section>
+                </div>
+            </section>
+
+            <section class="mt-section" id="sceList">
+                <h2>Estado</h2>
+                <ul id="sceOpenList"></ul>
+            </section>
+
+            <div class="mt-footer">
+                <a href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener">MENUTAGS</a>
+                by
+                <a href="https://unknownshoppers.com/" target="_blank" rel="noopener">The Unknown Shopper</a>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        (function () {
+            var KEY = "mt:srchorizo:encargado:v1";
+
+            function safeJsonParse(text, fallback) {
+                try { return JSON.parse(text); } catch (e) { return fallback; }
+            }
+
+            function loadState() {
+                try {
+                    var raw = window.localStorage.getItem(KEY);
+                    var data = safeJsonParse(raw || "{}", {});
+                    if (!data || typeof data !== "object") data = {};
+                    if (!data.seats || typeof data.seats !== "object") data.seats = {};
+                    return data;
+                } catch (e) {
+                    return { seats: {} };
+                }
+            }
+
+            function saveState(st) {
+                try { window.localStorage.setItem(KEY, JSON.stringify(st || { seats: {} })); } catch (e) {}
+            }
+
+            function pad2(n) {
+                return String(n < 10 ? "0" + n : n);
+            }
+
+            function seatId(prefix, idx) {
+                return String(prefix) + pad2(idx);
+            }
+
+            function nowIso() {
+                return new Date().toISOString();
+            }
+
+            function qs(id) { return document.getElementById(id); }
+
+            var selectedEl = qs("sceSelected");
+            var tabSel = qs("sceTab");
+            var newTabBtn = qs("sceNewTab");
+            var takeBtn = qs("sceTakeOrder");
+            var delBtn = qs("sceDelivered");
+            var paidBtn = qs("scePaid");
+            var clearBtn = qs("sceClear");
+            var openList = qs("sceOpenList");
+
+            var st = loadState();
+            var selectedSeat = null;
+            var selectedTab = null;
+
+            function ensureSeat(seat) {
+                if (!st.seats[seat]) {
+                    st.seats[seat] = { status: "idle", updatedAt: nowIso(), tabs: ["A"] };
+                }
+                if (!Array.isArray(st.seats[seat].tabs) || !st.seats[seat].tabs.length) {
+                    st.seats[seat].tabs = ["A"];
+                }
+                return st.seats[seat];
+            }
+
+            function setSelectedTab(tab) {
+                selectedTab = tab || null;
+                render();
+            }
+
+            function renderTabsForSeat(seat) {
+                if (!tabSel) return;
+                if (!seat) {
+                    tabSel.innerHTML = "";
+                    return;
+                }
+                var s = ensureSeat(seat);
+                var tabs = s.tabs || [];
+                tabSel.innerHTML = tabs
+                    .map(function (t) {
+                        return '<option value="' + String(t) + '">' + String(t) + "</option>";
+                    })
+                    .join("");
+
+                if (!selectedTab || tabs.indexOf(selectedTab) === -1) {
+                    selectedTab = tabs[0] || null;
+                }
+                if (selectedTab) tabSel.value = selectedTab;
+            }
+
+            function nextTabLabel(existing) {
+                var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                var used = {};
+                (existing || []).forEach(function (t) {
+                    used[String(t || "")] = true;
+                });
+                for (var i = 0; i < alphabet.length; i++) {
+                    var ch = alphabet.charAt(i);
+                    if (!used[ch]) return ch;
+                }
+                return "Z";
+            }
+
+            function addNewTabForSeat(seat) {
+                if (!seat) return;
+                var s = ensureSeat(seat);
+                var label = nextTabLabel(s.tabs);
+                s.tabs.push(label);
+                s.updatedAt = nowIso();
+                saveState(st);
+                selectedTab = label;
+                render();
+            }
+
+            function setSeatStatus(seat, status) {
+                var s = ensureSeat(seat);
+                s.status = status;
+                s.updatedAt = nowIso();
+                saveState(st);
+                render();
+            }
+
+            function clearSeat(seat) {
+                if (st.seats[seat]) {
+                    delete st.seats[seat];
+                    saveState(st);
+                }
+                if (selectedSeat === seat) selectedSeat = null;
+                if (selectedSeat === seat) selectedTab = null;
+                render();
+            }
+
+            function selectSeat(seat) {
+                selectedSeat = seat;
+                ensureSeat(seat);
+                render();
+            }
+
+            function statusLabel(status) {
+                if (status === "ordering") return "Tomando pedidos";
+                if (status === "delivered") return "Entregado";
+                if (status === "paid") return "Cobrado";
+                return "Libre";
+            }
+
+            function statusTone(status) {
+                if (status === "ordering") return "rgba(245, 158, 11, 0.28)";
+                if (status === "delivered") return "rgba(34, 197, 94, 0.22)";
+                if (status === "paid") return "rgba(59, 130, 246, 0.22)";
+                return "rgba(255,255,255,0.06)";
+            }
+
+            function buildSeatButton(seat) {
+                var seatState = st.seats[seat] || { status: "idle" };
+                var btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "mt-pill";
+                btn.textContent = seat;
+                btn.style.padding = "10px 12px";
+                btn.style.borderRadius = "12px";
+                btn.style.fontWeight = "800";
+                btn.style.background = statusTone(seatState.status);
+                btn.style.border =
+                    selectedSeat === seat
+                        ? "2px solid rgba(255,255,255,0.58)"
+                        : "1px solid rgba(255,255,255,0.12)";
+                btn.addEventListener("click", function () { selectSeat(seat); });
+                return btn;
+            }
+
+            function fillGroup(container, prefix, count) {
+                container.innerHTML = "";
+                container.style.display = "grid";
+                container.style.gridTemplateColumns = "repeat(auto-fit, minmax(92px, 1fr))";
+                container.style.gap = "10px";
+                for (var i = 1; i <= count; i++) {
+                    container.appendChild(buildSeatButton(seatId(prefix, i)));
+                }
+            }
+
+            function renderOpenList() {
+                if (!openList) return;
+                var keys = Object.keys(st.seats || {});
+                keys.sort();
+                if (!keys.length) {
+                    openList.innerHTML = "<li>No hay asientos activos.</li>";
+                    return;
+                }
+                openList.innerHTML = keys.map(function (k) {
+                    var s = st.seats[k];
+                    var t = s && s.updatedAt ? new Date(s.updatedAt).toLocaleString() : "";
+                    return (
+                        "<li>" +
+                        "<div class=\"mt-row\" style=\"justify-content:space-between; gap:10px; flex-wrap:wrap;\">" +
+                        "<div><strong>" + k + "</strong><div style=\"opacity:0.85; margin-top:4px;\">" +
+                        statusLabel(s.status) + (t ? " · " + t : "") +
+                        "</div></div>" +
+                        "<div class=\"mt-row\" style=\"gap:10px; flex-wrap:wrap;\">" +
+                        "<button class=\"mt-pill\" type=\"button\" data-action=\"sel\" data-seat=\"" + k + "\">Ver</button>" +
+                        "<button class=\"mt-pill\" type=\"button\" data-action=\"clear\" data-seat=\"" + k + "\">Limpiar</button>" +
+                        "</div>" +
+                        "</div>" +
+                        "</li>"
+                    );
+                }).join("");
+            }
+
+            function render() {
+                if (selectedEl) {
+                    selectedEl.textContent = selectedSeat ? ("Seleccionado: " + selectedSeat) : "Selecciona un asiento";
+                }
+
+                var has = !!selectedSeat;
+                if (tabSel) tabSel.disabled = !has;
+                if (newTabBtn) newTabBtn.disabled = !has;
+                if (takeBtn) takeBtn.disabled = !has;
+                if (delBtn) delBtn.disabled = !has;
+                if (paidBtn) paidBtn.disabled = !has;
+                if (clearBtn) clearBtn.disabled = !has;
+
+                renderTabsForSeat(selectedSeat);
+
+                var groups = document.querySelectorAll(".sce-grid");
+                for (var g = 0; g < groups.length; g++) {
+                    var group = groups[g];
+                    var prefix = group.getAttribute("data-group") || "";
+                    if (prefix === "me") fillGroup(group, "me", 6);
+                    if (prefix === "pe") fillGroup(group, "pe", 4);
+                    if (prefix === "sa") fillGroup(group, "sa", 2);
+                    if (prefix === "ba") fillGroup(group, "ba", 1);
+                    if (prefix === "ms") fillGroup(group, "ms", 1);
+                }
+
+                renderOpenList();
+            }
+
+            if (takeBtn) {
+                takeBtn.addEventListener("click", function () {
+                    if (!selectedSeat) return;
+                    setSeatStatus(selectedSeat, "ordering");
+                    var tab = (tabSel && tabSel.value) ? String(tabSel.value) : "A";
+                    window.location.href = "srchorizo.html?seat=" + encodeURIComponent(selectedSeat) + "&tab=" + encodeURIComponent(tab);
+                });
+            }
+
+            if (tabSel) {
+                tabSel.addEventListener("change", function () {
+                    setSelectedTab(tabSel.value);
+                });
+            }
+
+            if (newTabBtn) {
+                newTabBtn.addEventListener("click", function () {
+                    if (!selectedSeat) return;
+                    addNewTabForSeat(selectedSeat);
+                });
+            }
+
+            if (delBtn) {
+                delBtn.addEventListener("click", function () {
+                    if (!selectedSeat) return;
+                    setSeatStatus(selectedSeat, "delivered");
+                });
+            }
+
+            if (paidBtn) {
+                paidBtn.addEventListener("click", function () {
+                    if (!selectedSeat) return;
+                    setSeatStatus(selectedSeat, "paid");
+                });
+            }
+
+            if (clearBtn) {
+                clearBtn.addEventListener("click", function () {
+                    if (!selectedSeat) return;
+                    clearSeat(selectedSeat);
+                });
+            }
+
+            if (openList) {
+                openList.addEventListener("click", function (e) {
+                    var btn = e.target && e.target.closest ? e.target.closest("button[data-action]") : null;
+                    if (!btn) return;
+                    var action = btn.getAttribute("data-action");
+                    var seat = btn.getAttribute("data-seat");
+                    if (!seat) return;
+                    if (action === "sel") selectSeat(seat);
+                    if (action === "clear") clearSeat(seat);
+                });
+            }
+
+            render();
+        })();
+    </script>
+</body>
+</html>

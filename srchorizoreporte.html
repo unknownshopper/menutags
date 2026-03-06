@@ -27,9 +27,28 @@
     </header>
 
     <main class="mt-main">
+        <section class="mt-section" id="szrAuth">
+            <h2>Acceso dueño</h2>
+            <div class="mt-row" style="margin-top:12px; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span class="mt-brand">Email</span>
+                    <input class="mt-input" type="email" id="szrEmail" autocomplete="username" />
+                </label>
+                <label style="display:flex; flex-direction:column; gap:6px;">
+                    <span class="mt-brand">Contraseña</span>
+                    <input class="mt-input" type="password" id="szrPass" autocomplete="current-password" />
+                </label>
+                <div class="mt-row" style="gap:10px; flex-wrap:wrap;">
+                    <button class="mt-btn" type="button" id="szrLogin">Entrar</button>
+                    <button class="mt-pill" type="button" id="szrLogout" style="display:none;">Salir</button>
+                </div>
+            </div>
+            <div class="mt-status" id="szrAuthStatus" style="margin-top:12px;">No has iniciado sesión.</div>
+        </section>
+
         <section class="mt-section" id="szrInfo">
             <h2>Resumen</h2>
-            <p>Este reporte usa el historial guardado en este dispositivo (localStorage). Si cambias de celular o borras datos del navegador, se pierde el historial.</p>
+            <p id="szrSourceNote">Este reporte usa el historial guardado en este dispositivo (localStorage). Si cambias de celular o borras datos del navegador, se pierde el historial.</p>
             <div class="mt-row" style="margin-top:12px; gap:10px; flex-wrap:wrap;">
                 <label style="display:flex; flex-direction:column; gap:6px;">
                     <span class="mt-brand">Vista</span>
@@ -75,10 +94,33 @@
         <div class="mt-footer"><a href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener">MENUTAGS</a> by <a href="https://unknownshoppers.com/" target="_blank" rel="noopener">The Unknown Shopper</a></div>
     </main>
 
+    <script type="module" src="firebase.js"></script>
     <script src="script.js"></script>
     <script>
         (function () {
             var ORDERS_KEY = "mt:orders:srchorizo:v1";
+
+            function toMillis(ts) {
+                if (!ts) return null;
+                if (typeof ts === "number" && isFinite(ts)) return ts;
+                if (ts && typeof ts.toDate === "function") {
+                    var d = ts.toDate();
+                    return d && d.getTime ? d.getTime() : null;
+                }
+                if (ts && typeof ts.seconds === "number") return ts.seconds * 1000;
+                return null;
+            }
+
+            function makeLocalOrderFromDoc(o) {
+                var createdAtMs = toMillis(o && o.createdAt);
+                if (!createdAtMs) return null;
+                return {
+                    id: String(o.id || ""),
+                    createdAt: new Date(createdAtMs).toISOString(),
+                    total: Number(o.total || 0) || 0,
+                    items: Array.isArray(o.items) ? o.items : [],
+                };
+            }
 
             function safeJsonParse(text, fallback) {
                 try {
@@ -221,11 +263,11 @@
 
             function escapeHtml(s) {
                 return String(s || "")
-                    .replace(/&/g, "&​amp;")
-                    .replace(/</g, "&​lt;")
-                    .replace(/>/g, "&​gt;")
-                    .replace(/\"/g, "&​quot;")
-                    .replace(/'/g, "&​#39;");
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/\"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
             }
 
             var viewEl = qs("szrView");
@@ -238,8 +280,65 @@
             var exportJsonBtn = qs("szrExportJson");
             var clearBtn = qs("szrClear");
 
+            var authStatusEl = qs("szrAuthStatus");
+            var loginBtn = qs("szrLogin");
+            var logoutBtn = qs("szrLogout");
+            var emailEl = qs("szrEmail");
+            var passEl = qs("szrPass");
+            var sourceNoteEl = qs("szrSourceNote");
+
+            var mode = "local";
+
+            function setAuthStatus(text) {
+                if (authStatusEl) authStatusEl.textContent = text || "";
+            }
+
+            function setMode(nextMode) {
+                mode = nextMode;
+                if (sourceNoteEl) {
+                    sourceNoteEl.textContent =
+                        mode === "firestore"
+                            ? "Este reporte se basa en pedidos guardados en Firestore (multi-dispositivo)."
+                            : "Este reporte usa el historial guardado en este dispositivo (localStorage). Si cambias de celular o borras datos del navegador, se pierde el historial.";
+                }
+            }
+
+            function loadOrdersForMode() {
+                if (mode === "firestore") return loadOrders();
+                return loadOrders();
+            }
+
+            function loadFirestoreForCurrentWindow() {
+                if (!window.mtFirebase || !window.mtFirebase.listOrdersByRange) {
+                    setAuthStatus("Firebase no está disponible.");
+                    setMode("local");
+                    render();
+                    return;
+                }
+
+                var view = (viewEl && viewEl.value) || "day";
+                var start = getStartForSelected(view, (dateEl && dateEl.value) || "");
+                var endEx = endExclusive(start, view);
+
+                setAuthStatus("Cargando pedidos...");
+                window.mtFirebase
+                    .listOrdersByRange("srchorizo", start.toISOString(), endEx.toISOString(), 800)
+                    .then(function (orders) {
+                        var normalized = (orders || []).map(makeLocalOrderFromDoc).filter(Boolean);
+                        saveOrders(normalized);
+                        setAuthStatus("Sesión activa.");
+                        setMode("firestore");
+                        render();
+                    })
+                    .catch(function () {
+                        setAuthStatus("No se pudo leer Firestore (verifica owners UID y Rules).");
+                        setMode("local");
+                        render();
+                    });
+            }
+
             function render() {
-                var raw = loadOrders();
+                var raw = loadOrdersForMode();
                 var orders = normalizeOrders(raw);
 
                 var view = (viewEl && viewEl.value) || "day";
@@ -355,6 +454,49 @@
             if (exportJsonBtn) exportJsonBtn.addEventListener("click", exportJson);
             if (exportCsvBtn) exportCsvBtn.addEventListener("click", exportCsv);
             if (clearBtn) clearBtn.addEventListener("click", clearHistory);
+
+            if (window.mtFirebase && window.mtFirebase.onAuthStateChanged) {
+                window.mtFirebase.onAuthStateChanged(function (user) {
+                    if (user) {
+                        if (logoutBtn) logoutBtn.style.display = "inline-flex";
+                        loadFirestoreForCurrentWindow();
+                    } else {
+                        if (logoutBtn) logoutBtn.style.display = "none";
+                        setAuthStatus("No has iniciado sesión.");
+                        setMode("local");
+                        render();
+                    }
+                });
+            }
+
+            if (loginBtn) {
+                loginBtn.addEventListener("click", function () {
+                    if (!window.mtFirebase || !window.mtFirebase.loginOwner) return;
+                    var email = (emailEl && emailEl.value) ? String(emailEl.value).trim() : "";
+                    var pass = (passEl && passEl.value) ? String(passEl.value) : "";
+                    if (!email || !pass) {
+                        setAuthStatus("Escribe email y contraseña.");
+                        return;
+                    }
+                    setAuthStatus("Iniciando sesión...");
+                    window.mtFirebase
+                        .loginOwner(email, pass)
+                        .then(function () {
+                            setAuthStatus("Sesión activa.");
+                            loadFirestoreForCurrentWindow();
+                        })
+                        .catch(function () {
+                            setAuthStatus("No se pudo iniciar sesión.");
+                        });
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", function () {
+                    if (!window.mtFirebase || !window.mtFirebase.logout) return;
+                    window.mtFirebase.logout();
+                });
+            }
 
             render();
         })();

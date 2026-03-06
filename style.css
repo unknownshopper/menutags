@@ -1046,13 +1046,17 @@
  }
 
  .mt-theme-mingo .mt-cart-fab {
-     top: calc(16px + env(safe-area-inset-top, 0px) + 32px);
+    top: calc(16px + env(safe-area-inset-top, 0px) + 32px);
+}
+
+ .mt-theme-srchorizo button[data-action="add"] {
+     display: none;
  }
 
- @media (min-width: 720px) {
-     h1 {
-         font-size: 34px;
-     }
+@media (min-width: 720px) {
+    h1 {
+        font-size: 34px;
+    }
 
      .mt-theme-landing .mt-brand--giant {
          font-size: 54px;

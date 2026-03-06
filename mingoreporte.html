@@ -36,9 +36,28 @@
         </header>
 
         <main class="mt-main">
+            <section class="mt-section" id="mrAuth">
+                <h2>Acceso dueño</h2>
+                <div class="mt-row" style="margin-top:12px; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="mt-brand">Email</span>
+                        <input class="mt-input" type="email" id="mrEmail" autocomplete="username" />
+                    </label>
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="mt-brand">Contraseña</span>
+                        <input class="mt-input" type="password" id="mrPass" autocomplete="current-password" />
+                    </label>
+                    <div class="mt-row" style="gap:10px; flex-wrap:wrap;">
+                        <button class="mt-btn" type="button" id="mrLogin">Entrar</button>
+                        <button class="mt-pill" type="button" id="mrLogout" style="display:none;">Salir</button>
+                    </div>
+                </div>
+                <div class="mt-status" id="mrAuthStatus" style="margin-top:12px;">No has iniciado sesión.</div>
+            </section>
+
             <section class="mt-section">
                 <h2>Resumen</h2>
-                <p>Este reporte se basa en pedidos enviados desde este dispositivo/navegador (localStorage).</p>
+                <p id="mrSourceNote">Este reporte se basa en pedidos enviados desde este dispositivo/navegador (localStorage).</p>
 
                 <div class="mt-actions" style="justify-content:flex-start; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
                     <button class="mt-btn" type="button" id="mrRangeDay">Día</button>
@@ -79,6 +98,7 @@
         </main>
     </div>
 
+    <script type="module" src="firebase.js"></script>
     <script src="mingoreporte.js"></script>
 </body>
 </html>
