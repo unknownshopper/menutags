@@ -23,261 +23,7 @@
 
     <link rel="icon" href="logomenutag.png" />
     <link rel="apple-touch-icon" href="logomenutag.png" />
-
-    <style>
-        :root {
-            --bg: #0b1220;
-            --card: rgba(255, 255, 255, 0.06);
-            --card2: rgba(255, 255, 255, 0.08);
-            --text: rgba(255, 255, 255, 0.92);
-            --muted: rgba(255, 255, 255, 0.72);
-            --muted2: rgba(255, 255, 255, 0.62);
-            --line: rgba(255, 255, 255, 0.14);
-            --accent: rgba(167, 139, 250, 0.95);
-            --good: rgba(34, 197, 94, 0.85);
-            --shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
-            --radius: 18px;
-            --radius-sm: 14px;
-            --max: 1100px;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-            background:
-                radial-gradient(900px 500px at 20% 12%, rgba(167,139,250,0.24), transparent 60%),
-                radial-gradient(800px 520px at 86% 36%, rgba(34,197,94,0.16), transparent 58%),
-                linear-gradient(180deg, #080d18 0%, #0b1220 42%, #070b14 100%);
-            color: var(--text);
-            line-height: 1.42;
-        }
-
-        a { color: inherit; }
-
-        .wrap {
-            max-width: var(--max);
-            margin: 0 auto;
-            padding: 28px 18px 56px;
-        }
-
-        .hero {
-            border: 1px solid rgba(255,255,255,0.12);
-            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-            border-radius: var(--radius);
-            padding: 22px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .hero::before {
-            content: "";
-            position: absolute;
-            inset: -60px -40px auto auto;
-            width: 240px;
-            height: 240px;
-            background: radial-gradient(circle at 30% 30%, rgba(167,139,250,0.35), transparent 65%);
-            pointer-events: none;
-            filter: blur(2px);
-        }
-
-        .hero-top {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo {
-            width: 44px;
-            height: 44px;
-            object-fit: contain;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.25);
-        }
-
-        .brand {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .brand strong { letter-spacing: 0.2px; }
-        .brand span { color: var(--muted2); font-size: 13px; }
-
-        h1 {
-            margin: 14px 0 10px;
-            font-size: clamp(28px, 4.2vw, 44px);
-            line-height: 1.05;
-            letter-spacing: -0.4px;
-        }
-
-        .sub {
-            margin: 0;
-            color: var(--muted);
-            font-size: 16px;
-            max-width: 66ch;
-        }
-
-        .pill-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 14px;
-        }
-
-        .pill {
-            border: 1px solid rgba(255,255,255,0.14);
-            background: rgba(255,255,255,0.05);
-            border-radius: 999px;
-            padding: 8px 10px;
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        .cta {
-            margin-top: 16px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            border: 1px solid rgba(255,255,255,0.16);
-            background: rgba(255,255,255,0.06);
-            color: var(--text);
-            padding: 10px 14px;
-            border-radius: 999px;
-            text-decoration: none;
-            font-weight: 650;
-            font-size: 14px;
-            transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
-            backdrop-filter: blur(8px);
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.24);
-        }
-
-        .btn--good {
-            border-color: rgba(34,197,94,0.32);
-            background: linear-gradient(180deg, rgba(34,197,94,0.18), rgba(34,197,94,0.1));
-        }
-
-        .btn--accent {
-            border-color: rgba(167,139,250,0.35);
-            background: linear-gradient(180deg, rgba(167,139,250,0.22), rgba(167,139,250,0.12));
-        }
-
-        .grid {
-            margin-top: 18px;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 14px;
-        }
-
-        .card {
-            border: 1px solid rgba(255,255,255,0.12);
-            background: var(--card);
-            border-radius: var(--radius);
-            padding: 18px;
-            box-shadow: 0 18px 44px rgba(0,0,0,0.22);
-        }
-
-        .card h2 {
-            margin: 0 0 10px;
-            font-size: 18px;
-        }
-
-        .card p {
-            margin: 0 0 10px;
-            color: var(--muted);
-        }
-
-        .card ul {
-            margin: 0;
-            padding-left: 18px;
-            color: var(--muted);
-        }
-
-        .span-12 { grid-column: span 12; }
-        .span-7 { grid-column: span 7; }
-        .span-6 { grid-column: span 6; }
-        .span-5 { grid-column: span 5; }
-
-        .feature {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-            padding: 12px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.04);
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 999px;
-            margin-top: 6px;
-            background: var(--accent);
-            box-shadow: 0 0 0 6px rgba(167,139,250,0.12);
-            flex: 0 0 auto;
-        }
-
-        .dot--good {
-            background: var(--good);
-            box-shadow: 0 0 0 6px rgba(34,197,94,0.12);
-        }
-
-        .feature strong { display: block; margin-bottom: 4px; }
-        .feature span { color: var(--muted2); font-size: 13px; }
-
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .module {
-            border-radius: 16px;
-            padding: 14px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-        }
-
-        .module strong { display: block; margin-bottom: 6px; }
-        .module p { margin: 0; color: var(--muted2); font-size: 13px; }
-
-        .footer {
-            margin-top: 18px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,0.12);
-            color: var(--muted2);
-            font-size: 13px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-
-        .footer a {
-            color: var(--muted);
-            text-decoration: none;
-            border-bottom: 1px dashed rgba(255,255,255,0.25);
-        }
-
-        @media (max-width: 900px) {
-            .span-7, .span-6, .span-5, .span-12 { grid-column: span 12; }
-            .module-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    <link rel="stylesheet" href="eventos.css" />
 </head>
 <body>
     <div class="wrap">
@@ -307,7 +53,7 @@
 
             <div class="cta">
                 <a class="btn btn--good" href="https://wa.me/529932171855?text=Hola%20quiero%20cotizar%20Eventos%20con%20NFC%20(%20boda%2FXV%2Fcumple%20).%20Fecha%3A%20%20Invitados%3A%20%20Ciudad%3A%20">Cotizar por WhatsApp</a>
-                <a class="btn btn--accent" href="#modulos">Ver módulos</a>
+                <a class="btn btn--accent" href="eventosgaleria.html">Galería</a>
                 <a class="btn" href="index.html">Volver a inicio</a>
             </div>
         </section>
@@ -427,5 +173,40 @@
             </div>
         </footer>
     </div>
+
+    <script>
+        (function () {
+            var KEY = 'mt:privacy:ack:v1';
+            function safeGet() {
+                try { return localStorage.getItem(KEY); } catch (e) { return null; }
+            }
+            function safeSet() {
+                try { localStorage.setItem(KEY, '1'); } catch (e) {}
+            }
+
+            if (safeGet() === '1') return;
+            if (document.getElementById('mtPrivacy')) return;
+
+            var banner = document.createElement('div');
+            banner.id = 'mtPrivacy';
+            banner.className = 'mt-privacy';
+            banner.innerHTML =
+                '<div class="mt-privacy__row">' +
+                '  <div class="mt-privacy__text"><strong>Aviso de privacidad:</strong> no recopilamos ni vendemos datos personales. Este sitio puede guardar en tu dispositivo información técnica (localStorage) para recordar preferencias y facilitar el uso. Puedes borrarla desde la configuración de tu navegador.</div>' +
+                '  <div class="mt-privacy__actions">' +
+                '    <button class="mt-privacy__btn" type="button" id="mtPrivacyOk">Aceptar</button>' +
+                '  </div>' +
+                '</div>';
+
+            document.body.appendChild(banner);
+            var ok = document.getElementById('mtPrivacyOk');
+            if (ok) {
+                ok.addEventListener('click', function () {
+                    safeSet();
+                    if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+                });
+            }
+        })();
+    </script>
 </body>
 </html>

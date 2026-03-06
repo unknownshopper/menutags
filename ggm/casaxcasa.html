@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>GGM Casa x Casa</title>
     <link rel="stylesheet" href="ggm.css" />
+    <style>
+      .mt-privacy{position:fixed; left:16px; right:16px; bottom:calc(16px + env(safe-area-inset-bottom, 0px)); z-index:9999; border:1px solid rgba(255,255,255,0.14); background:rgba(0,0,0,0.72); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-radius:16px; padding:12px; color:rgba(255,255,255,0.86); box-shadow:0 18px 50px rgba(0,0,0,0.42)}
+      .mt-privacy__row{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+      .mt-privacy__text{font-size:13px; line-height:1.35; color:rgba(255,255,255,0.72)}
+      .mt-privacy__btn{cursor:pointer; border-radius:999px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.92); padding:9px 12px; font-weight:750; font-size:13px}
+    </style>
   </head>
   <body>
     <header class="ggm-header">
@@ -87,5 +93,24 @@
     </main>
 
     <script src="ggm.js"></script>
+    <script>
+      (function () {
+        var KEY = 'mt:privacy:ack:v1';
+        function safeGet(){ try { return localStorage.getItem(KEY); } catch(e){ return null; } }
+        function safeSet(){ try { localStorage.setItem(KEY,'1'); } catch(e){} }
+        if (safeGet() === '1') return;
+        if (document.getElementById('mtPrivacy')) return;
+        var banner = document.createElement('div');
+        banner.id = 'mtPrivacy';
+        banner.className = 'mt-privacy';
+        banner.innerHTML = '<div class="mt-privacy__row">' +
+          '<div class="mt-privacy__text"><strong>Aviso de privacidad:</strong> no recopilamos ni vendemos datos personales. Este sitio puede guardar en tu dispositivo información técnica (localStorage) para recordar preferencias y facilitar el uso. Puedes borrarla desde la configuración de tu navegador.</div>' +
+          '<div><button class="mt-privacy__btn" type="button" id="mtPrivacyOk">Aceptar</button></div>' +
+        '</div>';
+        document.body.appendChild(banner);
+        var ok = document.getElementById('mtPrivacyOk');
+        if (ok) ok.addEventListener('click', function(){ safeSet(); if (banner && banner.parentNode) banner.parentNode.removeChild(banner); });
+      })();
+    </script>
   </body>
 </html>

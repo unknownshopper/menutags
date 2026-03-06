@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Galería — Eventos con NFC | MenuTags</title>
+    <meta name="description" content="Galería de casos de uso: bodas, XV años, cumpleaños y eventos con NFC." />
+    <meta name="theme-color" content="#0b1220" />
+    <link rel="canonical" href="https://menutags.unknownshoppers.com/eventosgaleria.html" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MenuTags" />
+    <meta property="og:title" content="Galería — Eventos con NFC" />
+    <meta property="og:description" content="Inspiración para aplicar NFC en tu evento: bienvenida, ubicación, módulos e instrucciones." />
+    <meta property="og:url" content="https://menutags.unknownshoppers.com/eventosgaleria.html" />
+    <meta property="og:image" content="https://menutags.unknownshoppers.com/logomenutag.png" />
+    <meta property="og:image:alt" content="MenuTags" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Galería — Eventos con NFC" />
+    <meta name="twitter:description" content="Galería de casos de uso: bodas, XV años, cumpleaños y eventos con NFC." />
+    <meta name="twitter:image" content="https://menutags.unknownshoppers.com/logomenutag.png" />
+
+    <link rel="icon" href="logomenutag.png" />
+    <link rel="apple-touch-icon" href="logomenutag.png" />
+    <link rel="stylesheet" href="eventos.css" />
+</head>
+
+<body>
+    <div class="wrap">
+        <section class="hero">
+            <div class="hero-top">
+                <img class="logo" src="logomenutag.png" alt="MenuTags" />
+                <div class="brand">
+                    <strong>MenuTags</strong>
+                    <span>Galería · Eventos con NFC</span>
+                </div>
+            </div>
+
+            <h1>Galería</h1>
+            <p class="sub">Mientras se recolectan fotos reales, esta vista ya queda lista para cargar tus PNG (bodas, XV, cumpleaños, etc.).</p>
+
+            <div class="cta">
+                <a class="btn btn--accent" href="eventos.html">Volver a servicios</a>
+                <a class="btn" href="index.html">Inicio</a>
+            </div>
+        </section>
+
+        <section class="gallery" aria-label="Galería de eventos">
+            <figure class="gallery-item">
+                <img src="galeria/boda-01.png" alt="Boda — Invitación NFC" onerror="this.style.display='none'" />
+                <figcaption>Boda — Invitación NFC (placeholder)</figcaption>
+            </figure>
+
+            <figure class="gallery-item">
+                <img src="galeria/xv-01.png" alt="XV años — Ubicación y horarios" onerror="this.style.display='none'" />
+                <figcaption>XV años — Ubicación y horarios (placeholder)</figcaption>
+            </figure>
+
+            <figure class="gallery-item">
+                <img src="galeria/cumple-01.png" alt="Cumpleaños — Mesa asignada" onerror="this.style.display='none'" />
+                <figcaption>Cumpleaños — Mesa asignada (placeholder)</figcaption>
+            </figure>
+
+            <figure class="gallery-item">
+                <img src="galeria/corporativo-01.png" alt="Corporativo — Registro" onerror="this.style.display='none'" />
+                <figcaption>Corporativo — Registro (placeholder)</figcaption>
+            </figure>
+
+            <figure class="gallery-item">
+                <img src="galeria/bienvenida-01.png" alt="Bienvenida — instrucciones" onerror="this.style.display='none'" />
+                <figcaption>Bienvenida — instrucciones (placeholder)</figcaption>
+            </figure>
+
+            <figure class="gallery-item">
+                <img src="galeria/postevento-01.png" alt="Post-evento — feedback" onerror="this.style.display='none'" />
+                <figcaption>Post-evento — feedback (placeholder)</figcaption>
+            </figure>
+        </section>
+
+        <footer class="footer">
+            <div><a href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener">MENUTAGS</a> by <a href="https://unknownshoppers.com/" target="_blank" rel="noopener">The Unknown Shopper</a> · Galería</div>
+            <div>
+                <a href="eventos.html">Servicios</a>
+                &nbsp;·&nbsp;
+                <a href="index.html">Inicio</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        (function () {
+            var KEY = 'mt:privacy:ack:v1';
+            function safeGet() {
+                try { return localStorage.getItem(KEY); } catch (e) { return null; }
+            }
+            function safeSet() {
+                try { localStorage.setItem(KEY, '1'); } catch (e) {}
+            }
+
+            if (safeGet() === '1') return;
+            if (document.getElementById('mtPrivacy')) return;
+
+            var banner = document.createElement('div');
+            banner.id = 'mtPrivacy';
+            banner.className = 'mt-privacy';
+            banner.innerHTML =
+                '<div class="mt-privacy__row">' +
+                '  <div class="mt-privacy__text"><strong>Aviso de privacidad:</strong> no recopilamos ni vendemos datos personales. Este sitio puede guardar en tu dispositivo información técnica (localStorage) para recordar preferencias y facilitar el uso. Puedes borrarla desde la configuración de tu navegador.</div>' +
+                '  <div class="mt-privacy__actions">' +
+                '    <button class="mt-privacy__btn" type="button" id="mtPrivacyOk">Aceptar</button>' +
+                '  </div>' +
+                '</div>';
+
+            document.body.appendChild(banner);
+            var ok = document.getElementById('mtPrivacyOk');
+            if (ok) {
+                ok.addEventListener('click', function () {
+                    safeSet();
+                    if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

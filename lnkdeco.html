@@ -198,6 +198,52 @@
             text-decoration: none;
             border-bottom: 1px dashed rgba(255,255,255,0.25);
         }
+
+        .mt-privacy {
+            position: fixed;
+            left: 16px;
+            right: 16px;
+            bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+            z-index: 9999;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+        }
+
+        .mt-privacy__row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .mt-privacy__text {
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        .mt-privacy__actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .mt-privacy__btn {
+            cursor: pointer;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.92);
+            padding: 9px 12px;
+            font-weight: 750;
+            font-size: 13px;
+        }
     </style>
 </head>
 
@@ -284,6 +330,39 @@
         (function () {
             var yearEl = document.getElementById('mtYear');
             if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+            (function () {
+                var KEY = 'mt:privacy:ack:v1';
+                function safeGet() {
+                    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+                }
+                function safeSet() {
+                    try { localStorage.setItem(KEY, '1'); } catch (e) {}
+                }
+
+                if (safeGet() === '1') return;
+                if (document.getElementById('mtPrivacy')) return;
+
+                var banner = document.createElement('div');
+                banner.id = 'mtPrivacy';
+                banner.className = 'mt-privacy';
+                banner.innerHTML =
+                    '<div class="mt-privacy__row">' +
+                    '  <div class="mt-privacy__text"><strong>Aviso de privacidad:</strong> no recopilamos ni vendemos datos personales. Este sitio puede guardar en tu dispositivo información técnica (localStorage) para recordar preferencias y facilitar el uso. Puedes borrarla desde la configuración de tu navegador.</div>' +
+                    '  <div class="mt-privacy__actions">' +
+                    '    <button class="mt-privacy__btn" type="button" id="mtPrivacyOk">Aceptar</button>' +
+                    '  </div>' +
+                    '</div>';
+
+                document.body.appendChild(banner);
+                var ok = document.getElementById('mtPrivacyOk');
+                if (ok) {
+                    ok.addEventListener('click', function () {
+                        safeSet();
+                        if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+                    });
+                }
+            })();
 
             var params = new URLSearchParams(window.location.search || '');
             function get(k) { return (params.get(k) || '').trim(); }

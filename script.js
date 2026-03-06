@@ -4,6 +4,56 @@
         document.documentElement.style.setProperty("--vh", vh + "px");
     }
 
+    function safeGetStorage(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function safeSetStorage(key, value) {
+        try {
+            localStorage.setItem(key, value);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function ensurePrivacyBanner() {
+        var KEY = "mt:privacy:ack:v1";
+        if (safeGetStorage(KEY) === "1") return;
+        if (document.getElementById("mtPrivacy")) return;
+
+        var wrap = document.createElement("div");
+        wrap.id = "mtPrivacy";
+        wrap.className = "mt-privacy";
+        wrap.setAttribute("role", "dialog");
+        wrap.setAttribute("aria-live", "polite");
+        wrap.innerHTML =
+            '<div class="mt-privacy__row">' +
+            '  <div class="mt-privacy__text">' +
+            '    <strong>Aviso de privacidad:</strong> no recopilamos ni vendemos datos personales. Este sitio puede guardar en tu dispositivo información técnica (localStorage) para recordar preferencias y facilitar el uso. Puedes borrarla desde la configuración de tu navegador.' +
+            '  </div>' +
+            '  <div class="mt-privacy__actions">' +
+            '    <a class="mt-privacy__link" href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener">Más info</a>' +
+            '    <button class="mt-privacy__btn" type="button" id="mtPrivacyOk">Aceptar</button>' +
+            '  </div>' +
+            '</div>';
+
+        document.body.appendChild(wrap);
+
+        var ok = document.getElementById("mtPrivacyOk");
+        if (ok) {
+            ok.addEventListener("click", function () {
+                safeSetStorage(KEY, "1");
+                var el = document.getElementById("mtPrivacy");
+                if (el && el.parentNode) el.parentNode.removeChild(el);
+            });
+        }
+    }
+
     function findCartTarget() {
         return document.querySelector("[data-mt-cart]");
     }
@@ -81,6 +131,8 @@
     }
 
     setVh();
+
+    ensurePrivacyBanner();
 
     window.mtSetCartCount = setCartCount;
 

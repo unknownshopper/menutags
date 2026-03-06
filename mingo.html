@@ -19,6 +19,7 @@
 <body class="mt-theme-mingo">
     <div id="mtLoader" class="mt-loader">
         <div class="mt-loader-card">
+            <img class="mt-logo" src="mingologo.png" alt="Mingo" style="width:84px; height:84px; margin:0 auto 10px; display:block;" />
             <h2 class="mt-loader-title">Mingo Tortas Ahogadas</h2>
             <div class="mt-brand" style="margin-top:6px;">by MENUTAGS</div>
         </div>
@@ -46,12 +47,12 @@
                 <h2>Tortas ahogadas</h2>
                 <ul id="mtListTortas">
                     <li data-kind="torta" data-size="Mini">
-                        <div><strong>Torta Mini</strong> <span>($65)</span></div>
+                        <div><strong>Torta Mini</strong> <span data-field="price">(desde $59)</span></div>
                         <div class="mt-item-controls">
                             <select class="mt-input" data-field="protein">
-                                <option value="Maciza">Maciza</option>
-                                <option value="Cuerito con maciza">Cuerito con maciza</option>
-                                <option value="Camarón con panela">Camarón con panela</option>
+                                <option value="Panela">Panela</option>
+                                <option value="Carnitas">Carnitas</option>
+                                <option value="Camarón">Camarón</option>
                             </select>
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -61,12 +62,12 @@
                         </div>
                     </li>
                     <li data-kind="torta" data-size="Clásica">
-                        <div><strong>Torta Clásica</strong> <span>($85)</span></div>
+                        <div><strong>Torta Clásica</strong> <span data-field="price">(desde $89)</span></div>
                         <div class="mt-item-controls">
                             <select class="mt-input" data-field="protein">
-                                <option value="Maciza">Maciza</option>
-                                <option value="Cuerito con maciza">Cuerito con maciza</option>
-                                <option value="Camarón con panela">Camarón con panela</option>
+                                <option value="Panela">Panela</option>
+                                <option value="Carnitas">Carnitas</option>
+                                <option value="Camarón">Camarón</option>
                             </select>
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -75,13 +76,13 @@
                             </div>
                         </div>
                     </li>
-                    <li data-kind="torta" data-size="Jumbo">
-                        <div><strong>Torta Jumbo</strong> <span>($105)</span></div>
+                    <li data-kind="torta" data-size="Especial">
+                        <div><strong>Torta Especial</strong> <span data-field="price">(desde $159)</span></div>
                         <div class="mt-item-controls">
                             <select class="mt-input" data-field="protein">
-                                <option value="Maciza">Maciza</option>
-                                <option value="Cuerito con maciza">Cuerito con maciza</option>
-                                <option value="Camarón con panela">Camarón con panela</option>
+                                <option value="Panela">Panela</option>
+                                <option value="Carnitas">Carnitas</option>
+                                <option value="Camarón">Camarón</option>
                             </select>
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -97,11 +98,13 @@
                 <h2>Tacos dorados</h2>
                 <ul id="mtListTacos">
                     <li data-kind="taco" data-taco="Frijol">
-                        <div><strong>Taco Frijol</strong> <span>($65)</span></div>
+                        <div><strong>Taco dorado (Frijol)</strong> <span data-field="price">($29)</span></div>
                         <div class="mt-item-controls">
                             <select class="mt-input" data-field="protein">
-                                <option value="Maciza">Maciza</option>
-                                <option value="Cuerito con maciza">Cuerito con maciza</option>
+                                <option value="Natural">Natural</option>
+                                <option value="Panela">Panela</option>
+                                <option value="Carnitas">Carnitas</option>
+                                <option value="Camarón">Camarón</option>
                             </select>
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -111,12 +114,111 @@
                         </div>
                     </li>
                     <li data-kind="taco" data-taco="Papa">
-                        <div><strong>Taco Papa</strong> <span>($65)</span></div>
+                        <div><strong>Taco dorado (Papa)</strong> <span data-field="price">($29)</span></div>
                         <div class="mt-item-controls">
                             <select class="mt-input" data-field="protein">
-                                <option value="Maciza">Maciza</option>
-                                <option value="Cuerito con maciza">Cuerito con maciza</option>
+                                <option value="Natural">Natural</option>
+                                <option value="Panela">Panela</option>
+                                <option value="Carnitas">Carnitas</option>
+                                <option value="Camarón">Camarón</option>
                             </select>
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-kind="tacoquebrado" data-taco="Quebrado">
+                        <div><strong>Taco quebrado</strong> <span data-field="price">($55)</span></div>
+                        <div class="mt-item-controls">
+                            <select class="mt-input" data-field="protein">
+                                <option value="Panela">Panela</option>
+                                <option value="Carnitas">Carnitas</option>
+                                <option value="Camarón">Camarón</option>
+                            </select>
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mt-section" id="mtMenuSuaves">
+                <h2>Tacos suaves</h2>
+                <ul id="mtListSuaves">
+                    <li data-kind="suave" data-pack="1">
+                        <div><strong>Suaves (1 pza)</strong> <span data-field="price">($28)</span></div>
+                        <div class="mt-item-controls">
+                            <select class="mt-input" data-field="protein">
+                                <option value="Panela">Panela</option>
+                                <option value="Carnitas">Carnitas</option>
+                                <option value="Camarón">Camarón</option>
+                            </select>
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-kind="suave" data-pack="3">
+                        <div><strong>Suaves (3 pzas)</strong> <span data-field="price">($80)</span></div>
+                        <div class="mt-item-controls">
+                            <select class="mt-input" data-field="protein">
+                                <option value="Panela">Panela</option>
+                                <option value="Carnitas">Carnitas</option>
+                                <option value="Camarón">Camarón</option>
+                            </select>
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-kind="suavemix" data-pack="mix">
+                        <div><strong>Orden mix (1 de cu)</strong> <span data-field="price">($90)</span></div>
+                        <div class="mt-item-controls">
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mt-section" id="mtMenuCombos">
+                <h2>Combos</h2>
+                <ul id="mtListCombos">
+                    <li data-kind="combo" data-combo="Jalisco">
+                        <div><strong>Combo Jalisco</strong> <span data-field="price">($129)</span></div>
+                        <div class="mt-item-controls">
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-kind="combo" data-combo="Tapatío">
+                        <div><strong>Combo Tapatío</strong> <span data-field="price">($149)</span></div>
+                        <div class="mt-item-controls">
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-kind="combo" data-combo="Mingo">
+                        <div><strong>Combo Mingo</strong> <span data-field="price">($179)</span></div>
+                        <div class="mt-item-controls">
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
                                 <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
@@ -130,8 +232,8 @@
             <section class="mt-section" id="mtMenuBebidas">
                 <h2>Bebidas</h2>
                 <ul id="mtListBebidas">
-                    <li data-kind="bebida" data-bebida="Horchata">
-                        <div><strong>Horchata</strong> <span>($35)</span></div>
+                    <li data-kind="bebida" data-bebida="Coca/Fanta/Peñafiel (355ml)">
+                        <div><strong>Coca, Fanta &amp; Peñafiel (355ml)</strong> <span data-field="price">($35)</span></div>
                         <div class="mt-item-controls">
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -140,8 +242,8 @@
                             </div>
                         </div>
                     </li>
-                    <li data-kind="bebida" data-bebida="Horchata con fresa">
-                        <div><strong>Horchata con fresa</strong> <span>($35)</span></div>
+                    <li data-kind="bebida" data-bebida="Horchata de fresa (500ml)">
+                        <div><strong>Horchata de fresa (500ml)</strong> <span data-field="price">($35)</span></div>
                         <div class="mt-item-controls">
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -150,8 +252,8 @@
                             </div>
                         </div>
                     </li>
-                    <li data-kind="bebida" data-bebida="Lata GDL">
-                        <div><strong>Lata GDL</strong> <span>($35)</span></div>
+                    <li data-kind="bebida" data-bebida="Jamaica (500ml)">
+                        <div><strong>Jamaica (500ml)</strong> <span data-field="price">($35)</span></div>
                         <div class="mt-item-controls">
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -160,8 +262,18 @@
                             </div>
                         </div>
                     </li>
-                    <li data-kind="bebida" data-bebida="CocaCola">
-                        <div><strong>CocaCola</strong> <span>($35)</span></div>
+                    <li data-kind="bebida" data-bebida="Café (230ml)">
+                        <div><strong>Café (230ml)</strong> <span data-field="price">($35)</span></div>
+                        <div class="mt-item-controls">
+                            <div class="mt-qty mt-qty--compact">
+                                <button class="mt-pill" type="button" data-action="minus">-</button>
+                                <input class="mt-input" data-field="qty" inputmode="numeric" value="0" />
+                                <button class="mt-pill" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-kind="bebida" data-bebida="Coca Cola 1.25L">
+                        <div><strong>Coca Cola 1.25L</strong> <span data-field="price">($65)</span></div>
                         <div class="mt-item-controls">
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -173,11 +285,11 @@
                 </ul>
             </section>
 
-            <section class="mt-section" id="mtMenuPostres">
-                <h2>Postres</h2>
-                <ul id="mtListPostres">
-                    <li data-kind="postre" data-postre="Flan">
-                        <div><strong>Flan</strong> <span>($55)</span></div>
+            <section class="mt-section" id="mtMenuExtras">
+                <h2>Extras &amp; Postres</h2>
+                <ul id="mtListExtras">
+                    <li data-kind="extra" data-extra="Lechuguilla (355ml)">
+                        <div><strong>Lechuguilla (355ml)</strong> <span data-field="price">($49)</span></div>
                         <div class="mt-item-controls">
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -186,8 +298,8 @@
                             </div>
                         </div>
                     </li>
-                    <li data-kind="postre" data-postre="Natilla">
-                        <div><strong>Natilla</strong> <span>($55)</span></div>
+                    <li data-kind="postre" data-postre="Carlota (7oz)">
+                        <div><strong>Carlota (7oz)</strong> <span data-field="price">($40)</span></div>
                         <div class="mt-item-controls">
                             <div class="mt-qty mt-qty--compact">
                                 <button class="mt-pill" type="button" data-action="minus">-</button>
@@ -220,14 +332,14 @@
                 <ul>
                     <li>Mini</li>
                     <li>Clásica</li>
-                    <li>Jumbo</li>
+                    <li>Especial</li>
                 </ul>
 
                 <h3>Proteínas</h3>
                 <ul>
-                    <li>Maciza</li>
-                    <li>Cuerito con maciza</li>
-                    <li>Camarón con panela</li>
+                    <li>Panela</li>
+                    <li>Carnitas</li>
+                    <li>Camarón</li>
                 </ul>
             </section>
 
@@ -236,6 +348,15 @@
                 <ul>
                     <li>Frijol</li>
                     <li>Papa</li>
+                </ul>
+            </section>
+
+            <section class="mt-section mt-hidden" aria-hidden="true">
+                <h2>Tacos suaves</h2>
+                <ul>
+                    <li>1 pza</li>
+                    <li>3 pzas</li>
+                    <li>Orden mix (1 de cu)</li>
                 </ul>
             </section>
             <div class="mt-footer"><a href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener">MENUTAGS</a> by <a href="https://unknownshoppers.com/" target="_blank" rel="noopener">The Unknown Shopper</a></div>
