@@ -4,6 +4,20 @@
         document.documentElement.style.setProperty("--vh", vh + "px");
     }
 
+    function ensureLoaderFallback() {
+        var loader = document.getElementById("mtLoader");
+        if (!loader) return;
+        if (loader.classList.contains("mt-hidden")) return;
+
+        window.setTimeout(function () {
+            if (loader.classList.contains("mt-hidden")) return;
+            loader.classList.add("is-hiding");
+            window.setTimeout(function () {
+                loader.classList.add("mt-hidden");
+            }, 260);
+        }, 2600);
+    }
+
     function safeGetStorage(key) {
         try {
             return localStorage.getItem(key);
@@ -133,7 +147,8 @@
     setVh();
 
     ensurePrivacyBanner();
-
+    ensureCartFab();
+    ensureLoaderFallback();
     window.mtSetCartCount = setCartCount;
 
     window.addEventListener("mt:setCartCount", function (e) {

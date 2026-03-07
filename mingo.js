@@ -3,6 +3,14 @@
         return document.getElementById(id);
     }
 
+    function getQueryParam(name) {
+        try {
+            return new URLSearchParams(window.location.search || "").get(name);
+        } catch (e) {
+            return null;
+        }
+    }
+
     function money(n) {
         return "$" + String(n);
     }
@@ -102,10 +110,14 @@
 
     function recordSale() {
         var total = getCartTotal();
+        var t = window.mtFirebase && window.mtFirebase.getQueryParam ? window.mtFirebase.getQueryParam("t") : null;
+        if (!t) t = getQueryParam("t");
+        var tableId = t ? String(t) : null;
         var sale = {
             id: "sale_" + String(Date.now()) + "_" + String(Math.floor(Math.random() * 1e6)),
             createdAt: Date.now(),
             total: total,
+            tableId: tableId,
             items: cart.map(function (it) {
                 return {
                     kind: it.kind,

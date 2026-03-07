@@ -44,6 +44,7 @@
             id: String(o.id || ""),
             createdAt: createdAtMs,
             total: Number(o.total || 0) || 0,
+            tableId: o && o.tableId ? String(o.tableId) : null,
             items: items,
         };
     }
@@ -244,6 +245,7 @@
                       .slice(0, 80)
                       .map(function (s) {
                           var dt = new Date(s.createdAt || Date.now()).toLocaleString();
+                          var mesa = s.tableId ? ("Mesa: " + String(s.tableId)) : "";
                           var lines = (s.items || [])
                               .map(function (it) {
                                   var label = it.kind || "item";
@@ -257,7 +259,7 @@
                           return (
                               "<li>" +
                               "<div style=\"display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;\">" +
-                              "<strong>" + dt + "</strong>" +
+                              "<strong>" + dt + (mesa ? " · <span style=\\\"opacity:0.85\\\">" + mesa + "</span>" : "") + "</strong>" +
                               "<strong>" + money(s.total) + "</strong>" +
                               "</div>" +
                               "<div style=\"opacity:0.9; margin-top:6px;\">" + (lines || "—") + "</div>" +
@@ -397,6 +399,7 @@
                           .slice(0, 80)
                           .map(function (s) {
                               var dt = new Date(s.createdAt || Date.now()).toLocaleString();
+                              var mesa = s.tableId ? ("Mesa: " + String(s.tableId)) : "";
                               var lines = (s.items || [])
                                   .map(function (it) {
                                       var label = it.kind || "item";
@@ -410,7 +413,7 @@
                               return (
                                   "<li>" +
                                   "<div style=\"display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;\">" +
-                                  "<strong>" + dt + "</strong>" +
+                                  "<strong>" + dt + (mesa ? " · <span style=\\\"opacity:0.85\\\">" + mesa + "</span>" : "") + "</strong>" +
                                   "<strong>" + money(s.total) + "</strong>" +
                                   "</div>" +
                                   "<div style=\"opacity:0.9; margin-top:6px;\">" + (lines || "—") + "</div>" +
