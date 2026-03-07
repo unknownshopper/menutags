@@ -301,6 +301,8 @@
         var emailEl = qs("mrEmail");
         var passEl = qs("mrPass");
         var sourceNoteEl = qs("mrSourceNote");
+        var summarySection = qs("mrSummary");
+        var salesSection = qs("mrSales");
 
         var mode = "local";
         var fsSales = [];
@@ -317,6 +319,12 @@
                         ? "Este reporte se basa en pedidos guardados en Firestore (multi-dispositivo)."
                         : "Este reporte se basa en pedidos enviados desde este dispositivo/navegador (localStorage).";
             }
+        }
+
+        function setReportVisible(visible) {
+            var show = !!visible;
+            if (summarySection) summarySection.style.display = show ? "" : "none";
+            if (salesSection) salesSection.style.display = show ? "" : "none";
         }
 
         function getActiveSales() {
@@ -442,12 +450,15 @@
                 .listOrdersByRange("mingo", startIso, endIso, 800)
                 .then(function (orders) {
                     fsSales = (orders || []).map(makeSaleFromOrderDoc).filter(Boolean);
-                    setAuthStatus("Sesión activa.");
+                    setAuthStatus("Sesión activa · " + String((orders && orders.length) || 0) + " pedidos en este rango.");
                     setMode("firestore");
                     refresh();
                 })
-                .catch(function () {
-                    setAuthStatus("No se pudo leer Firestore (verifica owners UID y Rules).");
+                .catch(function (err) {
+                    var code = err && err.code ? String(err.code) : "";
+                    setAuthStatus(
+                        "No se pudo leer Firestore (verifica owners UID y Rules)" + (code ? " · " + code : "") + "."
+                    );
                     setMode("local");
                     refresh();
                 });
@@ -456,18 +467,20 @@
         function setupAuthUi() {
             if (!window.mtFirebase || !window.mtFirebase.onAuthStateChanged) {
                 setAuthStatus("Firebase no está disponible.");
+                setReportVisible(false);
                 return;
             }
 
             window.mtFirebase.onAuthStateChanged(function (user) {
                 if (user) {
                     if (logoutBtn) logoutBtn.style.display = "inline-flex";
+                    setReportVisible(true);
                     loadFirestoreForCurrentRange();
                 } else {
                     if (logoutBtn) logoutBtn.style.display = "none";
                     setAuthStatus("No has iniciado sesión.");
+                    setReportVisible(false);
                     setMode("local");
-                    refresh();
                 }
             });
 
@@ -498,6 +511,39 @@
                     window.mtFirebase.logout();
                 });
             }
+        }
+
+        function setupAuthUiWhenReady() {
+            if (window.mtFirebase && window.mtFirebase.onAuthStateChanged) {
+                setupAuthUi();
+                return;
+            }
+
+            setAuthStatus("Cargando Firebase...");
+
+            var p = window.mtFirebaseReady && window.mtFirebaseReady.then ? window.mtFirebaseReady : null;
+            if (p) {
+                p.then(function () {
+                    setupAuthUi();
+                }).catch(function () {
+                    setAuthStatus("Firebase no está disponible.");
+                });
+                return;
+            }
+
+            var tries = 0;
+            var timer = window.setInterval(function () {
+                tries++;
+                if (window.mtFirebase && window.mtFirebase.onAuthStateChanged) {
+                    window.clearInterval(timer);
+                    setupAuthUi();
+                    return;
+                }
+                if (tries > 40) {
+                    window.clearInterval(timer);
+                    setAuthStatus("Firebase no está disponible.");
+                }
+            }, 250);
         }
 
         var dayBtn = qs("mrRangeDay");
@@ -532,7 +578,7 @@
             });
 
         refresh();
-        setupAuthUi();
+        setupAuthUiWhenReady();
     }
 
     bind();
