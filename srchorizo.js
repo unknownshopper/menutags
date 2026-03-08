@@ -40,6 +40,7 @@
     var totalEl = qs("szTotal");
     var waBtn = qs("szWhatsApp");
     var clearBtn = qs("szClear");
+    var tableSel = qs("szTable");
 
     if (!listChoripan || !listGringas || !listTacos || !listParrilladas || !listBebidas || !listPostres || !listExtras || !cartList || !totalEl || !waBtn || !clearBtn) {
         return;
@@ -305,6 +306,12 @@
     function buildTicketText() {
         var lines = [HEADER, ""]; 
 
+        var tableNo = (tableSel && tableSel.value) ? String(tableSel.value).trim() : "";
+        if (tableNo) {
+            lines.push("Mesa: " + tableNo);
+            lines.push("");
+        }
+
         if (seatId) {
             lines.push("Asiento: " + seatId);
             if (tabId) lines.push("Cuenta: " + tabId);
@@ -346,6 +353,7 @@
     }
 
     function makeFirestoreOrderRecord() {
+        var tableNo = (tableSel && tableSel.value) ? String(tableSel.value).trim() : "";
         var items = cart.map(function (it) {
             var title = String(it.title || "Producto");
             var qty = safeParseInt(it.qty) || 0;
@@ -365,6 +373,7 @@
         return {
             source: "operator",
             status: "sent",
+            tableNo: tableNo || null,
             seatId: seatId,
             tabId: tabId,
             currency: "MXN",
