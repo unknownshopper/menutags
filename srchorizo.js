@@ -434,9 +434,22 @@
         renderCart();
     }
 
+    function closestEl(start, selector) {
+        var el = start;
+        if (!el) return null;
+        if (el.nodeType === 3) el = el.parentElement;
+        while (el && el !== document) {
+            if (el.matches && el.matches(selector)) return el;
+            el = el.parentElement;
+        }
+        return null;
+    }
+
     function bindList(listEl) {
         listEl.addEventListener("click", function (e) {
-            var plusBtn = e.target.closest('button[data-action="plus"]');
+            if (orderLocked) return;
+
+            var plusBtn = closestEl(e.target, 'button[data-action="plus"]');
             if (plusBtn) {
                 var li = plusBtn.closest("li");
                 var input = li && li.querySelector('[data-field="qty"]');
@@ -446,7 +459,7 @@
                 return;
             }
 
-            var minusBtn = e.target.closest('button[data-action="minus"]');
+            var minusBtn = closestEl(e.target, 'button[data-action="minus"]');
             if (minusBtn) {
                 var liMinus = minusBtn.closest("li");
                 var inputMinus = liMinus && liMinus.querySelector('[data-field="qty"]');
@@ -456,7 +469,7 @@
                 return;
             }
 
-            var addBtn = e.target.closest('button[data-action="add"]');
+            var addBtn = closestEl(e.target, 'button[data-action="add"]');
             if (addBtn) {
                 return;
             }
