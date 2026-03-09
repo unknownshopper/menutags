@@ -7,7 +7,33 @@
     <meta name="description" content="Acceso administrativo simple: atajos e instrucciones." />
     <meta name="theme-color" content="#0b1220" />
 
-    <link rel="stylesheet" href="style.css?v=3" />
+    <link rel="stylesheet" href="style.css?v=6" />
+    <style>
+        .lxa-auth-grid {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        @media (min-width: 720px) {
+            .lxa-auth-grid {
+                grid-template-columns: 1fr 1fr;
+                align-items: end;
+            }
+        }
+
+        .lxa-auth-actions {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        @media (min-width: 720px) {
+            .lxa-auth-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body class="mt-theme-lunchxpress">
@@ -21,115 +47,107 @@
                 </div>
             </div>
             <div class="mt-actions">
-                <a class="mt-pill" href="lunchxpress.html">Menú</a>
+                <a class="mt-pill" id="lxaGoMenu" href="lunchxpress.html">Menú</a>
+                <button class="mt-btn" id="lxaHeaderLogout" type="button" style="display:none;">Salir</button>
             </div>
         </header>
 
         <main class="mt-main">
             <section class="mt-section" id="lxaAuth">
                 <h2>Acceso</h2>
-                <div class="mt-row" style="margin-top:12px; gap:10px; flex-wrap:wrap; align-items:flex-end;">
-                    <label style="display:flex; flex-direction:column; gap:6px;">
+                <div class="mt-status" id="lxaAuthHelp" style="opacity:0.9; margin-top:12px; line-height:1.5; font-weight:650; letter-spacing:0.02em;">
+                    Inicia sesión para ver el resumen del día.
+                </div>
+
+                <div class="lxa-auth-grid" id="lxaAuthFields">
+                    <label class="mt-field">
                         <span class="mt-brand">Email</span>
                         <input class="mt-input" type="email" id="lxaEmail" autocomplete="username" />
                     </label>
-                    <label style="display:flex; flex-direction:column; gap:6px;">
+                    <label class="mt-field">
                         <span class="mt-brand">Contraseña</span>
                         <input class="mt-input" type="password" id="lxaPass" autocomplete="current-password" />
                     </label>
-                    <div class="mt-row" style="gap:10px; flex-wrap:wrap;">
-                        <button class="mt-btn" type="button" id="lxaLogin">Entrar</button>
-                        <button class="mt-pill" type="button" id="lxaLogout" style="display:none;">Salir</button>
-                    </div>
                 </div>
-                <div class="mt-status" id="lxaAuthStatus" style="margin-top:12px;">No has iniciado sesión.</div>
+
+                <div class="lxa-auth-actions">
+                    <button class="mt-btn" type="button" id="lxaAuthToggle">Entrar</button>
+                </div>
+
+                <div class="mt-status" id="lxaAuthStatus" style="margin-top:12px;">Cargando sesión...</div>
             </section>
 
             <div id="lxaApp" style="display:none;">
-            <section class="mt-section">
-                <h2>Accesos</h2>
-                <div class="mt-row" style="gap:10px; flex-wrap:wrap; margin-top:12px;">
-                    <a class="mt-btn" href="https://wa.me/5219933201843" target="_blank" rel="noopener">Abrir WhatsApp (pedidos)</a>
-                    <a class="mt-pill" href="lunchxpress.html">Abrir menú NFC</a>
-                </div>
-            </section>
+                <section class="mt-section">
+                    <h2>Accesos</h2>
+                    <div class="mt-row" style="gap:10px; flex-wrap:wrap; margin-top:12px;">
+                        <a class="mt-btn" href="https://wa.me/5219933201843" target="_blank" rel="noopener" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; text-align:center; color:rgba(121, 26, 20, 0.96);">
+                            <strong style="display:block;">WhatsApp</strong>
+                            <span style="display:block; opacity:0.82; font-weight:750; letter-spacing:0.08em; text-transform:uppercase; font-size:12px;">Ver pedidos</span>
+                        </a>
+                        <a class="mt-btn" href="lunchxpress.html" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; text-align:center; color:rgba(121, 26, 20, 0.96);">
+                            <strong style="display:block;">Menú</strong>
+                            <span style="display:block; opacity:0.82; font-weight:750; letter-spacing:0.08em; text-transform:uppercase; font-size:12px;">Abrir menú público</span>
+                        </a>
+                    </div>
+                </section>
 
-            <section class="mt-section" id="lxaReport">
-                <h2>Resumen de hoy</h2>
-                <div class="mt-status" id="lxaReportStatus" style="margin-top:12px; opacity:0.92;">Cargando...</div>
-                <div class="mt-row" id="lxaReportTotals" style="margin-top:12px; gap:10px; flex-wrap:wrap;"></div>
-                <ul class="mt-list" id="lxaReportList" style="margin-top:12px;"></ul>
-            </section>
+                <section class="mt-section" id="lxaReport">
+                    <h2>Resumen de hoy</h2>
+                    <div class="mt-status" id="lxaReportStatus" style="margin-top:12px;">Cargando...</div>
+                    <div class="mt-row" id="lxaReportTotals" style="margin-top:12px; gap:10px; flex-wrap:wrap;"></div>
+                    <ul class="mt-list" id="lxaReportList" style="margin-top:12px;"></ul>
+                </section>
 
-            <section class="mt-section">
-                <h2>Cómo revisar pedidos</h2>
-                <div class="mt-status" style="opacity:0.92; margin-top:12px; line-height:1.5;">
-                    Los pedidos se reciben por WhatsApp.
-                    <br />
-                    Para ver los pedidos del día:
-                    <br />
-                    1) Abre el chat de Lunch Express.
-                    <br />
-                    2) Filtra por fecha / busca por "Lunch Express — Pedido".
-                    <br />
-                    3) Revisa el total y cobra con el método que prefieras.
-                </div>
-            </section>
+                <section class="mt-section">
+                    <h2>Operación</h2>
+                    <div class="mt-status" style="opacity:0.92; margin-top:12px; line-height:1.5; font-weight:650; letter-spacing:0.02em;">
+                        <strong>Cómo revisar pedidos</strong>
+                        <br />
+                        Los pedidos se reciben por WhatsApp. Busca por “Lunch Express — Pedido”.
+                        <br />
+                        <br />
+                        <strong>Aviso de privacidad</strong>
+                        <br />
+                        El campo “Nombre” es opcional y solo ayuda a identificar el pedido.
+                        Al enviar por WhatsApp, se registra el pedido para generar el resumen del día.
+                        No se solicita ni se guarda número telefónico del cliente desde este sistema.
+                    </div>
+                </section>
 
-            <section class="mt-section">
-                <h2>Aviso de privacidad (operación)</h2>
-                <div class="mt-status" style="opacity:0.92; margin-top:12px; line-height:1.5;">
-                    En el menú, el campo "Nombre" es opcional.
-                    <br />
-                    Si el cliente lo escribe, se usa únicamente para identificar su pedido.
-                    <br />
-                    Al enviar el pedido por WhatsApp, se registra el pedido (productos, cantidades, totales, propina y nota si aplica) para generar el resumen del día.
-                    <br />
-                    No se solicita ni se guarda número telefónico del cliente desde este sistema.
-                </div>
-            </section>
-
-            <div class="mt-footer">
-                <div class="mt-led" role="contentinfo" aria-label="Créditos">
-                    <div class="mt-led__track" aria-hidden="true">
-                        <div class="mt-led__content">
-                            <span class="mt-led__gap">•</span>
-                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
-                            <span class="mt-led__sep">by</span>
-                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
-                            <span class="mt-led__gap">•</span>
-                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
-                            <span class="mt-led__sep">by</span>
-                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
-                            <span class="mt-led__gap">•</span>
-                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
-                            <span class="mt-led__sep">by</span>
-                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
-                            <span class="mt-led__gap">•</span>
+                <div class="mt-footer">
+                    <div class="mt-led" role="contentinfo" aria-label="Créditos">
+                        <div class="mt-led__track" aria-hidden="true">
+                            <div class="mt-led__content">
+                                <span class="mt-led__gap">•</span>
+                                <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                                <span class="mt-led__sep">by</span>
+                                <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                                <span class="mt-led__gap">•</span>
+                                <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                                <span class="mt-led__sep">by</span>
+                                <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                                <span class="mt-led__gap">•</span>
+                            </div>
+                            <div class="mt-led__content">
+                                <span class="mt-led__gap">•</span>
+                                <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                                <span class="mt-led__sep">by</span>
+                                <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                                <span class="mt-led__gap">•</span>
+                                <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                                <span class="mt-led__sep">by</span>
+                                <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                                <span class="mt-led__gap">•</span>
+                            </div>
                         </div>
-                        <div class="mt-led__content">
-                            <span class="mt-led__gap">•</span>
+                        <div class="mt-led__sr">
                             <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
-                            <span class="mt-led__sep">by</span>
+                            by
                             <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
-                            <span class="mt-led__gap">•</span>
-                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
-                            <span class="mt-led__sep">by</span>
-                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
-                            <span class="mt-led__gap">•</span>
-                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
-                            <span class="mt-led__sep">by</span>
-                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
-                            <span class="mt-led__gap">•</span>
                         </div>
                     </div>
-                    <div class="mt-led__sr">
-                        <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
-                        by
-                        <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
-                    </div>
                 </div>
-            </div>
             </div>
         </main>
     </div>
@@ -142,17 +160,23 @@
             var RESTAURANT_ID = "lunchxpress";
             var emailEl = document.getElementById("lxaEmail");
             var passEl = document.getElementById("lxaPass");
-            var loginBtn = document.getElementById("lxaLogin");
-            var logoutBtn = document.getElementById("lxaLogout");
+            var authFieldsEl = document.getElementById("lxaAuthFields");
+            var authHelpEl = document.getElementById("lxaAuthHelp");
+            var authToggleBtn = document.getElementById("lxaAuthToggle");
+            var goMenuBtn = document.getElementById("lxaGoMenu");
+            var headerLogoutBtn = document.getElementById("lxaHeaderLogout");
             var statusEl = document.getElementById("lxaAuthStatus");
             var appEl = document.getElementById("lxaApp");
             var reportStatusEl = document.getElementById("lxaReportStatus");
             var reportTotalsEl = document.getElementById("lxaReportTotals");
             var reportListEl = document.getElementById("lxaReportList");
+            var lastUserUid = null;
 
             function setStatus(t) {
                 if (!statusEl) return;
-                statusEl.textContent = String(t || "");
+                var msg = String(t || "");
+                statusEl.textContent = msg;
+                statusEl.style.display = msg ? "block" : "none";
             }
 
             function setAppVisible(on) {
@@ -164,6 +188,16 @@
                 var num = Number(n || 0);
                 if (!isFinite(num)) num = 0;
                 return "$" + num.toFixed(2);
+            }
+
+            function escHtml(v) {
+                var s = String(v == null ? "" : v);
+                return s
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/\"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
             }
 
             function setReportStatus(t) {
@@ -199,7 +233,7 @@
             function renderOrdersList(orders) {
                 if (!reportListEl) return;
                 if (!orders || !orders.length) {
-                    reportListEl.innerHTML = "<li class=\"mt-item\"><div class=\"mt-status\">Aún no hay pedidos hoy.</div></li>";
+                    reportListEl.innerHTML = "<li class=\"mt-item\"><div style=\"opacity:0.9; font-weight:650;\">Aún no hay pedidos hoy.</div></li>";
                     return;
                 }
 
@@ -207,10 +241,54 @@
                 reportListEl.innerHTML = show.map(function (o) {
                     var name = o.customerName ? String(o.customerName) : "";
                     var note = o.note ? String(o.note) : "";
-                    var line1 = '<div><strong>' + fmtMoney(o.total) + '</strong>' + (o.tip ? ' <span style="opacity:0.85;">(propina ' + fmtMoney(o.tip) + ')</span>' : '') + '</div>';
-                    var line2 = '<div class="mt-status" style="opacity:0.9;">' + (name ? ('Nombre: ' + name) : 'Nombre: (sin nombre)') + '</div>';
-                    var line3 = note ? ('<div class="mt-status" style="opacity:0.86;">Nota: ' + note + '</div>') : '';
-                    return '<li class="mt-item"><div style="width:100%;">' + line1 + line2 + line3 + '</div></li>';
+                    var items = Array.isArray(o.items) ? o.items : [];
+                    var hasDetail = (items && items.length) || note;
+
+                    var summaryTop =
+                        '<div class="mt-row" style="justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:baseline;">' +
+                        '<div><strong>' + fmtMoney(o.total) + '</strong>' + (o.tip ? ' <span style="opacity:0.85;">(propina ' + fmtMoney(o.tip) + ')</span>' : '') + '</div>' +
+                        '</div>';
+
+                    var meta1 = '<div style="opacity:0.9; margin-top:8px; font-weight:650;">' + (name ? ('Nombre: ' + escHtml(name)) : 'Nombre: (sin nombre)') + '</div>';
+
+                    if (!hasDetail) {
+                        return '<li class="mt-item"><div style="width:100%;">' + summaryTop + meta1 + '</div></li>';
+                    }
+
+                    var itemsHtml = '';
+                    if (items && items.length) {
+                        itemsHtml =
+                            '<div style="margin-top:10px; display:grid; gap:6px;">' +
+                            items
+                                .map(function (it) {
+                                    var qty = Number(it && it.qty) || 0;
+                                    var title = it && it.title ? escHtml(it.title) : 'Producto';
+                                    var unit = fmtMoney(it && it.unit);
+                                    var lineTotal = fmtMoney(it && it.lineTotal);
+                                    return (
+                                        '<div class="mt-row" style="justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:baseline;">' +
+                                        '<div style="font-weight:750;">' + escHtml(String(qty)) + 'x ' + title + '</div>' +
+                                        '<div style="opacity:0.92; font-weight:750;">' + lineTotal + '</div>' +
+                                        '<div style="width:100%; opacity:0.82; font-weight:650;">' + unit + ' c/u</div>' +
+                                        '</div>'
+                                    );
+                                })
+                                .join('') +
+                            '</div>';
+                    }
+
+                    var noteHtml = note ? ('<div style="opacity:0.86; margin-top:10px; font-weight:650;">Nota: ' + escHtml(note) + '</div>') : '';
+
+                    return (
+                        '<li class="mt-item">' +
+                        '<details style="width:100%;">' +
+                        '<summary style="list-style:none; cursor:pointer;">' +
+                        '<div style="width:100%;">' + summaryTop + meta1 + '</div>' +
+                        '</summary>' +
+                        '<div style="margin-top:10px;">' + itemsHtml + noteHtml + '</div>' +
+                        '</details>' +
+                        '</li>'
+                    );
                 }).join("");
             }
 
@@ -254,25 +332,49 @@
                 window.mtFirebase.onAuthStateChanged(function (user) {
                     if (user) {
                         if (ALLOWED_UID && user.uid !== ALLOWED_UID) {
-                            if (logoutBtn) logoutBtn.style.display = "none";
+                            lastUserUid = null;
+                            if (authToggleBtn) authToggleBtn.textContent = "Entrar";
                             setStatus("Acceso denegado.");
                             setAppVisible(false);
+                            if (authFieldsEl) authFieldsEl.style.display = "grid";
+                            if (authHelpEl) authHelpEl.style.display = "block";
+                            if (headerLogoutBtn) headerLogoutBtn.style.display = "none";
+                            if (document.getElementById("lxaAuth")) document.getElementById("lxaAuth").style.display = "block";
                             if (window.mtFirebase && window.mtFirebase.logout) window.mtFirebase.logout();
                             return;
                         }
-                        if (logoutBtn) logoutBtn.style.display = "inline-flex";
-                        setStatus("Sesión activa.");
+                        lastUserUid = String(user.uid || "");
+                        if (authToggleBtn) authToggleBtn.textContent = "Salir";
+                        setStatus("");
                         setAppVisible(true);
+                        if (authFieldsEl) authFieldsEl.style.display = "none";
+                        if (authHelpEl) authHelpEl.style.display = "none";
+                        if (headerLogoutBtn) headerLogoutBtn.style.display = "inline-flex";
+                        if (document.getElementById("lxaAuth")) document.getElementById("lxaAuth").style.display = "none";
                         loadTodayReport();
                     } else {
-                        if (logoutBtn) logoutBtn.style.display = "none";
+                        lastUserUid = null;
+                        if (authToggleBtn) authToggleBtn.textContent = "Entrar";
                         setStatus("No has iniciado sesión.");
                         setAppVisible(false);
+                        if (authFieldsEl) authFieldsEl.style.display = "grid";
+                        if (authHelpEl) authHelpEl.style.display = "block";
+                        if (headerLogoutBtn) headerLogoutBtn.style.display = "none";
+                        if (document.getElementById("lxaAuth")) document.getElementById("lxaAuth").style.display = "block";
                     }
                 });
 
-                if (loginBtn) {
-                    loginBtn.addEventListener("click", function () {
+                if (authToggleBtn) {
+                    authToggleBtn.addEventListener("click", function () {
+                        if (!window.mtFirebase) return;
+
+                        if (lastUserUid) {
+                            if (!window.mtFirebase.logout) return;
+                            setStatus("Cerrando sesión...");
+                            window.mtFirebase.logout();
+                            return;
+                        }
+
                         var email = emailEl ? String(emailEl.value || "").trim() : "";
                         var pass = passEl ? String(passEl.value || "").trim() : "";
                         if (!email || !pass) {
@@ -288,9 +390,31 @@
                     });
                 }
 
-                if (logoutBtn) {
-                    logoutBtn.addEventListener("click", function () {
+                if (goMenuBtn) {
+                    goMenuBtn.addEventListener("click", function (e) {
+                        try {
+                            e.preventDefault();
+                        } catch (e2) {}
+
+                        var href = goMenuBtn.getAttribute("href") || "lunchxpress.html";
+
+                        if (window.mtFirebase && window.mtFirebase.logout) {
+                            window.mtFirebase.logout().catch(function () {
+                                return;
+                            }).then(function () {
+                                window.location.href = href;
+                            });
+                            return;
+                        }
+
+                        window.location.href = href;
+                    });
+                }
+
+                if (headerLogoutBtn) {
+                    headerLogoutBtn.addEventListener("click", function () {
                         if (!window.mtFirebase || !window.mtFirebase.logout) return;
+                        setStatus("Cerrando sesión...");
                         window.mtFirebase.logout();
                     });
                 }

@@ -498,10 +498,23 @@
      border-color: rgba(159, 42, 33, 0.30);
  }
 
+ .mt-theme-lunchxpress .mt-btn,
+ .mt-theme-lunchxpress .mt-pill,
+ .mt-theme-lunchxpress .mt-btn *,
+ .mt-theme-lunchxpress .mt-pill * {
+     -webkit-text-fill-color: rgba(121, 26, 20, 0.96) !important;
+ }
+
+ .mt-theme-lunchxpress a.mt-btn,
+ .mt-theme-lunchxpress a.mt-pill,
+ .mt-theme-lunchxpress a.mt-btn *,
+ .mt-theme-lunchxpress a.mt-pill * {
+     color: rgba(121, 26, 20, 0.96) !important;
+ }
+
  .mt-theme-lunchxpress .mt-total {
      border-top-color: rgba(159, 42, 33, 0.16);
  }
-
 
  .mt-theme-lunchxpress .mt-cart-fab {
      color: rgba(121, 26, 20, 0.96);
@@ -521,6 +534,56 @@
      color: rgba(121, 26, 20, 0.82);
      font-weight: 750;
      letter-spacing: 0.02em;
+ }
+
+ @media (max-width: 520px) {
+    .mt-theme-lunchxpress .mt-container {
+        width: min(620px, calc(100% - 24px));
+        padding: 18px 0 38px;
+    }
+
+    .mt-theme-lunchxpress h1 {
+        font-size: 24px;
+    }
+
+    .mt-theme-lunchxpress h2 {
+        font-size: 17px;
+        margin: 0 0 8px;
+    }
+
+    .mt-theme-lunchxpress .mt-main {
+        gap: 12px;
+    }
+
+    .mt-theme-lunchxpress .mt-section {
+        padding: 14px;
+    }
+
+    .mt-theme-lunchxpress .mt-btn,
+    .mt-theme-lunchxpress .mt-pill {
+        font-weight: 750;
+    }
+
+    .mt-theme-lunchxpress .mt-header {
+        padding: 16px 14px 12px;
+    }
+
+     .mt-theme-lunchxpress .mt-logo {
+         width: 84px;
+         height: 84px;
+         border-radius: 14px;
+     }
+ }
+
+ @media (max-width: 380px) {
+     .mt-theme-lunchxpress .mt-container {
+         width: calc(100% - 20px);
+     }
+
+     .mt-theme-lunchxpress .mt-logo {
+         width: 76px;
+         height: 76px;
+     }
  }
 
  .mt-theme-lunchxpress .mt-footer a {
@@ -846,6 +909,23 @@
 
      .mt-theme-lunchxpress .mt-status {
          letter-spacing: 0.02em;
+     }
+ }
+
+ @media (max-width: 520px) {
+     .mt-theme-lunchxpress #lxaAuth .mt-row {
+         display: grid;
+         grid-template-columns: 1fr;
+         align-items: stretch;
+     }
+
+     .mt-theme-lunchxpress #lxaAuth .mt-row > * {
+         width: 100%;
+         max-width: 100%;
+     }
+
+     .mt-theme-lunchxpress #lxaAuth label {
+         width: 100%;
      }
  }
 
