@@ -1,0 +1,805 @@
+x<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Lunch Xpress — Menú</title>
+    <meta name="description" content="Menú Lunch Xpress: arma tu pedido y envíalo por WhatsApp." />
+    <meta name="theme-color" content="#0b1220" />
+
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+
+<body class="mt-theme-lunchxpress">
+    <div class="mt-container">
+        <header class="mt-header">
+            <div class="mt-header-left">
+                <img class="mt-logo" src="logolunch.png" alt="Lunch Xpress" />
+                <div class="mt-header-text">
+                    <div class="mt-brand">MenuTags</div>
+                    <h1>Lunch Xpress</h1>
+                </div>
+            </div>
+            <div class="mt-actions"></div>
+        </header>
+
+        <main class="mt-main">
+            <section class="mt-section">
+                <h2>MENÚ</h2>
+                <div class="mt-status" style="opacity:0.9; margin-top:10px;">
+                    Selecciona cantidades y al final envía tu pedido por WhatsApp.
+                </div>
+                <div class="mt-row" style="gap:10px; flex-wrap:wrap; margin-top:12px;">
+                    <a class="mt-pill" href="#lxTacosSection">Tacos</a>
+                    <a class="mt-pill" href="#lxTortasSection">Tortas</a>
+                    <a class="mt-pill" href="#lxDesayunosSection">Desayunos</a>
+                    <a class="mt-pill" href="#lxHuevosSection">Huevos</a>
+                    <a class="mt-pill" href="#lxCheckout">Tu pedido</a>
+                </div>
+            </section>
+
+            <section class="mt-section" id="lxTacosSection">
+                <h2>TACOS</h2>
+                <ul class="mt-list" id="lxTacos">
+                    <li class="mt-item" data-kind="item" data-item="Taco asada de res" data-price="15">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Asada de res</div>
+                            <div class="mt-item__meta">$15.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Taco empanizado de pollo" data-price="15">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Empanizado de pollo</div>
+                            <div class="mt-item__meta">$15.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Taco asada + chorizo" data-price="20">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Asada + chorizo</div>
+                            <div class="mt-item__meta">$20.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Taco pierna adobada" data-price="15">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Pierna adobada</div>
+                            <div class="mt-item__meta">$15.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Gringa asada" data-price="40">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Gringa asada</div>
+                            <div class="mt-item__meta">$40.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Gringa empanizado" data-price="40">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Gringa empanizado</div>
+                            <div class="mt-item__meta">$40.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Gringa pierna" data-price="35">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Gringa pierna</div>
+                            <div class="mt-item__meta">$35.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mt-section" id="lxTortasSection">
+                <h2>TORTAS</h2>
+                <ul class="mt-list" id="lxTortas">
+                    <li class="mt-item" data-kind="item" data-item="Torta pierna" data-price="65">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Pierna</div>
+                            <div class="mt-item__meta">$65.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Torta pierna + jamón" data-price="75">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Pierna + jamón</div>
+                            <div class="mt-item__meta">$75.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Torta pierna + chorizo" data-price="75">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Pierna + chorizo</div>
+                            <div class="mt-item__meta">$75.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Torta cubana" data-price="85">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Cubana</div>
+                            <div class="mt-item__meta">$85.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Torta carne asada res" data-price="85">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Carne Asada Res</div>
+                            <div class="mt-item__meta">$85.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Torta empanizado pollo" data-price="85">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Empanizado pollo</div>
+                            <div class="mt-item__meta">$85.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mt-section" id="lxDesayunosSection">
+                <h2>DESAYUNOS</h2>
+                <ul class="mt-list" id="lxDesayunos">
+                    <li class="mt-item" data-kind="item" data-item="Chilaquiles" data-price="70">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Chilaquiles</div>
+                            <div class="mt-item__meta">(c/frijoles, platanitos fritos) · $70.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                <h3 style="margin-top:16px;">Ing. Extras (para chilaquiles)</h3>
+                <ul class="mt-list" id="lxExtras">
+                    <li class="mt-item" data-kind="item" data-item="Extra: 1 huevo" data-price="15">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">1 huevo</div>
+                            <div class="mt-item__meta">$15.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Extra: chorizo" data-price="25">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">chorizo</div>
+                            <div class="mt-item__meta">$25.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Extra: carne asada" data-price="30">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">carne asada</div>
+                            <div class="mt-item__meta">$30.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Extra: empanizado pollo" data-price="30">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">empanizado pollo</div>
+                            <div class="mt-item__meta">$30.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Extra: queso de hebra" data-price="25">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">queso de hebra</div>
+                            <div class="mt-item__meta">$25.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+            </section>
+
+            <section class="mt-section" id="lxHuevosSection">
+                <h2>HUEVOS</h2>
+                <div class="mt-status" style="opacity:0.9; margin-top:8px;">Todos los platillos incluyen frijoles refritos y platanitos fritos.</div>
+                <ul class="mt-list" id="lxHuevos">
+                    <li class="mt-item" data-kind="item" data-item="Huevos a la mexicana" data-price="75">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Huevos a la mexicana</div>
+                            <div class="mt-item__meta">$75.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Huevos estrellados" data-price="65">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Huevos estrellados</div>
+                            <div class="mt-item__meta">$65.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Huevos c/ jamón" data-price="75">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Huevos c/ jamón</div>
+                            <div class="mt-item__meta">$75.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Huevos c/ chorizo" data-price="75">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Huevos c/ chorizo</div>
+                            <div class="mt-item__meta">$75.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mt-item" data-kind="item" data-item="Huevos rancheros" data-price="75">
+                        <div class="mt-item__left">
+                            <div class="mt-item__title">Huevos Rancheros</div>
+                            <div class="mt-item__meta">$75.00</div>
+                        </div>
+                        <div class="mt-item__right">
+                            <div class="mt-qty">
+                                <button class="mt-qty__btn" type="button" data-action="minus">-</button>
+                                <input class="mt-input mt-qty__input" inputmode="numeric" data-field="qty" value="0" />
+                                <button class="mt-qty__btn" type="button" data-action="plus">+</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mt-section" id="lxCheckout" data-mt-cart>
+                <h2>Tu pedido</h2>
+
+                <div class="mt-row" style="gap:10px; flex-wrap:wrap; align-items:flex-end;">
+                    <label style="display:flex; flex-direction:column; gap:6px; min-width: 220px;">
+                        <span class="mt-brand">Nombre (opcional)</span>
+                        <input class="mt-input" id="lxName" placeholder="Si gustas, para registrarte como cliente" />
+                    </label>
+                    <label style="display:flex; flex-direction:column; gap:6px; min-width: 260px;">
+                        <span class="mt-brand">Nota (opcional)</span>
+                        <input class="mt-input" id="lxNote" placeholder="Ej. sin cebolla, para llevar..." />
+                    </label>
+                    <label class="lx-tip-wrap" style="display:flex; flex-direction:column; gap:6px; min-width: 160px;">
+                        <span class="mt-brand">Propina (opcional)</span>
+                        <input class="mt-input" id="lxTip" inputmode="decimal" placeholder="0" />
+                    </label>
+                </div>
+
+                <div class="mt-status" style="margin-top:12px; opacity:0.9;">
+                    Si escribes tu nombre, es <strong>solo para identificar tu pedido</strong> en WhatsApp.
+                </div>
+
+                <ul id="lxCart" style="margin-top:12px;"></ul>
+
+                <div class="mt-row" style="justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:12px;">
+                    <div class="mt-status" id="lxTotal">TOTAL: $0.00</div>
+                    <div class="mt-row" style="gap:10px; flex-wrap:wrap;">
+                        <button class="mt-pill" type="button" id="lxClear">Limpiar</button>
+                        <button class="mt-btn" type="button" id="lxSend">Enviar por WhatsApp</button>
+                    </div>
+                </div>
+
+                <div class="mt-status" id="lxStatus" style="margin-top:12px; opacity:0.92;"></div>
+            </section>
+
+            <div class="mt-footer">
+                <div class="mt-led" role="contentinfo" aria-label="Créditos">
+                    <div class="mt-led__track" aria-hidden="true">
+                        <div class="mt-led__content">
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                        </div>
+                        <div class="mt-led__content">
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                        </div>
+                    </div>
+                    <div class="mt-led__sr">
+                        <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                        by
+                        <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="firebase.js"></script>
+    <script src="script.js"></script>
+    <script>
+        (function () {
+            var RESTAURANT_ID = "lunchxpress";
+            var WA_PHONE = "5219933201843";
+            var HEADER = "*Lunch Xpress — Pedido*";
+
+            var cartEl = document.getElementById("lxCart");
+            var totalEl = document.getElementById("lxTotal");
+            var statusEl = document.getElementById("lxStatus");
+            var clearBtn = document.getElementById("lxClear");
+            var sendBtn = document.getElementById("lxSend");
+            var nameEl = document.getElementById("lxName");
+            var noteEl = document.getElementById("lxNote");
+            var tipEl = document.getElementById("lxTip");
+
+            function money(n) {
+                var num = Number(n || 0);
+                if (!isFinite(num)) num = 0;
+                return "$" + num.toFixed(2);
+            }
+
+            function setStatus(t) {
+                if (!statusEl) return;
+                statusEl.textContent = String(t || "");
+            }
+
+            function safeParseInt(value) {
+                var n = parseInt(String(value || "").trim(), 10);
+                if (!isFinite(n)) return 0;
+                return n;
+            }
+
+            function safeNumber(value) {
+                var n = Number(String(value || "").replace(/,/g, ".").trim());
+                if (!isFinite(n)) return 0;
+                return n;
+            }
+
+            function getQtyFromInput(input) {
+                if (!input) return 0;
+                return Math.max(0, safeParseInt(input.value));
+            }
+
+            function setQtyInput(input, qty) {
+                if (!input) return;
+                var n = safeParseInt(qty);
+                if (n < 0) n = 0;
+                if (n > 99) n = 99;
+                input.value = String(n);
+            }
+
+            function closestEl(start, selector) {
+                var el = start;
+                if (!el) return null;
+                if (el.nodeType === 3) el = el.parentElement;
+                while (el && el !== document) {
+                    if (el.matches && el.matches(selector)) return el;
+                    el = el.parentElement;
+                }
+                return null;
+            }
+
+            function listItemRows() {
+                var rows = document.querySelectorAll("li.mt-item[data-kind]");
+                var out = [];
+                for (var i = 0; i < rows.length; i++) out.push(rows[i]);
+                return out;
+            }
+
+            function buildCart() {
+                var rows = listItemRows();
+                var cart = [];
+                for (var i = 0; i < rows.length; i++) {
+                    var li = rows[i];
+                    var title = String(li.getAttribute("data-item") || "Producto");
+                    var unit = Number(li.getAttribute("data-price") || 0);
+                    if (!isFinite(unit) || unit < 0) unit = 0;
+                    var qtyEl = li.querySelector('[data-field="qty"]');
+                    var qty = getQtyFromInput(qtyEl);
+                    if (qty <= 0) continue;
+                    cart.push({ title: title, unit: unit, qty: qty });
+                }
+                return cart;
+            }
+
+            function getTotal(cart) {
+                var sum = 0;
+                (cart || []).forEach(function (it) {
+                    sum += (Number(it.unit) || 0) * (Number(it.qty) || 0);
+                });
+                return Math.round(sum * 100) / 100;
+            }
+
+            function getCartCount(cart) {
+                var n = 0;
+                (cart || []).forEach(function (it) {
+                    n += Number(it.qty) || 0;
+                });
+                n = Math.round(n);
+                if (!isFinite(n) || n < 0) n = 0;
+                return n;
+            }
+
+            function getTip() {
+                var t = safeNumber(tipEl && tipEl.value);
+                if (!isFinite(t) || t < 0) t = 0;
+                return Math.round(t * 100) / 100;
+            }
+
+            function renderCart() {
+                var cart = buildCart();
+                var total = getTotal(cart);
+                var tip = getTip();
+                var grand = Math.round((total + tip) * 100) / 100;
+                var count = getCartCount(cart);
+
+                if (window.mtSetCartCount) window.mtSetCartCount(count);
+
+                if (totalEl) {
+                    if (tip > 0) {
+                        totalEl.innerHTML =
+                            "<div>SUBTOTAL: <strong>" + money(total) + "</strong></div>" +
+                            "<div>PROPINA: <strong>" + money(tip) + "</strong></div>" +
+                            "<div style=\"margin-top:6px;\">TOTAL: <strong>" + money(grand) + "</strong></div>";
+                    } else {
+                        totalEl.textContent = "TOTAL: " + money(grand);
+                    }
+                }
+
+                if (!cartEl) return;
+                if (!cart.length) {
+                    cartEl.innerHTML = "<li>Tu pedido está vacío.</li>";
+                    return;
+                }
+
+                cartEl.innerHTML = cart
+                    .map(function (it) {
+                        var line = Math.round(it.qty * it.unit * 100) / 100;
+                        return (
+                            "<li>" +
+                            "<div class=\"mt-row\" style=\"justify-content:space-between; gap:10px; flex-wrap:wrap;\">" +
+                            "<div><strong>" + it.qty + "x</strong> " + it.title + "</div>" +
+                            "<div><strong>" + money(line) + "</strong></div>" +
+                            "</div>" +
+                            "</li>"
+                        );
+                    })
+                    .join("");
+            }
+
+            function clearAll() {
+                var rows = listItemRows();
+                for (var i = 0; i < rows.length; i++) {
+                    var qtyEl = rows[i].querySelector('[data-field="qty"]');
+                    if (qtyEl) qtyEl.value = "0";
+                }
+                if (noteEl) noteEl.value = "";
+                if (tipEl) tipEl.value = "";
+                setStatus("");
+                renderCart();
+            }
+
+            function buildTicketText() {
+                var cart = buildCart();
+                var total = getTotal(cart);
+                var tip = getTip();
+                var grand = Math.round((total + tip) * 100) / 100;
+                var name = nameEl ? String(nameEl.value || "").trim() : "";
+                var note = noteEl ? String(noteEl.value || "").trim() : "";
+
+                var lines = [HEADER, ""];
+
+                if (name) {
+                    lines.push("Nombre: " + name);
+                    lines.push("");
+                }
+
+                cart.forEach(function (it, idx) {
+                    var line = Math.round(it.qty * it.unit * 100) / 100;
+                    lines.push(String(idx + 1) + ". " + it.qty + "x " + it.title + " - " + money(it.unit) + " c/u = " + money(line));
+                });
+
+                lines.push("");
+                if (note) {
+                    lines.push("Nota: " + note);
+                    lines.push("");
+                }
+                if (tip > 0) lines.push("Propina: " + money(tip));
+                lines.push("TOTAL: " + money(grand));
+
+                return lines.join("\n");
+            }
+
+            function ensureAnonIfAvailable() {
+                if (!window.mtFirebase || !window.mtFirebase.ensureAnon) return Promise.resolve(null);
+                return window.mtFirebase.ensureAnon().catch(function () {
+                    return null;
+                });
+            }
+
+            function saveOrderToFirestoreNonBlocking(ticketText) {
+                try {
+                    if (!window.mtFirebase || !window.mtFirebase.createOrder) return;
+
+                    var cart = buildCart();
+                    var subtotal = getTotal(cart);
+                    var tip = getTip();
+                    var grand = Math.round((subtotal + tip) * 100) / 100;
+                    var name = nameEl ? String(nameEl.value || "").trim() : "";
+                    var note = noteEl ? String(noteEl.value || "").trim() : "";
+
+                    ensureAnonIfAvailable().then(function () {
+                        return window.mtFirebase.createOrder(RESTAURANT_ID, {
+                            channel: "whatsapp",
+                            flow: "lunchxpress",
+                            customerName: name || null,
+                            note: note || null,
+                            tip: tip,
+                            subtotal: subtotal,
+                            total: grand,
+                            items: (cart || []).map(function (it) {
+                                return {
+                                    title: it.title,
+                                    unit: Number(it.unit) || 0,
+                                    qty: Number(it.qty) || 0,
+                                    lineTotal: Math.round((Number(it.unit) || 0) * (Number(it.qty) || 0) * 100) / 100,
+                                };
+                            }),
+                            waPhone: WA_PHONE,
+                            ticketText: String(ticketText || ""),
+                            client: {
+                                uid: window.mtFirebaseUser ? String(window.mtFirebaseUser.uid || "") : null,
+                                userAgent: navigator && navigator.userAgent ? String(navigator.userAgent) : null,
+                                tzOffsetMin: new Date().getTimezoneOffset(),
+                            },
+                        });
+                    }).catch(function () {
+                        return;
+                    });
+                } catch (e) {
+                    return;
+                }
+            }
+
+            function sendWhatsApp() {
+                var cart = buildCart();
+                if (!cart.length) {
+                    setStatus("Agrega al menos un producto.");
+                    return;
+                }
+
+                setStatus("Abriendo WhatsApp...");
+                var text = buildTicketText();
+                saveOrderToFirestoreNonBlocking(text);
+                var url = "https://wa.me/" + WA_PHONE + "?text=" + encodeURIComponent(text);
+                clearAll();
+                syncTipUi();
+                window.location.href = url;
+            }
+
+            function bindQtyButtons() {
+                document.addEventListener("click", function (e) {
+                    var plusBtn = closestEl(e.target, 'button[data-action="plus"]');
+                    if (plusBtn) {
+                        var li = plusBtn.closest("li");
+                        var input = li && li.querySelector('[data-field="qty"]');
+                        if (!input) return;
+                        setQtyInput(input, getQtyFromInput(input) + 1);
+                        setStatus("");
+                        renderCart();
+                        return;
+                    }
+
+                    var minusBtn = closestEl(e.target, 'button[data-action="minus"]');
+                    if (minusBtn) {
+                        var li2 = minusBtn.closest("li");
+                        var input2 = li2 && li2.querySelector('[data-field="qty"]');
+                        if (!input2) return;
+                        setQtyInput(input2, getQtyFromInput(input2) - 1);
+                        setStatus("");
+                        renderCart();
+                        return;
+                    }
+                });
+
+                document.addEventListener("input", function (e) {
+                    var input = e && e.target ? e.target : null;
+                    if (!input) return;
+                    if (!input.matches || !input.matches('[data-field="qty"]')) return;
+                    setQtyInput(input, getQtyFromInput(input));
+                    renderCart();
+                });
+            }
+
+            if (clearBtn) clearBtn.addEventListener("click", function () { clearAll(); });
+            if (sendBtn) sendBtn.addEventListener("click", function () { sendWhatsApp(); });
+            if (tipEl) {
+                tipEl.addEventListener("input", function () { renderCart(); });
+                tipEl.addEventListener("change", function () { renderCart(); });
+                tipEl.addEventListener("blur", function () { renderCart(); });
+            }
+
+            function syncTipUi() {
+                var wrap = tipEl ? closestEl(tipEl, ".lx-tip-wrap") : null;
+                if (!wrap) return;
+                var v = safeNumber(tipEl && tipEl.value);
+                if (v > 0) wrap.classList.add("has-value");
+                else wrap.classList.remove("has-value");
+            }
+
+            if (tipEl) {
+                tipEl.addEventListener("input", function () { syncTipUi(); });
+                tipEl.addEventListener("change", function () { syncTipUi(); });
+                tipEl.addEventListener("blur", function () { syncTipUi(); });
+                syncTipUi();
+            }
+
+            document.addEventListener("change", function (e) {
+                var input = e && e.target ? e.target : null;
+                if (!input) return;
+                if (input.matches && input.matches('[data-field="qty"]')) {
+                    setQtyInput(input, getQtyFromInput(input));
+                    renderCart();
+                }
+            });
+
+            document.addEventListener("blur", function (e) {
+                var input = e && e.target ? e.target : null;
+                if (!input) return;
+                if (input.matches && input.matches('[data-field="qty"]')) {
+                    setQtyInput(input, getQtyFromInput(input));
+                    renderCart();
+                }
+            }, true);
+
+            bindQtyButtons();
+            renderCart();
+        })();
+    </script>
+</body>
+</html>

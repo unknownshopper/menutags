@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Sr Chorizo — Caja</title>
+    <meta name="description" content="Vista de caja: ver cuentas abiertas/pre-cerradas, cobrar y cerrar." />
+    <meta name="theme-color" content="#0b1220" />
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="mt-theme-srchorizo">
+    <div class="mt-container">
+        <header class="mt-header">
+            <div class="mt-header-left">
+                <img class="mt-logo" src="srchorizo.png" alt="Sr Chorizo" />
+                <div class="mt-header-text">
+                    <div class="mt-brand">MenuTags</div>
+                    <h1>Caja</h1>
+                </div>
+            </div>
+            <div class="mt-actions">
+                <a class="mt-pill" href="srchorienca.html">Meseros</a>
+                <a class="mt-btn" href="srchorizoreporte.html">Reporte</a>
+            </div>
+        </header>
+
+        <main class="mt-main">
+            <section class="mt-section" id="sccAuth">
+                <h2>Acceso caja</h2>
+                <div class="mt-row" style="margin-top:12px; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="mt-brand">Email</span>
+                        <input class="mt-input" type="email" id="sccEmail" autocomplete="username" />
+                    </label>
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="mt-brand">Contraseña</span>
+                        <input class="mt-input" type="password" id="sccPass" autocomplete="current-password" />
+                    </label>
+                    <div class="mt-row" style="gap:10px; flex-wrap:wrap;">
+                        <button class="mt-btn" type="button" id="sccLogin">Entrar</button>
+                        <button class="mt-pill" type="button" id="sccLogout" style="display:none;">Salir</button>
+                    </div>
+                </div>
+                <div class="mt-status" id="sccAuthStatus" style="margin-top:12px;">No has iniciado sesión.</div>
+            </section>
+
+            <div id="sccApp" style="display:none;">
+                <section class="mt-section" id="sccTabs">
+                    <div class="mt-row" style="justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center;">
+                        <h2 style="margin:0;">Cuentas</h2>
+                        <div class="mt-row" style="gap:10px; flex-wrap:wrap; align-items:center;">
+                            <label style="display:flex; flex-direction:column; gap:6px; min-width: 160px;">
+                                <span class="mt-brand">Filtro</span>
+                                <select class="mt-input" id="sccFilter">
+                                    <option value="active">Abiertas + Pre-cerradas</option>
+                                    <option value="open">Abiertas</option>
+                                    <option value="preclosed">Pre-cerradas</option>
+                                    <option value="closed">Cerradas</option>
+                                </select>
+                            </label>
+                            <button class="mt-pill" type="button" id="sccRefresh">Actualizar</button>
+                        </div>
+                    </div>
+                    <ul id="sccTabList" style="margin-top:12px;"></ul>
+                    <div class="mt-status" id="sccTabsStatus" style="margin-top:12px; opacity:0.92;"></div>
+                </section>
+
+                <section class="mt-section" id="sccDetail">
+                    <h2>Detalle</h2>
+                    <div class="mt-row" style="gap:10px; flex-wrap:wrap; align-items:center;">
+                        <div class="mt-status" id="sccSelected">Selecciona una cuenta.</div>
+                        <button class="mt-pill" type="button" id="sccReloadDetail" disabled>Recargar</button>
+                    </div>
+
+                    <div class="mt-grid" style="grid-template-columns: 1fr; gap: 14px; margin-top:12px;">
+                        <section class="mt-section" style="margin:0;" id="sccConsumptionBox">
+                            <h3>Consumo</h3>
+                            <div class="mt-row" style="gap:10px; flex-wrap:wrap; align-items:center;">
+                                <div class="mt-status" id="sccTotals">Total: $0.00</div>
+                            </div>
+                            <ul id="sccOrders" style="margin-top:12px;"></ul>
+                        </section>
+
+                        <section class="mt-section" style="margin:0;" id="sccPaymentBox">
+                            <h3>Cobro</h3>
+                            <div class="mt-row" style="gap:10px; flex-wrap:wrap; align-items:flex-end;">
+                                <label style="display:flex; flex-direction:column; gap:6px; min-width:180px;">
+                                    <span class="mt-brand">Método</span>
+                                    <select class="mt-input" id="sccMethod">
+                                        <option value="cash">Efectivo</option>
+                                        <option value="card">Tarjeta</option>
+                                        <option value="transfer">Transferencia</option>
+                                    </select>
+                                </label>
+                                <label style="display:flex; flex-direction:column; gap:6px; min-width:160px;">
+                                    <span class="mt-brand">Recibido</span>
+                                    <input class="mt-input" id="sccReceived" inputmode="decimal" placeholder="0" />
+                                </label>
+                                <label style="display:flex; flex-direction:column; gap:6px; min-width:160px;">
+                                    <span class="mt-brand">Cambio</span>
+                                    <input class="mt-input" id="sccChange" disabled />
+                                </label>
+                                <button class="mt-btn" type="button" id="sccClose" disabled>Cerrar cuenta</button>
+                            </div>
+                            <div class="mt-status" id="sccPayStatus" style="margin-top:12px; opacity:0.92;"></div>
+                        </section>
+                    </div>
+                </section>
+
+                <div class="mt-footer">
+                    <a href="https://menutags.unknownshoppers.com/" target="_blank" rel="noopener">MENUTAGS</a>
+                    by
+                    <a href="https://unknownshoppers.com/" target="_blank" rel="noopener">The Unknown Shopper</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="firebase.js"></script>
+    <script src="script.js"></script>
+    <script>
+        (function () {
+            var RESTAURANT_ID = "srchorizo";
+
+            var emailEl = document.getElementById("sccEmail");
+            var passEl = document.getElementById("sccPass");
+            var loginBtn = document.getElementById("sccLogin");
+            var logoutBtn = document.getElementById("sccLogout");
+            var authStatus = document.getElementById("sccAuthStatus");
+            var appWrap = document.getElementById("sccApp");
+
+            var filterSel = document.getElementById("sccFilter");
+            var refreshBtn = document.getElementById("sccRefresh");
+            var tabList = document.getElementById("sccTabList");
+            var tabsStatus = document.getElementById("sccTabsStatus");
+
+            var selectedLabel = document.getElementById("sccSelected");
+            var reloadDetailBtn = document.getElementById("sccReloadDetail");
+            var totalsEl = document.getElementById("sccTotals");
+            var ordersEl = document.getElementById("sccOrders");
+
+            var methodSel = document.getElementById("sccMethod");
+            var receivedEl = document.getElementById("sccReceived");
+            var changeEl = document.getElementById("sccChange");
+            var closeBtn = document.getElementById("sccClose");
+            var payStatus = document.getElementById("sccPayStatus");
+
+            var cashierId = null;
+            var selectedTabId = null;
+            var selectedTabDoc = null;
+            var selectedOrders = [];
+            var selectedTotal = 0;
+
+            function money(n) {
+                var num = Number(n || 0);
+                if (!isFinite(num)) num = 0;
+                return "$" + num.toFixed(2);
+            }
+
+            function setAuthStatus(text) {
+                if (authStatus) authStatus.textContent = String(text || "");
+            }
+
+            function setTabsStatus(text) {
+                if (tabsStatus) tabsStatus.textContent = String(text || "");
+            }
+
+            function setPayStatus(text) {
+                if (payStatus) payStatus.textContent = String(text || "");
+            }
+
+            function setAppVisible(on) {
+                if (!appWrap) return;
+                appWrap.style.display = on ? "block" : "none";
+            }
+
+            function safeGetEmailPrefix(email) {
+                var e = String(email || "").trim();
+                var at = e.indexOf("@");
+                if (at <= 0) return null;
+                return e.slice(0, at);
+            }
+
+            function safeNumber(value) {
+                var n = Number(String(value || "").replace(/,/g, ".").trim());
+                if (!isFinite(n)) return 0;
+                return n;
+            }
+
+            function getTabLabel(t) {
+                var seat = t && t.tableNo ? String(t.tableNo) : "";
+                var status = t && t.status ? String(t.status) : "";
+                var id = t && t.id ? String(t.id) : "";
+                var shortId = id ? id.slice(0, 6) : "";
+                var s = status === "open" ? "Abierta" : status === "preclosed" ? "Pre-cerrada" : status === "closed" ? "Cerrada" : status;
+                return (seat ? seat + " · " : "") + (shortId ? "#" + shortId + " · " : "") + (s || "");
+            }
+
+            function pickTs(t) {
+                return (t && (t.updatedAt || t.closedAt || t.preclosedAt || t.openedAt)) || null;
+            }
+
+            function tsToText(ts) {
+                if (!ts) return "";
+                try {
+                    if (typeof ts.toDate === "function") return ts.toDate().toLocaleString();
+                } catch (e) {}
+                try {
+                    return new Date(ts).toLocaleString();
+                } catch (e2) {}
+                return String(ts);
+            }
+
+            function renderTabList(tabs) {
+                if (!tabList) return;
+                if (!tabs || !tabs.length) {
+                    tabList.innerHTML = "<li>No hay cuentas.</li>";
+                    return;
+                }
+
+                tabList.innerHTML = tabs
+                    .map(function (t) {
+                        var label = getTabLabel(t);
+                        var ts = tsToText(pickTs(t));
+                        var active = selectedTabId && t && t.id === selectedTabId;
+                        return (
+                            "<li>" +
+                            "<div class=\"mt-row\" style=\"justify-content:space-between; gap:10px; flex-wrap:wrap;\">" +
+                            "<div><strong>" + label + "</strong>" + (ts ? "<div style=\"opacity:0.85; margin-top:4px;\">" + ts + "</div>" : "") + "</div>" +
+                            "<div class=\"mt-row\" style=\"gap:10px; flex-wrap:wrap;\">" +
+                            "<button class=\"mt-pill\" type=\"button\" data-action=\"sel\" data-tab=\"" + String(t.id) + "\">" + (active ? "Viendo" : "Ver") + "</button>" +
+                            "</div>" +
+                            "</div>" +
+                            "</li>"
+                        );
+                    })
+                    .join("");
+            }
+
+            function computeTotalFromOrders(orders) {
+                var sum = 0;
+                (orders || []).forEach(function (o) {
+                    var v = (o && typeof o.total !== "undefined") ? Number(o.total) : 0;
+                    if (!isFinite(v)) v = 0;
+                    sum += v;
+                });
+                return Math.round(sum * 100) / 100;
+            }
+
+            function renderOrders(orders) {
+                if (!ordersEl) return;
+                if (!orders || !orders.length) {
+                    ordersEl.innerHTML = "<li>No hay pedidos ligados a esta cuenta.</li>";
+                    return;
+                }
+
+                ordersEl.innerHTML = orders
+                    .map(function (o) {
+                        var id = o && o.id ? String(o.id) : "";
+                        var shortId = id ? id.slice(0, 6) : "";
+                        var ts = o && o.createdAt ? tsToText(o.createdAt) : "";
+                        var who = o && o.waiterId ? String(o.waiterId) : "";
+                        var items = (o && o.items && o.items.length) ? o.items : [];
+                        var lines = items
+                            .map(function (it) {
+                                var q = it && it.qty ? Number(it.qty) : 0;
+                                if (!isFinite(q)) q = 0;
+                                var title = it && it.title ? String(it.title) : "Producto";
+                                return q + "x " + title;
+                            })
+                            .slice(0, 6);
+                        var more = items.length > 6 ? " +" + String(items.length - 6) + " más" : "";
+                        var text = lines.join(", ") + more;
+                        var total = o && typeof o.total !== "undefined" ? Number(o.total) : 0;
+                        if (!isFinite(total)) total = 0;
+                        return (
+                            "<li>" +
+                            "<div class=\"mt-row\" style=\"justify-content:space-between; gap:10px; flex-wrap:wrap;\">" +
+                            "<div><strong>Pedido " + (shortId ? "#" + shortId : "") + "</strong>" +
+                            (ts ? "<div style=\"opacity:0.85; margin-top:4px;\">" + ts + "</div>" : "") +
+                            (who ? "<div style=\"opacity:0.85; margin-top:4px;\">Mesero: " + who + "</div>" : "") +
+                            (text ? "<div style=\"opacity:0.95; margin-top:6px;\">" + text + "</div>" : "") +
+                            "</div>" +
+                            "<div><strong>" + money(total) + "</strong></div>" +
+                            "</div>" +
+                            "</li>"
+                        );
+                    })
+                    .join("");
+            }
+
+            function setSelectedTab(tabId) {
+                selectedTabId = tabId ? String(tabId) : null;
+                selectedTabDoc = null;
+                selectedOrders = [];
+                selectedTotal = 0;
+
+                if (selectedTabId) {
+                    selectedLabel.textContent = "Cuenta: " + selectedTabId;
+                    reloadDetailBtn.disabled = false;
+                } else {
+                    selectedLabel.textContent = "Selecciona una cuenta.";
+                    reloadDetailBtn.disabled = true;
+                }
+
+                totalsEl.textContent = "Total: " + money(selectedTotal);
+                renderOrders([]);
+                setPayStatus("");
+                receivedEl.value = "";
+                changeEl.value = "";
+                closeBtn.disabled = !selectedTabId;
+                updateChange();
+            }
+
+            function updateChange() {
+                var m = methodSel && methodSel.value ? String(methodSel.value) : "cash";
+                var received = safeNumber(receivedEl && receivedEl.value);
+                var change = 0;
+                if (m === "cash") {
+                    change = Math.max(0, received - selectedTotal);
+                }
+                if (changeEl) changeEl.value = money(change);
+
+                if (!selectedTabId) {
+                    closeBtn.disabled = true;
+                } else if (selectedTotal <= 0) {
+                    closeBtn.disabled = false;
+                } else if (m === "cash") {
+                    closeBtn.disabled = received < selectedTotal;
+                } else {
+                    closeBtn.disabled = false;
+                }
+
+                if (receivedEl) receivedEl.style.display = m === "cash" ? "block" : "none";
+                if (changeEl) changeEl.parentElement.style.display = m === "cash" ? "flex" : "none";
+            }
+
+            function loadTabs() {
+                if (!window.mtFirebase || !window.mtFirebase.listTabsByStatus) return;
+                var f = filterSel && filterSel.value ? String(filterSel.value) : "active";
+                setTabsStatus("Cargando...");
+
+                if (f === "active") {
+                    Promise.all([
+                        window.mtFirebase.listTabsByStatus(RESTAURANT_ID, "open", 250),
+                        window.mtFirebase.listTabsByStatus(RESTAURANT_ID, "preclosed", 250),
+                    ]).then(function (parts) {
+                        var all = [].concat(parts[0] || [], parts[1] || []);
+                        all.sort(function (a, b) {
+                            var aTs = pickTs(a);
+                            var bTs = pickTs(b);
+                            var aMs = 0;
+                            var bMs = 0;
+                            try { aMs = aTs && typeof aTs.toDate === "function" ? aTs.toDate().getTime() : new Date(aTs || 0).getTime(); } catch (e) { aMs = 0; }
+                            try { bMs = bTs && typeof bTs.toDate === "function" ? bTs.toDate().getTime() : new Date(bTs || 0).getTime(); } catch (e2) { bMs = 0; }
+                            return bMs - aMs;
+                        });
+                        renderTabList(all);
+                        setTabsStatus(String(all.length) + " cuenta(s).");
+                    }).catch(function () {
+                        setTabsStatus("No se pudieron cargar las cuentas.");
+                    });
+                    return;
+                }
+
+                window.mtFirebase
+                    .listTabsByStatus(RESTAURANT_ID, f, 400)
+                    .then(function (tabs) {
+                        renderTabList(tabs || []);
+                        setTabsStatus(String((tabs || []).length) + " cuenta(s).");
+                    })
+                    .catch(function () {
+                        setTabsStatus("No se pudieron cargar las cuentas.");
+                    });
+            }
+
+            function loadSelectedDetail() {
+                if (!selectedTabId) return;
+                if (!window.mtFirebase || !window.mtFirebase.listOrdersByTabId || !window.mtFirebase.getTab) return;
+
+                setPayStatus("Cargando detalle...");
+                Promise.all([
+                    window.mtFirebase.getTab(RESTAURANT_ID, selectedTabId),
+                    window.mtFirebase.listOrdersByTabId(RESTAURANT_ID, selectedTabId, 500),
+                ]).then(function (parts) {
+                    selectedTabDoc = parts[0] || null;
+                    selectedOrders = parts[1] || [];
+                    selectedTotal = computeTotalFromOrders(selectedOrders);
+
+                    totalsEl.textContent = "Total: " + money(selectedTotal);
+                    renderOrders(selectedOrders);
+                    setPayStatus("");
+                    updateChange();
+                }).catch(function () {
+                    setPayStatus("No se pudo cargar el detalle.");
+                });
+            }
+
+            function closeTabWithPayment() {
+                if (!selectedTabId) return;
+                if (!window.mtFirebase || !window.mtFirebase.createPayment || !window.mtFirebase.updateTab) return;
+
+                var method = methodSel && methodSel.value ? String(methodSel.value) : "cash";
+                var received = safeNumber(receivedEl && receivedEl.value);
+                var change = method === "cash" ? Math.max(0, received - selectedTotal) : 0;
+
+                if (method === "cash" && selectedTotal > 0 && received < selectedTotal) {
+                    setPayStatus("Efectivo insuficiente.");
+                    return;
+                }
+
+                setPayStatus("Cerrando cuenta...");
+
+                var payment = {
+                    tabId: selectedTabId,
+                    tableNo: selectedTabDoc && selectedTabDoc.tableNo ? String(selectedTabDoc.tableNo) : null,
+                    amount: Math.round(selectedTotal * 100) / 100,
+                    method: method,
+                    received: method === "cash" ? Math.round(received * 100) / 100 : null,
+                    change: method === "cash" ? Math.round(change * 100) / 100 : null,
+                    cashierId: cashierId,
+                };
+
+                window.mtFirebase
+                    .createPayment(RESTAURANT_ID, payment)
+                    .then(function (ref) {
+                        var patch = {
+                            status: "closed",
+                            closedAt: new Date().toISOString(),
+                            closedBy: cashierId,
+                            paymentId: ref && ref.id ? ref.id : null,
+                        };
+                        return window.mtFirebase.updateTab(RESTAURANT_ID, selectedTabId, patch);
+                    })
+                    .then(function () {
+                        setPayStatus("Cuenta cerrada.");
+                        loadTabs();
+                        loadSelectedDetail();
+                    })
+                    .catch(function () {
+                        setPayStatus("No se pudo cerrar la cuenta.");
+                    });
+            }
+
+            function setupAuthUi() {
+                if (!window.mtFirebase || !window.mtFirebase.onAuthStateChanged) return;
+
+                window.mtFirebase.onAuthStateChanged(function (user) {
+                    if (user) {
+                        cashierId = safeGetEmailPrefix(user.email) || user.uid || "caja";
+                        if (logoutBtn) logoutBtn.style.display = "inline-flex";
+                        setAuthStatus("Sesión activa: " + String(cashierId || "caja"));
+                        setAppVisible(true);
+                        loadTabs();
+                    } else {
+                        cashierId = null;
+                        if (logoutBtn) logoutBtn.style.display = "none";
+                        setAuthStatus("No has iniciado sesión.");
+                        setAppVisible(false);
+                        setSelectedTab(null);
+                        if (tabList) tabList.innerHTML = "";
+                        setTabsStatus("");
+                    }
+                });
+
+                if (loginBtn) {
+                    loginBtn.addEventListener("click", function () {
+                        var email = emailEl ? String(emailEl.value || "").trim() : "";
+                        var pass = passEl ? String(passEl.value || "").trim() : "";
+                        if (!email || !pass) {
+                            setAuthStatus("Completa email y contraseña.");
+                            return;
+                        }
+                        setAuthStatus("Iniciando sesión...");
+                        window.mtFirebase
+                            .loginOwner(email, pass)
+                            .catch(function () {
+                                setAuthStatus("No se pudo iniciar sesión.");
+                            });
+                    });
+                }
+
+                if (logoutBtn) {
+                    logoutBtn.addEventListener("click", function () {
+                        if (!window.mtFirebase || !window.mtFirebase.logout) return;
+                        window.mtFirebase.logout();
+                    });
+                }
+            }
+
+            function setupAuthUiWhenReady() {
+                if (window.mtFirebase && window.mtFirebase.onAuthStateChanged) {
+                    setupAuthUi();
+                    return;
+                }
+                var p = window.mtFirebaseReady && window.mtFirebaseReady.then ? window.mtFirebaseReady : null;
+                if (p) {
+                    p.then(function () {
+                        setupAuthUi();
+                    }).catch(function () {
+                        setAuthStatus("Firebase no está disponible.");
+                    });
+                    return;
+                }
+                var tries = 0;
+                var timer = window.setInterval(function () {
+                    tries++;
+                    if (window.mtFirebase && window.mtFirebase.onAuthStateChanged) {
+                        window.clearInterval(timer);
+                        setupAuthUi();
+                        return;
+                    }
+                    if (tries > 40) {
+                        window.clearInterval(timer);
+                        setAuthStatus("Firebase no está disponible.");
+                    }
+                }, 250);
+            }
+
+            if (refreshBtn) refreshBtn.addEventListener("click", function () { loadTabs(); });
+            if (filterSel) filterSel.addEventListener("change", function () { loadTabs(); });
+
+            if (tabList) {
+                tabList.addEventListener("click", function (e) {
+                    var btn = e.target && e.target.closest ? e.target.closest("button[data-action]") : null;
+                    if (!btn) return;
+                    var action = btn.getAttribute("data-action");
+                    var tabId = btn.getAttribute("data-tab");
+                    if (action === "sel" && tabId) {
+                        setSelectedTab(tabId);
+                        loadSelectedDetail();
+                    }
+                });
+            }
+
+            if (reloadDetailBtn) reloadDetailBtn.addEventListener("click", function () { loadSelectedDetail(); });
+
+            if (methodSel) methodSel.addEventListener("change", function () { updateChange(); });
+            if (receivedEl) receivedEl.addEventListener("input", function () { updateChange(); });
+            if (closeBtn) closeBtn.addEventListener("click", function () { closeTabWithPayment(); });
+
+            setSelectedTab(null);
+            updateChange();
+            setupAuthUiWhenReady();
+        })();
+    </script>
+</body>
+</html>

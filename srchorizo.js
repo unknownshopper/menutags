@@ -16,6 +16,9 @@
     var tabId = (getQueryParam("tab") || "").trim();
     if (!tabId) tabId = null;
 
+    var waiterId = (getQueryParam("waiter") || "").trim();
+    if (!waiterId) waiterId = null;
+
     function qs(id) {
         return document.getElementById(id);
     }
@@ -306,6 +309,11 @@
     function buildTicketText() {
         var lines = [HEADER, ""]; 
 
+        if (waiterId) {
+            lines.push("Mesero: " + waiterId);
+            lines.push("");
+        }
+
         var tableNo = (tableSel && tableSel.value) ? String(tableSel.value).trim() : "";
         if (tableNo) {
             lines.push("Mesa: " + tableNo);
@@ -376,6 +384,7 @@
             tableNo: tableNo || null,
             seatId: seatId,
             tabId: tabId,
+            waiterId: waiterId,
             currency: "MXN",
             total: Math.round(getCartTotal() * 100) / 100,
             items: items,
@@ -520,6 +529,12 @@
     clearBtn.addEventListener("click", clearCart);
 
     try {
+        var tFromUrl = (getQueryParam("table") || "").trim();
+        if (tFromUrl && tableSel) {
+            tableSel.value = tFromUrl;
+            tableSel.disabled = true;
+        }
+
         if (seatId) {
             window.sessionStorage.removeItem(ORDER_DONE_KEY);
             setOrderLocked(false);

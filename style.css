@@ -14,23 +14,14 @@
  
  * {
      box-sizing: border-box;
- }
- 
- html,
- body {
-     height: 100%;
- }
- 
- body {
-     margin: 0;
-     color: var(--text);
-     background: radial-gradient(1200px 600px at 20% 10%, rgba(124, 58, 237, 0.25), transparent 55%),
-         radial-gradient(1000px 600px at 90% 30%, rgba(34, 197, 94, 0.18), transparent 55%),
-         linear-gradient(180deg, var(--bg0), var(--bg1));
      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
          "Segoe UI Emoji";
      line-height: 1.4;
-     overflow: hidden;
+ }
+
+ html,
+ body {
+     overflow-x: hidden;
  }
 
  .mt-theme-landing {
@@ -425,20 +416,252 @@
      accent-color: #facc15;
  }
 
- .mt-theme-mingo .mt-header {
-     border-color: rgba(220, 38, 38, 0.20);
-     background: linear-gradient(180deg, rgba(220, 38, 38, 0.06), rgba(220, 38, 38, 0.03));
-     box-shadow: 0 14px 34px rgba(11, 42, 111, 0.10);
+ .mt-theme-lunchxpress {
+     overflow-x: hidden;
+     overflow-y: auto;
+     color: rgba(59, 25, 18, 0.96);
+     background:
+         radial-gradient(1000px 520px at 18% 8%, rgba(233, 173, 66, 0.22), transparent 55%),
+         radial-gradient(900px 520px at 88% 26%, rgba(159, 42, 33, 0.18), transparent 55%),
+         linear-gradient(180deg, #fff7e9, #fff1dc);
  }
 
- .mt-theme-mingo .mt-brand {
-     color: rgba(11, 42, 111, 0.68);
+ .mt-theme-lunchxpress .mt-container,
+ .mt-theme-lunchxpress .mt-main {
+     overflow-x: hidden;
  }
 
- .mt-theme-mingo .mt-btn {
-     border-color: rgba(220, 38, 38, 0.25);
-     background: rgba(220, 38, 38, 0.08);
-     color: rgba(220, 38, 38, 0.92);
+ .mt-theme-lunchxpress .mt-header {
+     border-color: rgba(159, 42, 33, 0.22);
+     background: linear-gradient(180deg, rgba(159, 42, 33, 0.06), rgba(233, 173, 66, 0.06));
+     box-shadow: 0 14px 34px rgba(59, 25, 18, 0.10);
+ }
+
+ .mt-theme-lunchxpress .mt-brand {
+     color: rgba(159, 42, 33, 0.70);
+ }
+
+ .mt-theme-lunchxpress h1,
+ .mt-theme-lunchxpress h2,
+ .mt-theme-lunchxpress h3 {
+     color: rgba(121, 26, 20, 0.96);
+ }
+
+ .mt-theme-lunchxpress .mt-section {
+     border-color: rgba(159, 42, 33, 0.18);
+     background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.60));
+     box-shadow: 0 10px 26px rgba(59, 25, 18, 0.08);
+ }
+
+ .mt-theme-lunchxpress li {
+     border-color: rgba(159, 42, 33, 0.14);
+     background: rgba(159, 42, 33, 0.04);
+ }
+
+ .mt-theme-lunchxpress .mt-input {
+     border-color: rgba(159, 42, 33, 0.18);
+     background: rgba(255, 255, 255, 0.78);
+     color: rgba(59, 25, 18, 0.96);
+ }
+
+ .mt-theme-lunchxpress .mt-input::placeholder {
+     color: rgba(59, 25, 18, 0.56);
+ }
+
+ .mt-theme-lunchxpress .mt-btn {
+     border-color: rgba(159, 42, 33, 0.30);
+     background: rgba(233, 173, 66, 0.14);
+     color: rgba(121, 26, 20, 0.96);
+ }
+
+ .mt-theme-lunchxpress .mt-btn:hover {
+     background: rgba(233, 173, 66, 0.20);
+     border-color: rgba(159, 42, 33, 0.38);
+ }
+
+ .mt-theme-lunchxpress .mt-pill {
+     border-color: rgba(159, 42, 33, 0.22);
+     background: rgba(159, 42, 33, 0.06);
+     color: rgba(121, 26, 20, 0.96);
+ }
+
+ .mt-theme-lunchxpress .mt-pill:hover {
+     background: rgba(159, 42, 33, 0.10);
+     border-color: rgba(159, 42, 33, 0.30);
+ }
+
+ .mt-theme-lunchxpress .mt-total {
+     border-top-color: rgba(159, 42, 33, 0.16);
+ }
+
+
+ .mt-theme-lunchxpress .mt-cart-fab {
+     color: rgba(121, 26, 20, 0.96);
+ }
+
+ .mt-theme-lunchxpress .mt-cart-badge {
+     background: rgba(159, 42, 33, 0.92);
+ }
+
+ .mt-theme-lunchxpress .mt-footer {
+     margin-top: 18px;
+     padding: 10px 12px;
+     border-radius: 12px;
+     overflow: hidden;
+     background: rgba(159, 42, 33, 0.06);
+     border: 1px solid rgba(159, 42, 33, 0.12);
+     color: rgba(121, 26, 20, 0.82);
+     font-weight: 750;
+     letter-spacing: 0.02em;
+ }
+
+ .mt-theme-lunchxpress .mt-footer a {
+     color: rgba(121, 26, 20, 0.92);
+     text-decoration: none;
+     border-bottom: 1px dashed rgba(159, 42, 33, 0.30);
+ }
+
+ .mt-theme-lunchxpress .mt-footer a:hover {
+     color: rgba(121, 26, 20, 0.98);
+     border-bottom-color: rgba(159, 42, 33, 0.45);
+ }
+
+ .mt-theme-lunchxpress .mt-led {
+     position: relative;
+     overflow: hidden;
+     border-radius: 12px;
+     width: 100%;
+     background:
+         radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.24) 1px, transparent 1.6px) 0 0 / 10px 10px,
+         linear-gradient(180deg, rgba(121, 26, 20, 0.22), rgba(121, 26, 20, 0.10));
+     border: 1px solid rgba(159, 42, 33, 0.18);
+     box-shadow: inset 0 0 0 1px rgba(233, 173, 66, 0.10);
+ }
+
+ .mt-theme-lunchxpress .mt-led__sr {
+     position: absolute;
+     left: -99999px;
+     top: auto;
+     width: 1px;
+     height: 1px;
+     overflow: hidden;
+ }
+
+ .mt-theme-lunchxpress .mt-led__track {
+     display: flex;
+     width: 200%;
+     min-width: 200%;
+     gap: 0;
+     padding: 10px 12px;
+     will-change: transform;
+     animation: mtLedMarquee 14s linear infinite;
+ }
+
+ .mt-theme-lunchxpress .mt-led__content {
+     display: inline-flex;
+     flex: 0 0 auto;
+     align-items: center;
+     gap: 10px;
+     padding-right: 22px;
+     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+     font-weight: 900;
+     letter-spacing: 0.08em;
+     text-transform: uppercase;
+     color: rgba(255, 247, 233, 0.98);
+     text-shadow:
+         0 0 6px rgba(233, 173, 66, 0.35),
+         0 0 14px rgba(233, 173, 66, 0.28),
+         0 0 22px rgba(159, 42, 33, 0.22);
+     white-space: nowrap;
+ }
+
+ .mt-theme-lunchxpress .mt-led__content a {
+     color: rgba(255, 247, 233, 0.98);
+     border-bottom-color: rgba(255, 247, 233, 0.40);
+ }
+
+ .mt-theme-lunchxpress .mt-led__content a:hover {
+     color: rgba(255, 247, 233, 1);
+     border-bottom-color: rgba(233, 173, 66, 0.75);
+ }
+
+ .mt-theme-lunchxpress .mt-led__sep {
+     opacity: 0.92;
+ }
+
+ .mt-theme-lunchxpress .mt-led__gap {
+     opacity: 0.62;
+ }
+
+ .mt-theme-lunchxpress .lx-tip-wrap {
+     position: relative;
+     padding: 10px 10px 8px;
+     border-radius: 16px;
+     border: 1px solid rgba(159, 42, 33, 0.22);
+     background: rgba(255, 255, 255, 0.26);
+     backdrop-filter: blur(12px);
+     -webkit-backdrop-filter: blur(12px);
+     box-shadow:
+         0 12px 26px rgba(59, 25, 18, 0.10),
+         inset 0 0 0 1px rgba(255, 247, 233, 0.35);
+ }
+
+ .mt-theme-lunchxpress .lx-tip-wrap::before {
+     content: "";
+     position: absolute;
+     inset: -2px;
+     border-radius: 18px;
+     background: linear-gradient(135deg, rgba(233, 173, 66, 0.55), rgba(159, 42, 33, 0.45));
+     filter: blur(14px);
+     opacity: 0.45;
+     z-index: -1;
+     animation: mtTipPulse 1.65s ease-in-out infinite;
+ }
+
+ .mt-theme-lunchxpress .lx-tip-wrap.has-value::before {
+     animation: none;
+     opacity: 0.18;
+ }
+
+ .mt-theme-lunchxpress .lx-tip-wrap .mt-brand {
+     font-weight: 900;
+     letter-spacing: 0.06em;
+     text-transform: uppercase;
+ }
+
+ .mt-theme-lunchxpress .lx-tip-wrap .mt-input {
+     background: rgba(255, 255, 255, 0.58);
+ }
+
+ .mt-theme-lunchxpress .lx-tip-wrap:focus-within {
+     border-color: rgba(159, 42, 33, 0.42);
+     box-shadow:
+         0 16px 34px rgba(59, 25, 18, 0.14),
+         inset 0 0 0 1px rgba(233, 173, 66, 0.22);
+ }
+
+ @keyframes mtTipPulse {
+     0% { transform: scale(1); opacity: 0.42; }
+     50% { transform: scale(1.03); opacity: 0.62; }
+     100% { transform: scale(1); opacity: 0.42; }
+ }
+
+ @media (prefers-reduced-motion: reduce) {
+     .mt-theme-lunchxpress .lx-tip-wrap::before {
+         animation: none;
+     }
+ }
+
+ @keyframes mtLedMarquee {
+     0% { transform: translateX(0); }
+     100% { transform: translateX(-50%); }
+ }
+
+ @media (prefers-reduced-motion: reduce) {
+     .mt-theme-lunchxpress .mt-led__track {
+         animation: none;
+         justify-content: center;
+     }
  }
 
  .mt-theme-mingo .mt-btn:hover {

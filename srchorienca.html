@@ -17,15 +17,36 @@
                 <img class="mt-logo" src="srchorizo.png" alt="Sr Chorizo" />
                 <div class="mt-header-text">
                     <div class="mt-brand">MenuTags</div>
-                    <h1>Encargado</h1>
+                    <h1>Meseros</h1>
                 </div>
             </div>
             <div class="mt-actions">
+                <a class="mt-pill" href="srchorizocaja.html">Caja</a>
                 <a class="mt-btn" href="srchorizoreporte.html">Reporte</a>
             </div>
         </header>
 
         <main class="mt-main">
+            <section class="mt-section" id="sceAuth">
+                <h2>Acceso mesero</h2>
+                <div class="mt-row" style="margin-top:12px; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="mt-brand">Email</span>
+                        <input class="mt-input" type="email" id="sceEmail" autocomplete="username" />
+                    </label>
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="mt-brand">Contraseña</span>
+                        <input class="mt-input" type="password" id="scePass" autocomplete="current-password" />
+                    </label>
+                    <div class="mt-row" style="gap:10px; flex-wrap:wrap;">
+                        <button class="mt-btn" type="button" id="sceLogin">Entrar</button>
+                        <button class="mt-pill" type="button" id="sceLogout" style="display:none;">Salir</button>
+                    </div>
+                </div>
+                <div class="mt-status" id="sceAuthStatus" style="margin-top:12px;">No has iniciado sesión.</div>
+            </section>
+
+            <div id="sceApp" style="display:none;">
             <section class="mt-section" id="sceFunnel">
                 <h2>Flujo</h2>
                 <div class="mt-row" style="gap:10px; flex-wrap:wrap; align-items:center;">
@@ -34,14 +55,14 @@
                         <span class="mt-brand">Cuenta</span>
                         <select class="mt-input" id="sceTab" disabled></select>
                     </label>
-                    <button class="mt-pill" type="button" id="sceNewTab" disabled>Nueva cuenta</button>
+                    <button class="mt-pill" type="button" id="sceNewTab" disabled>Abrir cuenta</button>
                     <button class="mt-btn" type="button" id="sceTakeOrder" disabled>Tomar pedido</button>
-                    <button class="mt-pill" type="button" id="sceDelivered" disabled>Entregado</button>
-                    <button class="mt-pill" type="button" id="scePaid" disabled>Cobrado</button>
+                    <button class="mt-pill" type="button" id="scePreclose" disabled>Pre-cerrar</button>
+                    <button class="mt-pill" type="button" id="sceReopen" disabled>Reabrir</button>
                     <button class="mt-pill" type="button" id="sceClear" disabled>Limpiar</button>
                 </div>
                 <div class="mt-status" id="sceNote" style="margin-top:12px; opacity:0.92;">
-                    Este tablero se guarda en este dispositivo (localStorage).
+                    Este tablero se sincroniza con Firestore.
                 </div>
             </section>
 
@@ -82,32 +103,26 @@
                 by
                 <a href="https://unknownshoppers.com/" target="_blank" rel="noopener">The Unknown Shopper</a>
             </div>
+            </div>
         </main>
     </div>
 
+    <script type="module" src="firebase.js"></script>
     <script src="script.js"></script>
     <script>
         (function () {
-            var KEY = "mt:srchorizo:encargado:v1";
+            var RESTAURANT_ID = "srchorizo";
 
             function safeJsonParse(text, fallback) {
                 try { return JSON.parse(text); } catch (e) { return fallback; }
             }
 
-            function loadState() {
-                try {
-                    var raw = window.localStorage.getItem(KEY);
-                    var data = safeJsonParse(raw || "{}", {});
-                    if (!data || typeof data !== "object") data = {};
-                    if (!data.seats || typeof data.seats !== "object") data.seats = {};
-                    return data;
-                } catch (e) {
-                    return { seats: {} };
-                }
-            }
-
-            function saveState(st) {
-                try { window.localStorage.setItem(KEY, JSON.stringify(st || { seats: {} })); } catch (e) {}
+            function getWaiterIdFromEmail(email) {
+                var e = String(email || "").trim().toLowerCase();
+                if (!e) return null;
+                var at = e.indexOf("@");
+                if (at === -1) return e;
+                return e.slice(0, at);
             }
 
             function pad2(n) {
@@ -128,23 +143,40 @@
             var tabSel = qs("sceTab");
             var newTabBtn = qs("sceNewTab");
             var takeBtn = qs("sceTakeOrder");
-            var delBtn = qs("sceDelivered");
-            var paidBtn = qs("scePaid");
+            var precloseBtn = qs("scePreclose");
+            var reopenBtn = qs("sceReopen");
             var clearBtn = qs("sceClear");
             var openList = qs("sceOpenList");
 
-            var st = loadState();
+            var emailEl = qs("sceEmail");
+            var passEl = qs("scePass");
+            var loginBtn = qs("sceLogin");
+            var logoutBtn = qs("sceLogout");
+            var authStatusEl = qs("sceAuthStatus");
+            var appWrap = qs("sceApp");
+
             var selectedSeat = null;
             var selectedTab = null;
+            var waiterId = null;
+            var tabsBySeat = {};
 
-            function ensureSeat(seat) {
-                if (!st.seats[seat]) {
-                    st.seats[seat] = { status: "idle", updatedAt: nowIso(), tabs: ["A"] };
+            function setAuthStatus(text) {
+                if (authStatusEl) authStatusEl.textContent = text || "";
+            }
+
+            function setAppVisible(visible) {
+                if (appWrap) appWrap.style.display = visible ? "" : "none";
+            }
+
+            function getSeatState(seat) {
+                return tabsBySeat[String(seat || "")] || null;
+            }
+
+            function ensureSeatLocal(seat) {
+                if (!tabsBySeat[seat]) {
+                    tabsBySeat[seat] = { seat: seat, tabs: [] };
                 }
-                if (!Array.isArray(st.seats[seat].tabs) || !st.seats[seat].tabs.length) {
-                    st.seats[seat].tabs = ["A"];
-                }
-                return st.seats[seat];
+                return tabsBySeat[seat];
             }
 
             function setSelectedTab(tab) {
@@ -158,57 +190,63 @@
                     tabSel.innerHTML = "";
                     return;
                 }
-                var s = ensureSeat(seat);
+                var s = ensureSeatLocal(seat);
                 var tabs = s.tabs || [];
                 tabSel.innerHTML = tabs
                     .map(function (t) {
-                        return '<option value="' + String(t) + '">' + String(t) + "</option>";
+                        var label = (t && t.label) ? String(t.label) : "Cuenta";
+                        var status = (t && t.status) ? String(t.status) : "";
+                        var suffix = status ? (" · " + status) : "";
+                        return '<option value="' + String(t.id) + '">' + label + suffix + "</option>";
                     })
                     .join("");
 
-                if (!selectedTab || tabs.indexOf(selectedTab) === -1) {
-                    selectedTab = tabs[0] || null;
+                if (!selectedTab || !tabs.some(function (t) { return t && t.id === selectedTab; })) {
+                    selectedTab = (tabs[0] && tabs[0].id) ? tabs[0].id : null;
                 }
                 if (selectedTab) tabSel.value = selectedTab;
             }
 
-            function nextTabLabel(existing) {
-                var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                var used = {};
-                (existing || []).forEach(function (t) {
-                    used[String(t || "")] = true;
-                });
-                for (var i = 0; i < alphabet.length; i++) {
-                    var ch = alphabet.charAt(i);
-                    if (!used[ch]) return ch;
+            function openNewTabForSeat(seat) {
+                if (!seat || !window.mtFirebase || !window.mtFirebase.createTab) return;
+                var data = {
+                    tableNo: String(seat),
+                    status: "open",
+                    openedBy: waiterId,
+                };
+                window.mtFirebase
+                    .createTab(RESTAURANT_ID, data)
+                    .then(function (ref) {
+                        selectedTab = ref && ref.id ? ref.id : selectedTab;
+                        refreshTabs();
+                    })
+                    .catch(function () {
+                        setAuthStatus("No se pudo abrir cuenta.");
+                    });
+            }
+
+            function updateSelectedTabStatus(nextStatus) {
+                if (!selectedTab || !window.mtFirebase || !window.mtFirebase.updateTab) return;
+                var patch = { status: String(nextStatus || "") };
+                if (nextStatus === "preclosed") {
+                    patch.preclosedAt = new Date().toISOString();
+                    patch.preclosedBy = waiterId;
                 }
-                return "Z";
-            }
-
-            function addNewTabForSeat(seat) {
-                if (!seat) return;
-                var s = ensureSeat(seat);
-                var label = nextTabLabel(s.tabs);
-                s.tabs.push(label);
-                s.updatedAt = nowIso();
-                saveState(st);
-                selectedTab = label;
-                render();
-            }
-
-            function setSeatStatus(seat, status) {
-                var s = ensureSeat(seat);
-                s.status = status;
-                s.updatedAt = nowIso();
-                saveState(st);
-                render();
+                if (nextStatus === "open") {
+                    patch.reopenedAt = new Date().toISOString();
+                    patch.reopenedBy = waiterId;
+                }
+                window.mtFirebase
+                    .updateTab(RESTAURANT_ID, selectedTab, patch)
+                    .then(function () {
+                        refreshTabs();
+                    })
+                    .catch(function () {
+                        setAuthStatus("No se pudo actualizar la cuenta.");
+                    });
             }
 
             function clearSeat(seat) {
-                if (st.seats[seat]) {
-                    delete st.seats[seat];
-                    saveState(st);
-                }
                 if (selectedSeat === seat) selectedSeat = null;
                 if (selectedSeat === seat) selectedTab = null;
                 render();
@@ -216,26 +254,27 @@
 
             function selectSeat(seat) {
                 selectedSeat = seat;
-                ensureSeat(seat);
+                ensureSeatLocal(seat);
                 render();
             }
 
             function statusLabel(status) {
-                if (status === "ordering") return "Tomando pedidos";
-                if (status === "delivered") return "Entregado";
-                if (status === "paid") return "Cobrado";
+                if (status === "open") return "Abierta";
+                if (status === "preclosed") return "Pre-cerrada";
+                if (status === "closed") return "Cerrada";
                 return "Libre";
             }
 
             function statusTone(status) {
-                if (status === "ordering") return "rgba(245, 158, 11, 0.28)";
-                if (status === "delivered") return "rgba(34, 197, 94, 0.22)";
-                if (status === "paid") return "rgba(59, 130, 246, 0.22)";
+                if (status === "open") return "rgba(245, 158, 11, 0.20)";
+                if (status === "preclosed") return "rgba(59, 130, 246, 0.18)";
+                if (status === "closed") return "rgba(34, 197, 94, 0.18)";
                 return "rgba(255,255,255,0.06)";
             }
 
             function buildSeatButton(seat) {
-                var seatState = st.seats[seat] || { status: "idle" };
+                var seatState = getSeatState(seat);
+                var status = seatState && seatState.status ? String(seatState.status) : "idle";
                 var btn = document.createElement("button");
                 btn.type = "button";
                 btn.className = "mt-pill";
@@ -243,7 +282,7 @@
                 btn.style.padding = "10px 12px";
                 btn.style.borderRadius = "12px";
                 btn.style.fontWeight = "800";
-                btn.style.background = statusTone(seatState.status);
+                btn.style.background = statusTone(status);
                 btn.style.border =
                     selectedSeat === seat
                         ? "2px solid rgba(255,255,255,0.58)"
@@ -264,20 +303,21 @@
 
             function renderOpenList() {
                 if (!openList) return;
-                var keys = Object.keys(st.seats || {});
+                var keys = Object.keys(tabsBySeat || {});
                 keys.sort();
                 if (!keys.length) {
                     openList.innerHTML = "<li>No hay asientos activos.</li>";
                     return;
                 }
                 openList.innerHTML = keys.map(function (k) {
-                    var s = st.seats[k];
+                    var s = tabsBySeat[k] || {};
+                    var status = s && s.status ? String(s.status) : "idle";
                     var t = s && s.updatedAt ? new Date(s.updatedAt).toLocaleString() : "";
                     return (
                         "<li>" +
                         "<div class=\"mt-row\" style=\"justify-content:space-between; gap:10px; flex-wrap:wrap;\">" +
                         "<div><strong>" + k + "</strong><div style=\"opacity:0.85; margin-top:4px;\">" +
-                        statusLabel(s.status) + (t ? " · " + t : "") +
+                        statusLabel(status) + (t ? " · " + t : "") +
                         "</div></div>" +
                         "<div class=\"mt-row\" style=\"gap:10px; flex-wrap:wrap;\">" +
                         "<button class=\"mt-pill\" type=\"button\" data-action=\"sel\" data-seat=\"" + k + "\">Ver</button>" +
@@ -298,8 +338,8 @@
                 if (tabSel) tabSel.disabled = !has;
                 if (newTabBtn) newTabBtn.disabled = !has;
                 if (takeBtn) takeBtn.disabled = !has;
-                if (delBtn) delBtn.disabled = !has;
-                if (paidBtn) paidBtn.disabled = !has;
+                if (precloseBtn) precloseBtn.disabled = !has;
+                if (reopenBtn) reopenBtn.disabled = !has;
                 if (clearBtn) clearBtn.disabled = !has;
 
                 renderTabsForSeat(selectedSeat);
@@ -321,9 +361,9 @@
             if (takeBtn) {
                 takeBtn.addEventListener("click", function () {
                     if (!selectedSeat) return;
-                    setSeatStatus(selectedSeat, "ordering");
-                    var tab = (tabSel && tabSel.value) ? String(tabSel.value) : "A";
-                    window.location.href = "srchorizo.html?seat=" + encodeURIComponent(selectedSeat) + "&tab=" + encodeURIComponent(tab);
+                    var tab = (tabSel && tabSel.value) ? String(tabSel.value) : "";
+                    if (!tab) return;
+                    window.location.href = "srchorizo.html?table=" + encodeURIComponent(selectedSeat) + "&tab=" + encodeURIComponent(tab) + "&waiter=" + encodeURIComponent(waiterId || "");
                 });
             }
 
@@ -336,21 +376,21 @@
             if (newTabBtn) {
                 newTabBtn.addEventListener("click", function () {
                     if (!selectedSeat) return;
-                    addNewTabForSeat(selectedSeat);
+                    openNewTabForSeat(selectedSeat);
                 });
             }
 
-            if (delBtn) {
-                delBtn.addEventListener("click", function () {
-                    if (!selectedSeat) return;
-                    setSeatStatus(selectedSeat, "delivered");
+            if (precloseBtn) {
+                precloseBtn.addEventListener("click", function () {
+                    if (!selectedSeat || !selectedTab) return;
+                    updateSelectedTabStatus("preclosed");
                 });
             }
 
-            if (paidBtn) {
-                paidBtn.addEventListener("click", function () {
-                    if (!selectedSeat) return;
-                    setSeatStatus(selectedSeat, "paid");
+            if (reopenBtn) {
+                reopenBtn.addEventListener("click", function () {
+                    if (!selectedSeat || !selectedTab) return;
+                    updateSelectedTabStatus("open");
                 });
             }
 
@@ -359,6 +399,108 @@
                     if (!selectedSeat) return;
                     clearSeat(selectedSeat);
                 });
+            }
+
+            function refreshTabs() {
+                if (!window.mtFirebase || !window.mtFirebase.listTabsByStatus) return;
+                window.mtFirebase
+                    .listTabsByStatus(RESTAURANT_ID, null, 400)
+                    .then(function (tabs) {
+                        tabsBySeat = {};
+                        (tabs || []).forEach(function (t) {
+                            var seat = t && t.tableNo ? String(t.tableNo) : "";
+                            if (!seat) return;
+                            if (!tabsBySeat[seat]) tabsBySeat[seat] = { seat: seat, tabs: [], status: "idle", updatedAt: null };
+                            tabsBySeat[seat].tabs.push({ id: t.id, label: t.id.slice(0, 6), status: t.status || "" });
+                            tabsBySeat[seat].status = t.status || tabsBySeat[seat].status;
+                            var ts = t.updatedAt || t.preclosedAt || t.openedAt || null;
+                            var ms = ts && typeof ts.toDate === "function" ? ts.toDate().toISOString() : (ts || null);
+                            tabsBySeat[seat].updatedAt = ms;
+                        });
+                        render();
+                    })
+                    .catch(function () {
+                        setAuthStatus("No se pudo leer cuentas.");
+                    });
+            }
+
+            function setupAuthUi() {
+                if (!window.mtFirebase || !window.mtFirebase.onAuthStateChanged) {
+                    setAuthStatus("Firebase no está disponible.");
+                    return;
+                }
+
+                window.mtFirebase.onAuthStateChanged(function (user) {
+                    if (user) {
+                        waiterId = getWaiterIdFromEmail(user.email);
+                        if (logoutBtn) logoutBtn.style.display = "inline-flex";
+                        setAuthStatus("Sesión activa: " + String(waiterId || "mesero"));
+                        setAppVisible(true);
+                        refreshTabs();
+                    } else {
+                        waiterId = null;
+                        tabsBySeat = {};
+                        selectedSeat = null;
+                        selectedTab = null;
+                        if (logoutBtn) logoutBtn.style.display = "none";
+                        setAuthStatus("No has iniciado sesión.");
+                        setAppVisible(false);
+                        render();
+                    }
+                });
+
+                if (loginBtn) {
+                    loginBtn.addEventListener("click", function () {
+                        var email = (emailEl && emailEl.value) ? String(emailEl.value).trim() : "";
+                        var pass = (passEl && passEl.value) ? String(passEl.value) : "";
+                        if (!email || !pass || !window.mtFirebase || !window.mtFirebase.loginOwner) {
+                            setAuthStatus("Escribe email y contraseña.");
+                            return;
+                        }
+                        setAuthStatus("Iniciando sesión...");
+                        window.mtFirebase
+                            .loginOwner(email, pass)
+                            .catch(function () {
+                                setAuthStatus("No se pudo iniciar sesión.");
+                            });
+                    });
+                }
+
+                if (logoutBtn) {
+                    logoutBtn.addEventListener("click", function () {
+                        if (!window.mtFirebase || !window.mtFirebase.logout) return;
+                        window.mtFirebase.logout();
+                    });
+                }
+            }
+
+            function setupAuthUiWhenReady() {
+                if (window.mtFirebase && window.mtFirebase.onAuthStateChanged) {
+                    setupAuthUi();
+                    return;
+                }
+                var p = window.mtFirebaseReady && window.mtFirebaseReady.then ? window.mtFirebaseReady : null;
+                if (p) {
+                    p.then(function () {
+                        setupAuthUi();
+                    }).catch(function () {
+                        setAuthStatus("Firebase no está disponible.");
+                    });
+                    return;
+                }
+                var tries = 0;
+                var timer = window.setInterval(function () {
+                    tries++;
+                    if (window.mtFirebase && window.mtFirebase.onAuthStateChanged) {
+                        window.clearInterval(timer);
+                        setupAuthUi();
+                        return;
+                    }
+                    if (tries > 40) {
+                        window.clearInterval(timer);
+                        setAuthStatus("Firebase no está disponible.");
+                    }
+                }, 250);
             }
 
             if (openList) {
@@ -374,7 +516,8 @@
             }
 
             render();
+            setupAuthUiWhenReady();
         })();
-    </script>
+</script>
 </body>
 </html>

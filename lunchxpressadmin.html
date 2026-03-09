@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Lunch Xpress — Admin</title>
+    <meta name="description" content="Acceso administrativo simple: atajos e instrucciones." />
+    <meta name="theme-color" content="#0b1220" />
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="mt-theme-lunchxpress">
+    <div class="mt-container">
+        <header class="mt-header">
+            <div class="mt-header-left">
+                <img class="mt-logo" src="logolunch.png" alt="Lunch Xpress" />
+                <div class="mt-header-text">
+                    <div class="mt-brand">MenuTags</div>
+                    <h1>Lunch Xpress — Admin</h1>
+                </div>
+            </div>
+            <div class="mt-actions">
+                <a class="mt-pill" href="lunchxpress.html">Menú</a>
+            </div>
+        </header>
+
+        <main class="mt-main">
+            <section class="mt-section" id="lxaAuth">
+                <h2>Acceso</h2>
+                <div class="mt-row" style="margin-top:12px; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="mt-brand">Email</span>
+                        <input class="mt-input" type="email" id="lxaEmail" autocomplete="username" />
+                    </label>
+                    <label style="display:flex; flex-direction:column; gap:6px;">
+                        <span class="mt-brand">Contraseña</span>
+                        <input class="mt-input" type="password" id="lxaPass" autocomplete="current-password" />
+                    </label>
+                    <div class="mt-row" style="gap:10px; flex-wrap:wrap;">
+                        <button class="mt-btn" type="button" id="lxaLogin">Entrar</button>
+                        <button class="mt-pill" type="button" id="lxaLogout" style="display:none;">Salir</button>
+                    </div>
+                </div>
+                <div class="mt-status" id="lxaAuthStatus" style="margin-top:12px;">No has iniciado sesión.</div>
+            </section>
+
+            <div id="lxaApp" style="display:none;">
+            <section class="mt-section">
+                <h2>Accesos</h2>
+                <div class="mt-row" style="gap:10px; flex-wrap:wrap; margin-top:12px;">
+                    <a class="mt-btn" href="https://wa.me/5219933201843" target="_blank" rel="noopener">Abrir WhatsApp (pedidos)</a>
+                    <a class="mt-pill" href="lunchxpress.html">Abrir menú NFC</a>
+                </div>
+            </section>
+
+            <section class="mt-section" id="lxaReport">
+                <h2>Resumen de hoy</h2>
+                <div class="mt-status" id="lxaReportStatus" style="margin-top:12px; opacity:0.92;">Cargando...</div>
+                <div class="mt-row" id="lxaReportTotals" style="margin-top:12px; gap:10px; flex-wrap:wrap;"></div>
+                <ul class="mt-list" id="lxaReportList" style="margin-top:12px;"></ul>
+            </section>
+
+            <section class="mt-section">
+                <h2>Cómo revisar pedidos</h2>
+                <div class="mt-status" style="opacity:0.92; margin-top:12px; line-height:1.5;">
+                    Los pedidos se reciben por WhatsApp.
+                    <br />
+                    Para ver los pedidos del día:
+                    <br />
+                    1) Abre el chat de Lunch Xpress.
+                    <br />
+                    2) Filtra por fecha / busca por "Lunch Xpress — Pedido".
+                    <br />
+                    3) Revisa el total y cobra con el método que prefieras.
+                </div>
+            </section>
+
+            <section class="mt-section">
+                <h2>Aviso de privacidad (operación)</h2>
+                <div class="mt-status" style="opacity:0.92; margin-top:12px; line-height:1.5;">
+                    En el menú, el campo "Nombre" es opcional.
+                    <br />
+                    Si el cliente lo escribe, se usa únicamente para identificar su pedido dentro del chat.
+                    <br />
+                    Si en el futuro deseas registrar clientes y habilitar derechos ARCO, entonces sí conviene habilitar un sistema con base de datos.
+                </div>
+            </section>
+
+            <div class="mt-footer">
+                <div class="mt-led" role="contentinfo" aria-label="Créditos">
+                    <div class="mt-led__track" aria-hidden="true">
+                        <div class="mt-led__content">
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                        </div>
+                        <div class="mt-led__content">
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                            <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                            <span class="mt-led__sep">by</span>
+                            <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                            <span class="mt-led__gap">•</span>
+                        </div>
+                    </div>
+                    <div class="mt-led__sr">
+                        <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
+                        by
+                        <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="firebase.js"></script>
+    <script src="script.js"></script>
+    <script>
+        (function () {
+            var ALLOWED_UID = "H3Kzi57xxzSbvAoZJqYsbu5ZNz13";
+            var RESTAURANT_ID = "lunchxpress";
+            var emailEl = document.getElementById("lxaEmail");
+            var passEl = document.getElementById("lxaPass");
+            var loginBtn = document.getElementById("lxaLogin");
+            var logoutBtn = document.getElementById("lxaLogout");
+            var statusEl = document.getElementById("lxaAuthStatus");
+            var appEl = document.getElementById("lxaApp");
+            var reportStatusEl = document.getElementById("lxaReportStatus");
+            var reportTotalsEl = document.getElementById("lxaReportTotals");
+            var reportListEl = document.getElementById("lxaReportList");
+
+            function setStatus(t) {
+                if (!statusEl) return;
+                statusEl.textContent = String(t || "");
+            }
+
+            function setAppVisible(on) {
+                if (!appEl) return;
+                appEl.style.display = on ? "block" : "none";
+            }
+
+            function fmtMoney(n) {
+                var num = Number(n || 0);
+                if (!isFinite(num)) num = 0;
+                return "$" + num.toFixed(2);
+            }
+
+            function setReportStatus(t) {
+                if (!reportStatusEl) return;
+                reportStatusEl.textContent = String(t || "");
+            }
+
+            function getLocalDayRangeIso() {
+                var now = new Date();
+                var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+                var end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+                return { startIso: start.toISOString(), endIso: end.toISOString() };
+            }
+
+            function renderTotals(orders) {
+                if (!reportTotalsEl) return;
+                var subtotal = 0;
+                var tip = 0;
+                var total = 0;
+                (orders || []).forEach(function (o) {
+                    subtotal += Number(o.subtotal) || 0;
+                    tip += Number(o.tip) || 0;
+                    total += Number(o.total) || 0;
+                });
+
+                reportTotalsEl.innerHTML =
+                    "<div class=\"mt-pill\">Pedidos: <strong>" + String((orders || []).length) + "</strong></div>" +
+                    "<div class=\"mt-pill\">Subtotal: <strong>" + fmtMoney(subtotal) + "</strong></div>" +
+                    "<div class=\"mt-pill\">Propina: <strong>" + fmtMoney(tip) + "</strong></div>" +
+                    "<div class=\"mt-btn\" style=\"pointer-events:none;\">Total: <strong>" + fmtMoney(total) + "</strong></div>";
+            }
+
+            function renderOrdersList(orders) {
+                if (!reportListEl) return;
+                if (!orders || !orders.length) {
+                    reportListEl.innerHTML = "<li class=\"mt-item\"><div class=\"mt-status\">Aún no hay pedidos hoy.</div></li>";
+                    return;
+                }
+
+                var show = orders.slice(0, 40);
+                reportListEl.innerHTML = show.map(function (o) {
+                    var name = o.customerName ? String(o.customerName) : "";
+                    var note = o.note ? String(o.note) : "";
+                    var line1 = '<div><strong>' + fmtMoney(o.total) + '</strong>' + (o.tip ? ' <span style="opacity:0.85;">(propina ' + fmtMoney(o.tip) + ')</span>' : '') + '</div>';
+                    var line2 = '<div class="mt-status" style="opacity:0.9;">' + (name ? ('Nombre: ' + name) : 'Nombre: (sin nombre)') + '</div>';
+                    var line3 = note ? ('<div class="mt-status" style="opacity:0.86;">Nota: ' + note + '</div>') : '';
+                    return '<li class="mt-item"><div style="width:100%;">' + line1 + line2 + line3 + '</div></li>';
+                }).join("");
+            }
+
+            function loadTodayReport() {
+                try {
+                    if (!window.mtFirebase || !window.mtFirebase.listOrdersByRange) {
+                        setReportStatus("Firebase no está disponible.");
+                        return;
+                    }
+
+                    var range = getLocalDayRangeIso();
+                    setReportStatus("Cargando pedidos de hoy...");
+                    window.mtFirebase
+                        .listOrdersByRange(RESTAURANT_ID, range.startIso, range.endIso, 500)
+                        .then(function (orders) {
+                            setReportStatus("Pedidos de hoy: " + String((orders || []).length));
+                            renderTotals(orders || []);
+                            renderOrdersList(orders || []);
+                        })
+                        .catch(function () {
+                            setReportStatus("No se pudo cargar el resumen.");
+                        });
+                } catch (e) {
+                    setReportStatus("No se pudo cargar el resumen.");
+                }
+            }
+
+            function setupAuthUi() {
+                if (!window.mtFirebase || !window.mtFirebase.onAuthStateChanged) return;
+
+                window.mtFirebase.onAuthStateChanged(function (user) {
+                    if (user) {
+                        if (ALLOWED_UID && user.uid !== ALLOWED_UID) {
+                            if (logoutBtn) logoutBtn.style.display = "none";
+                            setStatus("Acceso denegado.");
+                            setAppVisible(false);
+                            if (window.mtFirebase && window.mtFirebase.logout) window.mtFirebase.logout();
+                            return;
+                        }
+                        if (logoutBtn) logoutBtn.style.display = "inline-flex";
+                        setStatus("Sesión activa.");
+                        setAppVisible(true);
+                        loadTodayReport();
+                    } else {
+                        if (logoutBtn) logoutBtn.style.display = "none";
+                        setStatus("No has iniciado sesión.");
+                        setAppVisible(false);
+                    }
+                });
+
+                if (loginBtn) {
+                    loginBtn.addEventListener("click", function () {
+                        var email = emailEl ? String(emailEl.value || "").trim() : "";
+                        var pass = passEl ? String(passEl.value || "").trim() : "";
+                        if (!email || !pass) {
+                            setStatus("Completa email y contraseña.");
+                            return;
+                        }
+                        setStatus("Iniciando sesión...");
+                        window.mtFirebase
+                            .loginOwner(email, pass)
+                            .catch(function () {
+                                setStatus("No se pudo iniciar sesión.");
+                            });
+                    });
+                }
+
+                if (logoutBtn) {
+                    logoutBtn.addEventListener("click", function () {
+                        if (!window.mtFirebase || !window.mtFirebase.logout) return;
+                        window.mtFirebase.logout();
+                    });
+                }
+            }
+
+            function setupAuthUiWhenReady() {
+                if (window.mtFirebase && window.mtFirebase.onAuthStateChanged) {
+                    setupAuthUi();
+                    return;
+                }
+                var p = window.mtFirebaseReady && window.mtFirebaseReady.then ? window.mtFirebaseReady : null;
+                if (p) {
+                    p.then(function () {
+                        setupAuthUi();
+                    }).catch(function () {
+                        setStatus("Firebase no está disponible.");
+                    });
+                    return;
+                }
+                var tries = 0;
+                var timer = window.setInterval(function () {
+                    tries++;
+                    if (window.mtFirebase && window.mtFirebase.onAuthStateChanged) {
+                        window.clearInterval(timer);
+                        setupAuthUi();
+                        return;
+                    }
+                    if (tries > 40) {
+                        window.clearInterval(timer);
+                        setStatus("Firebase no está disponible.");
+                    }
+                }, 250);
+            }
+
+            setAppVisible(false);
+            if (emailEl && !emailEl.value) emailEl.value = "lunch@express.com";
+            setupAuthUiWhenReady();
+        })();
+    </script>
+</body>
+</html>

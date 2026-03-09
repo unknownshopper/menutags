@@ -10,6 +10,9 @@ import {
     getFirestore,
     collection,
     addDoc,
+    doc,
+    updateDoc,
+    getDoc,
     serverTimestamp,
     query,
     where,
@@ -68,6 +71,14 @@ import {
         return collection(db, "restaurants", String(restaurantId || ""), "orders");
     }
 
+    function getRestaurantTabsCollection(restaurantId) {
+        return collection(db, "restaurants", String(restaurantId || ""), "tabs");
+    }
+
+    function getRestaurantPaymentsCollection(restaurantId) {
+        return collection(db, "restaurants", String(restaurantId || ""), "payments");
+    }
+
     function createOrder(restaurantId, orderData) {
         if (!restaurantId) return Promise.reject(new Error("missing restaurantId"));
         var data = Object.assign({}, orderData || {});
@@ -95,6 +106,74 @@ import {
         });
     }
 
+    function listOrdersByTabId(restaurantId, tabId, max) {
+        if (!restaurantId || !tabId) return Promise.resolve([]);
+        var col = getRestaurantOrdersCollection(restaurantId);
+        var q = query(
+            col,
+            where("tabId", "==", String(tabId)),
+            orderBy("createdAt", "desc"),
+            limit(max || 500)
+        );
+        return getDocs(q).then(function (snap) {
+            var out = [];
+            snap.forEach(function (docSnap) {
+                out.push(Object.assign({ id: docSnap.id }, docSnap.data()));
+            });
+            return out;
+        });
+    }
+
+    function createTab(restaurantId, tabData) {
+        if (!restaurantId) return Promise.reject(new Error("missing restaurantId"));
+        var data = Object.assign({}, tabData || {});
+        data.restaurantId = String(restaurantId);
+        data.openedAt = serverTimestamp();
+        if (!data.status) data.status = "open";
+        return addDoc(getRestaurantTabsCollection(restaurantId), data);
+    }
+
+    function updateTab(restaurantId, tabId, patch) {
+        if (!restaurantId || !tabId) return Promise.reject(new Error("missing ids"));
+        var ref = doc(db, "restaurants", String(restaurantId), "tabs", String(tabId));
+        var next = Object.assign({}, patch || {});
+        next.updatedAt = serverTimestamp();
+        return updateDoc(ref, next);
+    }
+
+    function getTab(restaurantId, tabId) {
+        if (!restaurantId || !tabId) return Promise.resolve(null);
+        var ref = doc(db, "restaurants", String(restaurantId), "tabs", String(tabId));
+        return getDoc(ref).then(function (snap) {
+            if (!snap.exists()) return null;
+            return Object.assign({ id: snap.id }, snap.data());
+        });
+    }
+
+    function listTabsByStatus(restaurantId, status, max) {
+        if (!restaurantId) return Promise.resolve([]);
+        var col = getRestaurantTabsCollection(restaurantId);
+        var q = status
+            ? query(col, where("status", "==", String(status)), orderBy("openedAt", "desc"), limit(max || 200))
+            : query(col, orderBy("openedAt", "desc"), limit(max || 200));
+
+        return getDocs(q).then(function (snap) {
+            var out = [];
+            snap.forEach(function (docSnap) {
+                out.push(Object.assign({ id: docSnap.id }, docSnap.data()));
+            });
+            return out;
+        });
+    }
+
+    function createPayment(restaurantId, paymentData) {
+        if (!restaurantId) return Promise.reject(new Error("missing restaurantId"));
+        var data = Object.assign({}, paymentData || {});
+        data.restaurantId = String(restaurantId);
+        data.createdAt = serverTimestamp();
+        return addDoc(getRestaurantPaymentsCollection(restaurantId), data);
+    }
+
     window.mtFirebase = {
         app: app,
         auth: auth,
@@ -107,6 +186,12 @@ import {
         },
         createOrder: createOrder,
         listOrdersByRange: listOrdersByRange,
+        listOrdersByTabId: listOrdersByTabId,
+        createTab: createTab,
+        updateTab: updateTab,
+        getTab: getTab,
+        listTabsByStatus: listTabsByStatus,
+        createPayment: createPayment,
         getQueryParam: getQueryParam,
     };
 
