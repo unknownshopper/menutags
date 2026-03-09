@@ -740,6 +740,20 @@
      border-color: rgba(220, 38, 38, 0.35);
  }
 
+ .mt-theme-mingo .mt-btn,
+ .mt-theme-mingo .mt-btn * {
+     color: rgba(11, 42, 111, 0.96);
+     -webkit-text-fill-color: rgba(11, 42, 111, 0.96) !important;
+     border-color: rgba(220, 38, 38, 0.22);
+     background: rgba(220, 38, 38, 0.08);
+ }
+
+ .mt-theme-mingo .mt-btn:hover,
+ .mt-theme-mingo .mt-btn:hover * {
+     color: rgba(11, 42, 111, 0.98);
+     -webkit-text-fill-color: rgba(11, 42, 111, 0.98) !important;
+ }
+
  .mt-theme-mingo .mt-section {
      border-color: rgba(220, 38, 38, 0.18);
      background: linear-gradient(180deg, rgba(11, 42, 111, 0.04), rgba(11, 42, 111, 0.02));
@@ -751,6 +765,10 @@
  }
 
  .mt-theme-mingo p {
+     color: rgba(11, 42, 111, 0.72);
+ }
+
+ .mt-theme-mingo .mt-brand {
      color: rgba(11, 42, 111, 0.72);
  }
 
