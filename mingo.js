@@ -77,9 +77,33 @@
     var totalEl = qs("mtTotal");
     var waBtn = qs("mtWhatsApp");
     var clearBtn = qs("mtClear");
+    var scrollTopBtn = qs("mtScrollTop");
 
     if (!listTortas || !listTacos || !listBebidas || !listSuaves || !listCombos || !listExtras || !cartList || !totalEl || !waBtn || !clearBtn) {
         return;
+    }
+
+    if (scrollTopBtn) {
+        scrollTopBtn.addEventListener("click", function () {
+            try {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            } catch (e) {
+                window.scrollTo(0, 0);
+            }
+        });
+
+        function updateScrollTopBtn() {
+            try {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.add("is-visible");
+                } else {
+                    scrollTopBtn.classList.remove("is-visible");
+                }
+            } catch (e) {}
+        }
+
+        window.addEventListener("scroll", updateScrollTopBtn, { passive: true });
+        updateScrollTopBtn();
     }
 
     var ORDER_DONE_KEY = "mtOrderDone:" + String(window.location.pathname || "");
@@ -165,6 +189,7 @@
                 "<div><strong>Este pedido ya fue enviado.</strong></div>" +
                 "<div class=\"mt-row\" style=\"margin-top:10px;\">" +
                 "<button class=\"mt-btn\" type=\"button\" id=\"mtUnlockOrder\">Hacer otro pedido</button>" +
+                "<button class=\"mt-pill\" type=\"button\" id=\"mtUnlockOrder2\">Desbloquear</button>" +
                 "</div>" +
                 "</li>";
             totalEl.textContent = money(0);
@@ -182,6 +207,12 @@
     }
 
     var cart = [];
+
+    function getSelectedDiner() {
+        var el = document.getElementById("mtDiner");
+        if (!el) return "";
+        return String(el.value || "");
+    }
 
     function getQtyFromInput(inputEl) {
         var v = parseInt(String((inputEl && inputEl.value) || "0"), 10);
@@ -300,7 +331,25 @@
             return;
         }
 
-        cartList.innerHTML = cart.map(function (it, idx) {
+        var groups = {};
+        for (var gi = 0; gi < cart.length; gi++) {
+            var dit = String(cart[gi].diner || "");
+            if (!groups[dit]) groups[dit] = [];
+            groups[dit].push({ it: cart[gi], idx: gi });
+        }
+
+        function dinerSortKey(d) {
+            if (d === "") return 9999;
+            var n = parseInt(String(d), 10);
+            if (!isFinite(n)) return 9998;
+            return n;
+        }
+
+        var dinerKeys = Object.keys(groups).sort(function (a, b) {
+            return dinerSortKey(a) - dinerSortKey(b);
+        });
+
+        function renderCartRow(it, idx) {
             var title =
                 it.kind === "torta" ? "Torta" :
                 it.kind === "taco" ? "Taco dorado" :
@@ -311,6 +360,7 @@
                 it.kind === "bebida" ? "Bebida" :
                 it.kind === "extra" ? "Extra" :
                 "Postre";
+
             var details = [];
             if (it.kind === "torta") details.push(it.size);
             if (it.kind === "taco") details.push(it.taco);
@@ -355,13 +405,31 @@
             var line = getLineTotal(it);
 
             return (
-                "<li>" +
+                "<li style=\"background: transparent; border-color: transparent; padding: 10px 0;\">" +
                 "<div><strong>" + it.qty + "x " + title + "</strong> <span>(" + details.join(", ") + ")</span></div>" +
                 "<div>" + money(unit) + " c/u · <strong>" + money(line) + "</strong></div>" +
                 "<div class=\"mt-row\"><button class=\"mt-pill\" type=\"button\" data-remove=\"" + idx + "\">Eliminar</button></div>" +
                 "</li>"
             );
-        }).join("");
+        }
+
+        var html = "";
+        for (var dk = 0; dk < dinerKeys.length; dk++) {
+            var diner = dinerKeys[dk];
+            var title = diner ? ("Comensal " + diner) : "Sin comensal";
+
+            var rowsHtml = groups[diner].map(function (row) {
+                return renderCartRow(row.it, row.idx);
+            }).join("");
+
+            html +=
+                "<li style=\"padding: 12px;\">" +
+                "<div style=\"font-weight: 850; margin-bottom: 8px;\">" + title + "</div>" +
+                "<ul style=\"list-style:none; padding:0; margin:0;\">" + rowsHtml + "</ul>" +
+                "</li>";
+        }
+
+        cartList.innerHTML = html;
 
         totalEl.textContent = money(getCartTotal());
         if (window.mtSetCartCount) window.mtSetCartCount(getCartCount());
@@ -369,14 +437,16 @@
 
     function buildKeyFromItem(it) {
         if (!it) return "";
-        if (it.kind === "torta") return ["torta", it.size || "", it.protein || "", it.protein2 || ""].join("|");
-        if (it.kind === "taco") return ["taco", it.taco || "", it.protein || "", it.protein2 || ""].join("|");
-        if (it.kind === "tacoquebrado") return ["tacoquebrado", it.protein || "", it.protein2 || ""].join("|");
-        if (it.kind === "suave") return ["suave", String(it.pack || ""), it.protein || "", it.protein2 || ""].join("|");
-        if (it.kind === "suavemix") return ["suavemix"].join("|");
+        var diner = String(it.diner || "");
+        if (it.kind === "torta") return ["torta", diner, it.size || "", it.protein || "", it.protein2 || ""].join("|");
+        if (it.kind === "taco") return ["taco", diner, it.taco || "", it.protein || "", it.protein2 || ""].join("|");
+        if (it.kind === "tacoquebrado") return ["tacoquebrado", diner, it.protein || "", it.protein2 || ""].join("|");
+        if (it.kind === "suave") return ["suave", diner, String(it.pack || ""), it.protein || "", it.protein2 || ""].join("|");
+        if (it.kind === "suavemix") return ["suavemix", diner].join("|");
         if (it.kind === "combo") {
             return [
                 "combo",
+                diner,
                 it.combo || "",
                 it.comboMode || "",
                 it.comboProtein || "",
@@ -387,9 +457,9 @@
                 it.comboT2Protein || "",
             ].join("|");
         }
-        if (it.kind === "bebida") return ["bebida", it.bebida || ""].join("|");
-        if (it.kind === "extra") return ["extra", it.extra || ""].join("|");
-        if (it.kind === "postre") return ["postre", it.postre || ""].join("|");
+        if (it.kind === "bebida") return ["bebida", diner, it.bebida || ""].join("|");
+        if (it.kind === "extra") return ["extra", diner, it.extra || ""].join("|");
+        if (it.kind === "postre") return ["postre", diner, it.postre || ""].join("|");
         return String(it.kind || "");
     }
 
@@ -444,6 +514,7 @@
         if (rowKind === "torta") {
             return {
                 kind: "torta",
+                diner: getSelectedDiner(),
                 qty: qty,
                 size: li.getAttribute("data-size") || "",
                 protein: readProtein1(),
@@ -454,6 +525,7 @@
         if (rowKind === "taco") {
             return {
                 kind: "taco",
+                diner: getSelectedDiner(),
                 qty: qty,
                 taco: li.getAttribute("data-taco") || "",
                 protein: readProtein1(),
@@ -464,6 +536,7 @@
         if (rowKind === "tacoquebrado") {
             return {
                 kind: "tacoquebrado",
+                diner: getSelectedDiner(),
                 qty: qty,
                 taco: li.getAttribute("data-taco") || "Quebrado",
                 protein: readProtein1(),
@@ -474,6 +547,7 @@
         if (rowKind === "suave") {
             return {
                 kind: "suave",
+                diner: getSelectedDiner(),
                 qty: qty,
                 pack: li.getAttribute("data-pack") || "",
                 protein: readProtein1(),
@@ -484,6 +558,7 @@
         if (rowKind === "suavemix") {
             return {
                 kind: "suavemix",
+                diner: getSelectedDiner(),
                 qty: qty,
             };
         }
@@ -501,6 +576,7 @@
 
             return {
                 kind: "combo",
+                diner: getSelectedDiner(),
                 qty: qty,
                 combo: comboName,
                 comboMode: modeEl ? String(modeEl.value || "") : "",
@@ -517,6 +593,7 @@
         if (rowKind === "bebida") {
             return {
                 kind: "bebida",
+                diner: getSelectedDiner(),
                 qty: qty,
                 bebida: li.getAttribute("data-bebida") || "",
             };
@@ -525,6 +602,7 @@
         if (rowKind === "extra") {
             return {
                 kind: "extra",
+                diner: getSelectedDiner(),
                 qty: qty,
                 extra: li.getAttribute("data-extra") || "",
             };
@@ -533,6 +611,7 @@
         if (rowKind === "postre") {
             return {
                 kind: "postre",
+                diner: getSelectedDiner(),
                 qty: qty,
                 postre: li.getAttribute("data-postre") || "",
             };
@@ -581,7 +660,25 @@
         lines.push("");
         lines.push("Detalle:");
 
-        cart.forEach(function (it, i) {
+        var groups = {};
+        for (var gi = 0; gi < cart.length; gi++) {
+            var dit = String(cart[gi].diner || "");
+            if (!groups[dit]) groups[dit] = [];
+            groups[dit].push(cart[gi]);
+        }
+
+        function dinerSortKey(d) {
+            if (d === "") return 9999;
+            var n = parseInt(String(d), 10);
+            if (!isFinite(n)) return 9998;
+            return n;
+        }
+
+        var dinerKeys = Object.keys(groups).sort(function (a, b) {
+            return dinerSortKey(a) - dinerSortKey(b);
+        });
+
+        function pushItemLines(it, n) {
             var title =
                 it.kind === "torta" ? "Torta" :
                 it.kind === "taco" ? "Taco dorado" :
@@ -592,27 +689,27 @@
                 it.kind === "bebida" ? "Bebida" :
                 it.kind === "extra" ? "Extra" :
                 "Postre";
+
             var details = [];
             if (it.kind === "torta") details.push(it.size);
             if (it.kind === "taco") details.push(it.taco);
             if (it.kind === "tacoquebrado") details.push("Quebrado");
             if (it.kind === "suave") details.push((it.pack || "") + " pza");
             if (it.kind === "suavemix") details.push("mix");
-            if (it.kind === "combo") details.push(it.combo);
-            if (it.kind === "bebida") details.push(it.bebida);
-            if (it.kind === "extra") details.push(it.extra);
-            if (it.kind === "postre") details.push(it.postre);
             if (it.kind === "combo") {
+                details.push(it.combo);
                 if (it.comboMode) details.push(it.comboMode === "dorados" ? "2 tacos dorados" : "1 clásica");
                 if (it.comboProtein) details.push(it.comboProtein);
                 if (it.comboBebida) details.push(it.comboBebida);
                 if (it.comboLechuguilla) details.push(it.comboLechuguilla);
                 if (it.comboMode === "dorados") {
-                    if (it.comboT1Kind) details.push("T1 " + String(it.comboT1Kind) + (it.comboT1Protein ? " " + String(it.comboT1Protein) : ""));
-                    if (it.comboT2Kind) details.push("T2 " + String(it.comboT2Kind) + (it.comboT2Protein ? " " + String(it.comboT2Protein) : ""));
+                    if (it.comboT1Kind) details.push("T1 " + it.comboT1Kind + (it.comboT1Protein ? " " + it.comboT1Protein : ""));
+                    if (it.comboT2Kind) details.push("T2 " + it.comboT2Kind + (it.comboT2Protein ? " " + it.comboT2Protein : ""));
                 }
             }
-
+            if (it.kind === "bebida") details.push(it.bebida);
+            if (it.kind === "extra") details.push(it.extra);
+            if (it.kind === "postre") details.push(it.postre);
             if (it.kind === "torta" || it.kind === "taco" || it.kind === "tacoquebrado" || it.kind === "suave") {
                 if (it.protein2) {
                     details.push(String(it.protein || "") + " / " + String(it.protein2 || ""));
@@ -623,11 +720,25 @@
 
             var unit = getUnitPrice(it);
             var lineTotal = getLineTotal(it);
-
             var meta = details.length ? (" (" + details.join(", ") + ")") : "";
-            lines.push((i + 1) + ") " + it.qty + "x " + title + meta);
-            lines.push("    " + money(unit) + " c/u = " + money(lineTotal));
-        });
+            lines.push("  " + n + ") " + it.qty + "x " + title + meta);
+            lines.push("      " + money(unit) + " c/u = " + money(lineTotal));
+        }
+
+        for (var dk = 0; dk < dinerKeys.length; dk++) {
+            var diner = dinerKeys[dk];
+            var title = diner ? ("*Comensal " + diner + "*") : "*Sin comensal*";
+            lines.push("");
+            lines.push(title);
+
+            var items = groups[diner];
+            var subtotal = 0;
+            for (var ii = 0; ii < items.length; ii++) {
+                pushItemLines(items[ii], ii + 1);
+                subtotal += getLineTotal(items[ii]);
+            }
+            lines.push("  Subtotal: " + money(subtotal));
+        }
 
         lines.push("");
         lines.push("TOTAL: " + money(getCartTotal()));
@@ -757,7 +868,11 @@
 
     function bindList(listEl) {
         listEl.addEventListener("click", function (e) {
-            var plusBtn = e.target.closest('button[data-action="plus"]');
+            var target = e && e.target ? e.target : null;
+            if (target && target.nodeType === 3) target = target.parentElement;
+            if (!target || !target.closest) return;
+
+            var plusBtn = target.closest('button[data-action="plus"]');
             if (plusBtn) {
                 var li = plusBtn.closest("li");
                 if (!li || orderLocked) return;
@@ -781,7 +896,7 @@
                 return;
             }
 
-            var minusBtn = e.target.closest('button[data-action="minus"]');
+            var minusBtn = target.closest('button[data-action="minus"]');
             if (minusBtn) {
                 var liMinus = minusBtn.closest("li");
                 if (!liMinus || orderLocked) return;
@@ -946,6 +1061,17 @@
 
     initDisplayedPrices();
 
+    var dinerSelect = document.getElementById("mtDiner");
+    if (dinerSelect) {
+        dinerSelect.addEventListener("change", function () {
+            var rows = document.querySelectorAll('li[data-kind]');
+            for (var i = 0; i < rows.length; i++) {
+                updateRowQtyFromCart(rows[i]);
+                refreshRowPrice(rows[i]);
+            }
+        });
+    }
+
     cartList.addEventListener("click", function (e) {
         if (orderLocked) return;
         var btn = e.target.closest("button[data-remove]");
@@ -966,6 +1092,13 @@
         var unlockBtn = document.getElementById("mtUnlockOrder");
         if (unlockBtn) {
             unlockBtn.addEventListener("click", function () {
+                unlockOrder();
+            });
+        }
+
+        var unlockBtn2 = document.getElementById("mtUnlockOrder2");
+        if (unlockBtn2) {
+            unlockBtn2.addEventListener("click", function () {
                 unlockOrder();
             });
         }

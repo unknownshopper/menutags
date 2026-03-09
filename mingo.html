@@ -41,6 +41,23 @@
                 <h2>Pedido</h2>
                 <p>Arma tu pedido y envíalo por WhatsApp.</p>
                 <p>Solo se permite 1 pedido. Para hacer otro, vuelve a acercar tu teléfono al sticker NFC.</p>
+                <div class="mt-row" style="margin-top:10px; align-items:flex-end;">
+                    <label class="mt-field" style="min-width:220px;">
+                        <span class="mt-label">Comensal</span>
+                        <select class="mt-input" id="mtDiner">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </label>
+                </div>
             </section>
 
             <section class="mt-section" id="mtMenuTortas">
@@ -553,6 +570,8 @@
                     <button class="mt-pill" type="button" id="mtClear">Vaciar</button>
                 </div>
             </section>
+
+            <button class="mt-scrolltop" type="button" id="mtScrollTop" aria-label="Subir">↑</button>
 
             <section class="mt-section mt-hidden" id="mtStaticMenu" aria-hidden="true">
                 <h2>Tortas ahogadas</h2>
