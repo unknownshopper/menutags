@@ -830,6 +830,25 @@
      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
  }
 
+ @media (max-width: 420px) {
+     .mt-theme-lunchxpress .mt-row {
+         flex-direction: column;
+         align-items: stretch;
+     }
+
+     .mt-theme-lunchxpress .mt-row > .mt-btn,
+     .mt-theme-lunchxpress .mt-row > .mt-pill {
+         width: 100%;
+         max-width: 100%;
+         white-space: normal;
+         text-align: center;
+     }
+
+     .mt-theme-lunchxpress .mt-status {
+         letter-spacing: 0.02em;
+     }
+ }
+
  .mt-option.is-selected {
      background: rgba(255, 255, 255, 0.18);
      border-color: rgba(255, 255, 255, 0.34);
@@ -1195,6 +1214,9 @@
      background: rgba(255, 255, 255, 0.06);
      font-weight: 800;
      letter-spacing: 0.04em;
+     white-space: normal;
+     overflow-wrap: anywhere;
+     word-break: break-word;
  }
 
  .mt-status--ok {

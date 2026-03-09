@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Lunch Xpress — Admin</title>
+    <title>Lunch Express — Admin</title>
     <meta name="description" content="Acceso administrativo simple: atajos e instrucciones." />
     <meta name="theme-color" content="#0b1220" />
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=3" />
 </head>
 
 <body class="mt-theme-lunchxpress">
     <div class="mt-container">
         <header class="mt-header">
             <div class="mt-header-left">
-                <img class="mt-logo" src="logolunch.png" alt="Lunch Xpress" />
+                <img class="mt-logo" src="logolunch.png" alt="Lunch Express" />
                 <div class="mt-header-text">
                     <div class="mt-brand">MenuTags</div>
-                    <h1>Lunch Xpress — Admin</h1>
+                    <h1>Lunch Express — Admin</h1>
                 </div>
             </div>
             <div class="mt-actions">
@@ -68,9 +68,9 @@
                     <br />
                     Para ver los pedidos del día:
                     <br />
-                    1) Abre el chat de Lunch Xpress.
+                    1) Abre el chat de Lunch Express.
                     <br />
-                    2) Filtra por fecha / busca por "Lunch Xpress — Pedido".
+                    2) Filtra por fecha / busca por "Lunch Express — Pedido".
                     <br />
                     3) Revisa el total y cobra con el método que prefieras.
                 </div>
@@ -81,9 +81,11 @@
                 <div class="mt-status" style="opacity:0.92; margin-top:12px; line-height:1.5;">
                     En el menú, el campo "Nombre" es opcional.
                     <br />
-                    Si el cliente lo escribe, se usa únicamente para identificar su pedido dentro del chat.
+                    Si el cliente lo escribe, se usa únicamente para identificar su pedido.
                     <br />
-                    Si en el futuro deseas registrar clientes y habilitar derechos ARCO, entonces sí conviene habilitar un sistema con base de datos.
+                    Al enviar el pedido por WhatsApp, se registra el pedido (productos, cantidades, totales, propina y nota si aplica) para generar el resumen del día.
+                    <br />
+                    No se solicita ni se guarda número telefónico del cliente desde este sistema.
                 </div>
             </section>
 
@@ -91,6 +93,7 @@
                 <div class="mt-led" role="contentinfo" aria-label="Créditos">
                     <div class="mt-led__track" aria-hidden="true">
                         <div class="mt-led__content">
+                            <span class="mt-led__gap">•</span>
                             <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
                             <span class="mt-led__sep">by</span>
                             <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
@@ -105,6 +108,7 @@
                             <span class="mt-led__gap">•</span>
                         </div>
                         <div class="mt-led__content">
+                            <span class="mt-led__gap">•</span>
                             <a href="https://github.com/unknownshopper/menutags" target="_blank" rel="noopener">MENUTAGS</a>
                             <span class="mt-led__sep">by</span>
                             <a href="https://github.com/unknownshopper" target="_blank" rel="noopener">The Unknown Shopper</a>
@@ -226,8 +230,18 @@
                             renderTotals(orders || []);
                             renderOrdersList(orders || []);
                         })
-                        .catch(function () {
-                            setReportStatus("No se pudo cargar el resumen.");
+                        .catch(function (err) {
+                            try {
+                                console.warn("[LunchExpressAdmin] listOrdersByRange failed", err);
+                            } catch (e) {}
+                            var msg = "No se pudo cargar el resumen.";
+                            try {
+                                if (err && (err.code || err.message)) {
+                                    msg += " (" + String(err.code || "error") + ")";
+                                    if (err.message) msg += ": " + String(err.message);
+                                }
+                            } catch (e2) {}
+                            setReportStatus(msg);
                         });
                 } catch (e) {
                     setReportStatus("No se pudo cargar el resumen.");

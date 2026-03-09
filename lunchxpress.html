@@ -676,9 +676,11 @@
             }
 
             function ensureAnonIfAvailable() {
-                if (!window.mtFirebase || !window.mtFirebase.ensureAnon) return Promise.resolve(null);
-                return window.mtFirebase.ensureAnon().catch(function () {
-                    return null;
+                if (!window.mtFirebase || !window.mtFirebase.ensureAnon) return Promise.resolve(false);
+                return window.mtFirebase.ensureAnon().then(function () {
+                    return true;
+                }).catch(function () {
+                    return false;
                 });
             }
 
@@ -693,7 +695,9 @@
                     var name = nameEl ? String(nameEl.value || "").trim() : "";
                     var note = noteEl ? String(noteEl.value || "").trim() : "";
 
-                    ensureAnonIfAvailable().then(function () {
+                    ensureAnonIfAvailable().then(function (ok) {
+                        if (!ok) throw new Error("anon auth not available");
+                        var clientNow = new Date();
                         return window.mtFirebase.createOrder(RESTAURANT_ID, {
                             channel: "whatsapp",
                             flow: "lunchxpress",
@@ -702,6 +706,8 @@
                             tip: tip,
                             subtotal: subtotal,
                             total: grand,
+                            clientCreatedAtIso: clientNow.toISOString(),
+                            clientCreatedAtMs: clientNow.getTime(),
                             items: (cart || []).map(function (it) {
                                 return {
                                     title: it.title,
@@ -718,8 +724,10 @@
                                 tzOffsetMin: new Date().getTimezoneOffset(),
                             },
                         });
-                    }).catch(function () {
-                        return;
+                    }).catch(function (err) {
+                        try {
+                            console.warn("[LunchExpress] Firestore createOrder failed", err);
+                        } catch (e) {}
                     });
                 } catch (e) {
                     return;
